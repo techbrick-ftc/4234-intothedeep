@@ -9,7 +9,7 @@
 # Files for the ART/Dalvik VM
 *.dex
 
-# Java/JDK files
+# Java/JDK fileses
 *.class
 *.hprof
 
