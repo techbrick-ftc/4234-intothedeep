@@ -1,0 +1,181 @@
+<html>
+<head>
+<title>SensorHuskyLens.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SensorHuskyLens.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+Copyright (c) 2023 FIRST 
+ 
+All rights reserved. 
+ 
+Redistribution and use in source and binary forms, with or without modification, 
+are permitted (subject to the limitations in the disclaimer below) provided that 
+the following conditions are met: 
+ 
+Redistributions of source code must retain the above copyright notice, this list 
+of conditions and the following disclaimer. 
+ 
+Redistributions in binary form must reproduce the above copyright notice, this 
+list of conditions and the following disclaimer in the documentation and/or 
+other materials provided with the distribution. 
+ 
+Neither the name of FIRST nor the names of its contributors may be used to 
+endorse or promote products derived from this software without specific prior 
+written permission. 
+ 
+NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+&quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR 
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+*/</span>
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">dfrobot</span><span class="s3">.</span><span class="s1">HuskyLens</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">system</span><span class="s3">.</span><span class="s1">Deadline</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">java</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">concurrent</span><span class="s3">.</span><span class="s1">TimeUnit</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode illustrates how to use the DFRobot HuskyLens. 
+ * 
+ * The HuskyLens is a Vision Sensor with a built-in object detection model.  It can 
+ * detect a number of predefined objects and AprilTags in the 36h11 family, can 
+ * recognize colors, and can be trained to detect custom objects. See this website for 
+ * documentation: https://wiki.dfrobot.com/HUSKYLENS_V1.0_SKU_SEN0305_SEN0336 
+ * 
+ * For detailed instructions on how a HuskyLens is used in FTC, please see this tutorial: 
+ * https://ftc-docs.firstinspires.org/en/latest/devices/huskylens/huskylens.html 
+ *  
+ * This sample illustrates how to detect AprilTags, but can be used to detect other types 
+ * of objects by changing the algorithm. It assumes that the HuskyLens is configured with 
+ * a name of &quot;huskylens&quot;. 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list 
+ */</span>
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name </span><span class="s3">= </span><span class="s4">&quot;Sensor: HuskyLens&quot;</span><span class="s3">, </span><span class="s1">group </span><span class="s3">= </span><span class="s4">&quot;Sensor&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">SensorHuskyLens </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+
+    <span class="s2">private final int </span><span class="s1">READ_PERIOD </span><span class="s3">= </span><span class="s5">1</span><span class="s3">;</span>
+
+    <span class="s2">private </span><span class="s1">HuskyLens huskyLens</span><span class="s3">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">()</span>
+    <span class="s3">{</span>
+        <span class="s1">huskyLens </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">HuskyLens</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;huskylens&quot;</span><span class="s3">);</span>
+
+        <span class="s0">/* 
+         * This sample rate limits the reads solely to allow a user time to observe 
+         * what is happening on the Driver Station telemetry.  Typical applications 
+         * would not likely rate limit. 
+         */</span>
+        <span class="s1">Deadline rateLimit </span><span class="s3">= </span><span class="s2">new </span><span class="s1">Deadline</span><span class="s3">(</span><span class="s1">READ_PERIOD</span><span class="s3">, </span><span class="s1">TimeUnit</span><span class="s3">.</span><span class="s1">SECONDS</span><span class="s3">);</span>
+
+        <span class="s0">/* 
+         * Immediately expire so that the first time through we'll do the read. 
+         */</span>
+        <span class="s1">rateLimit</span><span class="s3">.</span><span class="s1">expire</span><span class="s3">();</span>
+
+        <span class="s0">/* 
+         * Basic check to see if the device is alive and communicating.  This is not 
+         * technically necessary here as the HuskyLens class does this in its 
+         * doInitialization() method which is called when the device is pulled out of 
+         * the hardware map.  However, sometimes it's unclear why a device reports as 
+         * failing on initialization.  In the case of this device, it's because the 
+         * call to knock() failed. 
+         */</span>
+        <span class="s2">if </span><span class="s3">(!</span><span class="s1">huskyLens</span><span class="s3">.</span><span class="s1">knock</span><span class="s3">()) {</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Problem communicating with &quot; </span><span class="s3">+ </span><span class="s1">huskyLens</span><span class="s3">.</span><span class="s1">getDeviceName</span><span class="s3">());</span>
+        <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Press start to continue&quot;</span><span class="s3">);</span>
+        <span class="s3">}</span>
+
+        <span class="s0">/* 
+         * The device uses the concept of an algorithm to determine what types of 
+         * objects it will look for and/or what mode it is in.  The algorithm may be 
+         * selected using the scroll wheel on the device, or via software as shown in 
+         * the call to selectAlgorithm(). 
+         * 
+         * The SDK itself does not assume that the user wants a particular algorithm on 
+         * startup, and hence does not set an algorithm. 
+         * 
+         * Users, should, in general, explicitly choose the algorithm they want to use 
+         * within the OpMode by calling selectAlgorithm() and passing it one of the values 
+         * found in the enumeration HuskyLens.Algorithm. 
+         * 
+         * Other algorithm choices for FTC might be: OBJECT_RECOGNITION, COLOR_RECOGNITION or OBJECT_CLASSIFICATION. 
+         */</span>
+        <span class="s1">huskyLens</span><span class="s3">.</span><span class="s1">selectAlgorithm</span><span class="s3">(</span><span class="s1">HuskyLens</span><span class="s3">.</span><span class="s1">Algorithm</span><span class="s3">.</span><span class="s1">TAG_RECOGNITION</span><span class="s3">);</span>
+
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s1">waitForStart</span><span class="s3">();</span>
+
+        <span class="s0">/* 
+         * Looking for AprilTags per the call to selectAlgorithm() above.  A handy grid 
+         * for testing may be found at https://wiki.dfrobot.com/HUSKYLENS_V1.0_SKU_SEN0305_SEN0336#target_20. 
+         * 
+         * Note again that the device only recognizes the 36h11 family of tags out of the box. 
+         */</span>
+        <span class="s2">while</span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">()) {</span>
+            <span class="s2">if </span><span class="s3">(!</span><span class="s1">rateLimit</span><span class="s3">.</span><span class="s1">hasExpired</span><span class="s3">()) {</span>
+                <span class="s2">continue</span><span class="s3">;</span>
+            <span class="s3">}</span>
+            <span class="s1">rateLimit</span><span class="s3">.</span><span class="s1">reset</span><span class="s3">();</span>
+
+            <span class="s0">/* 
+             * All algorithms, except for LINE_TRACKING, return a list of Blocks where a 
+             * Block represents the outline of a recognized object along with its ID number. 
+             * ID numbers allow you to identify what the device saw.  See the HuskyLens documentation 
+             * referenced in the header comment above for more information on IDs and how to 
+             * assign them to objects. 
+             * 
+             * Returns an empty array if no objects are seen. 
+             */</span>
+            <span class="s1">HuskyLens</span><span class="s3">.</span><span class="s1">Block</span><span class="s3">[] </span><span class="s1">blocks </span><span class="s3">= </span><span class="s1">huskyLens</span><span class="s3">.</span><span class="s1">blocks</span><span class="s3">();</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Block count&quot;</span><span class="s3">, </span><span class="s1">blocks</span><span class="s3">.</span><span class="s1">length</span><span class="s3">);</span>
+            <span class="s2">for </span><span class="s3">(</span><span class="s2">int </span><span class="s1">i </span><span class="s3">= </span><span class="s5">0</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">blocks</span><span class="s3">.</span><span class="s1">length</span><span class="s3">; </span><span class="s1">i</span><span class="s3">++) {</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Block&quot;</span><span class="s3">, </span><span class="s1">blocks</span><span class="s3">[</span><span class="s1">i</span><span class="s3">].</span><span class="s1">toString</span><span class="s3">());</span>
+                <span class="s0">/* 
+                 * Here inside the FOR loop, you could save or evaluate specific info for the currently recognized Bounding Box: 
+                 * - blocks[i].width and blocks[i].height   (size of box, in pixels) 
+                 * - blocks[i].left and blocks[i].top       (edges of box) 
+                 * - blocks[i].x and blocks[i].y            (center location) 
+                 * - blocks[i].id                           (Color ID) 
+                 * 
+                 * These values have Java type int (integer). 
+                 */</span>
+            <span class="s3">}</span>
+
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+<span class="s3">}</span></pre>
+</body>
+</html>

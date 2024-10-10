@@ -1,0 +1,206 @@
+<html>
+<head>
+<title>ConceptExploringIMUOrientation.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ConceptExploringIMUOrientation.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+Copyright (c) 2022 REV Robotics, FIRST 
+ 
+All rights reserved. 
+ 
+Redistribution and use in source and binary forms, with or without modification, 
+are permitted (subject to the limitations in the disclaimer below) provided that 
+the following conditions are met: 
+ 
+Redistributions of source code must retain the above copyright notice, this list 
+of conditions and the following disclaimer. 
+ 
+Redistributions in binary form must reproduce the above copyright notice, this 
+list of conditions and the following disclaimer in the documentation and/or 
+other materials provided with the distribution. 
+ 
+Neither the name of REV Robotics nor the names of its contributors may be used to 
+endorse or promote products derived from this software without specific prior 
+written permission. 
+ 
+NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+&quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR 
+TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF 
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+*/</span>
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">rev</span><span class="s3">.</span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">IMU</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">AngleUnit</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">AngularVelocity</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">YawPitchRollAngles</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode demonstrates the impact of setting the IMU orientation correctly or incorrectly. This 
+ * code assumes there is an IMU configured with the name &quot;imu&quot;. 
+ * 
+ * Note: This OpMode is more of a tool than a code sample. The User Interface portion of this code 
+ *       goes beyond simply showing how to interface to the IMU.&lt;br&gt; 
+ *       For a minimal example of interfacing to an IMU, please see the SensorIMUOrthogonal or SensorIMUNonOrthogonal sample OpModes. 
+ * 
+ * This OpMode enables you to re-specify the Hub Mounting orientation dynamically by using gamepad controls. 
+ * While doing so, the sample will display how Pitch, Roll and Yaw angles change as the hub is moved. 
+ * 
+ * The gamepad controls let you change the two parameters that specify how the Control/Expansion Hub is mounted. &lt;br&gt; 
+ * The first parameter specifies which direction the printed logo on the Hub is pointing. &lt;br&gt; 
+ * The second parameter specifies which direction the USB connector on the Hub is pointing. &lt;br&gt; 
+ * All directions are relative to the robot, and left/right is as viewed from behind the robot. 
+ * 
+ * How will you know if you have chosen the correct Orientation? With the correct orientation 
+ * parameters selected, pitch/roll/yaw should act as follows: 
+ * 
+ *   Pitch value should INCREASE as the robot is tipped UP at the front. (Rotation about X) &lt;br&gt; 
+ *   Roll value should INCREASE as the robot is tipped UP at the left side. (Rotation about Y) &lt;br&gt; 
+ *   Yaw value should INCREASE as the robot is rotated Counter Clockwise. (Rotation about Z) &lt;br&gt; 
+ * 
+ * The Yaw can be reset (to zero) by pressing the Y button on the gamepad (Triangle on a PS4 controller) 
+ * 
+ * The rotational velocities should follow the change in corresponding axes. 
+ */</span>
+
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name</span><span class="s3">=</span><span class="s4">&quot;Concept: IMU Orientation&quot;</span><span class="s3">, </span><span class="s1">group</span><span class="s3">=</span><span class="s4">&quot;Concept&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">ConceptExploringIMUOrientation </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+    <span class="s2">static </span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">LogoFacingDirection</span><span class="s3">[] </span><span class="s1">logoFacingDirections</span>
+            <span class="s3">= </span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">LogoFacingDirection</span><span class="s3">.</span><span class="s1">values</span><span class="s3">();</span>
+    <span class="s2">static </span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">UsbFacingDirection</span><span class="s3">[] </span><span class="s1">usbFacingDirections</span>
+            <span class="s3">= </span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">UsbFacingDirection</span><span class="s3">.</span><span class="s1">values</span><span class="s3">();</span>
+    <span class="s2">static int </span><span class="s1">LAST_DIRECTION </span><span class="s3">= </span><span class="s1">logoFacingDirections</span><span class="s3">.</span><span class="s1">length </span><span class="s3">- </span><span class="s5">1</span><span class="s3">;</span>
+    <span class="s2">static float </span><span class="s1">TRIGGER_THRESHOLD </span><span class="s3">= </span><span class="s5">0.2f</span><span class="s3">;</span>
+
+    <span class="s1">IMU imu</span><span class="s3">;</span>
+    <span class="s2">int </span><span class="s1">logoFacingDirectionPosition</span><span class="s3">;</span>
+    <span class="s2">int </span><span class="s1">usbFacingDirectionPosition</span><span class="s3">;</span>
+    <span class="s2">boolean </span><span class="s1">orientationIsValid </span><span class="s3">= </span><span class="s2">true</span><span class="s3">;</span>
+
+    <span class="s1">@Override </span><span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() </span><span class="s2">throws </span><span class="s1">InterruptedException </span><span class="s3">{</span>
+        <span class="s1">imu </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">IMU</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;imu&quot;</span><span class="s3">);</span>
+        <span class="s1">logoFacingDirectionPosition </span><span class="s3">= </span><span class="s5">0</span><span class="s3">; </span><span class="s0">// Up</span>
+        <span class="s1">usbFacingDirectionPosition </span><span class="s3">= </span><span class="s5">2</span><span class="s3">; </span><span class="s0">// Forward</span>
+
+        <span class="s1">updateOrientation</span><span class="s3">();</span>
+
+        <span class="s2">boolean </span><span class="s1">justChangedLogoDirection </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+        <span class="s2">boolean </span><span class="s1">justChangedUsbDirection </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+
+        <span class="s0">// Loop until stop requested</span>
+        <span class="s2">while </span><span class="s3">(!</span><span class="s1">isStopRequested</span><span class="s3">()) {</span>
+
+            <span class="s0">// Check to see if Yaw reset is requested (Y button)</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">y</span><span class="s3">) {</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Yaw&quot;</span><span class="s3">, </span><span class="s4">&quot;Resetting</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+                <span class="s1">imu</span><span class="s3">.</span><span class="s1">resetYaw</span><span class="s3">();</span>
+            <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Yaw&quot;</span><span class="s3">, </span><span class="s4">&quot;Press Y (triangle) on Gamepad to reset.</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Check to see if new Logo Direction is requested</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">left_bumper </span><span class="s3">|| </span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">right_bumper</span><span class="s3">) {</span>
+                <span class="s2">if </span><span class="s3">(!</span><span class="s1">justChangedLogoDirection</span><span class="s3">) {</span>
+                    <span class="s1">justChangedLogoDirection </span><span class="s3">= </span><span class="s2">true</span><span class="s3">;</span>
+                    <span class="s2">if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">left_bumper</span><span class="s3">) {</span>
+                        <span class="s1">logoFacingDirectionPosition</span><span class="s3">--;</span>
+                        <span class="s2">if </span><span class="s3">(</span><span class="s1">logoFacingDirectionPosition </span><span class="s3">&lt; </span><span class="s5">0</span><span class="s3">) {</span>
+                            <span class="s1">logoFacingDirectionPosition </span><span class="s3">= </span><span class="s1">LAST_DIRECTION</span><span class="s3">;</span>
+                        <span class="s3">}</span>
+                    <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+                        <span class="s1">logoFacingDirectionPosition</span><span class="s3">++;</span>
+                        <span class="s2">if </span><span class="s3">(</span><span class="s1">logoFacingDirectionPosition </span><span class="s3">&gt; </span><span class="s1">LAST_DIRECTION</span><span class="s3">) {</span>
+                            <span class="s1">logoFacingDirectionPosition </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+                        <span class="s3">}</span>
+                    <span class="s3">}</span>
+                    <span class="s1">updateOrientation</span><span class="s3">();</span>
+                <span class="s3">}</span>
+            <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+                <span class="s1">justChangedLogoDirection </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Check to see if new USB Direction is requested</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">left_trigger </span><span class="s3">&gt; </span><span class="s1">TRIGGER_THRESHOLD </span><span class="s3">|| </span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">right_trigger </span><span class="s3">&gt; </span><span class="s1">TRIGGER_THRESHOLD</span><span class="s3">) {</span>
+                <span class="s2">if </span><span class="s3">(!</span><span class="s1">justChangedUsbDirection</span><span class="s3">) {</span>
+                    <span class="s1">justChangedUsbDirection </span><span class="s3">= </span><span class="s2">true</span><span class="s3">;</span>
+                    <span class="s2">if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">left_trigger </span><span class="s3">&gt; </span><span class="s1">TRIGGER_THRESHOLD</span><span class="s3">) {</span>
+                        <span class="s1">usbFacingDirectionPosition</span><span class="s3">--;</span>
+                        <span class="s2">if </span><span class="s3">(</span><span class="s1">usbFacingDirectionPosition </span><span class="s3">&lt; </span><span class="s5">0</span><span class="s3">) {</span>
+                            <span class="s1">usbFacingDirectionPosition </span><span class="s3">= </span><span class="s1">LAST_DIRECTION</span><span class="s3">;</span>
+                        <span class="s3">}</span>
+                    <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+                        <span class="s1">usbFacingDirectionPosition</span><span class="s3">++;</span>
+                        <span class="s2">if </span><span class="s3">(</span><span class="s1">usbFacingDirectionPosition </span><span class="s3">&gt; </span><span class="s1">LAST_DIRECTION</span><span class="s3">) {</span>
+                            <span class="s1">usbFacingDirectionPosition </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+                        <span class="s3">}</span>
+                    <span class="s3">}</span>
+                    <span class="s1">updateOrientation</span><span class="s3">();</span>
+                <span class="s3">}</span>
+            <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+                <span class="s1">justChangedUsbDirection </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Display User instructions and IMU data</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;logo Direction (set with bumpers)&quot;</span><span class="s3">, </span><span class="s1">logoFacingDirections</span><span class="s3">[</span><span class="s1">logoFacingDirectionPosition</span><span class="s3">]);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;usb Direction (set with triggers)&quot;</span><span class="s3">, </span><span class="s1">usbFacingDirections</span><span class="s3">[</span><span class="s1">usbFacingDirectionPosition</span><span class="s3">] + </span><span class="s4">&quot;</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">orientationIsValid</span><span class="s3">) {</span>
+                <span class="s1">YawPitchRollAngles orientation </span><span class="s3">= </span><span class="s1">imu</span><span class="s3">.</span><span class="s1">getRobotYawPitchRollAngles</span><span class="s3">();</span>
+                <span class="s1">AngularVelocity angularVelocity </span><span class="s3">= </span><span class="s1">imu</span><span class="s3">.</span><span class="s1">getRobotAngularVelocity</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">);</span>
+
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Yaw (Z)&quot;</span><span class="s3">, </span><span class="s4">&quot;%.2f Deg. (Heading)&quot;</span><span class="s3">, </span><span class="s1">orientation</span><span class="s3">.</span><span class="s1">getYaw</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">));</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Pitch (X)&quot;</span><span class="s3">, </span><span class="s4">&quot;%.2f Deg.&quot;</span><span class="s3">, </span><span class="s1">orientation</span><span class="s3">.</span><span class="s1">getPitch</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">));</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Roll (Y)&quot;</span><span class="s3">, </span><span class="s4">&quot;%.2f Deg.</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">, </span><span class="s1">orientation</span><span class="s3">.</span><span class="s1">getRoll</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">));</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Yaw (Z) velocity&quot;</span><span class="s3">, </span><span class="s4">&quot;%.2f Deg/Sec&quot;</span><span class="s3">, </span><span class="s1">angularVelocity</span><span class="s3">.</span><span class="s1">zRotationRate</span><span class="s3">);</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Pitch (X) velocity&quot;</span><span class="s3">, </span><span class="s4">&quot;%.2f Deg/Sec&quot;</span><span class="s3">, </span><span class="s1">angularVelocity</span><span class="s3">.</span><span class="s1">xRotationRate</span><span class="s3">);</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Roll (Y) velocity&quot;</span><span class="s3">, </span><span class="s4">&quot;%.2f Deg/Sec&quot;</span><span class="s3">, </span><span class="s1">angularVelocity</span><span class="s3">.</span><span class="s1">yRotationRate</span><span class="s3">);</span>
+            <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Error&quot;</span><span class="s3">, </span><span class="s4">&quot;Selected orientation on robot is invalid&quot;</span><span class="s3">);</span>
+            <span class="s3">}</span>
+
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+
+    <span class="s0">// apply any requested orientation changes.</span>
+    <span class="s2">void </span><span class="s1">updateOrientation</span><span class="s3">() {</span>
+        <span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">LogoFacingDirection logo </span><span class="s3">= </span><span class="s1">logoFacingDirections</span><span class="s3">[</span><span class="s1">logoFacingDirectionPosition</span><span class="s3">];</span>
+        <span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">UsbFacingDirection usb </span><span class="s3">= </span><span class="s1">usbFacingDirections</span><span class="s3">[</span><span class="s1">usbFacingDirectionPosition</span><span class="s3">];</span>
+        <span class="s2">try </span><span class="s3">{</span>
+            <span class="s1">RevHubOrientationOnRobot orientationOnRobot </span><span class="s3">= </span><span class="s2">new </span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">(</span><span class="s1">logo</span><span class="s3">, </span><span class="s1">usb</span><span class="s3">);</span>
+            <span class="s1">imu</span><span class="s3">.</span><span class="s1">initialize</span><span class="s3">(</span><span class="s2">new </span><span class="s1">IMU</span><span class="s3">.</span><span class="s1">Parameters</span><span class="s3">(</span><span class="s1">orientationOnRobot</span><span class="s3">));</span>
+            <span class="s1">orientationIsValid </span><span class="s3">= </span><span class="s2">true</span><span class="s3">;</span>
+        <span class="s3">} </span><span class="s2">catch </span><span class="s3">(</span><span class="s1">IllegalArgumentException e</span><span class="s3">) {</span>
+            <span class="s1">orientationIsValid </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

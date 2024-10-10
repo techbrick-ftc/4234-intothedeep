@@ -1,0 +1,189 @@
+<html>
+<head>
+<title>BasicOmniOpMode_Linear.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+BasicOmniOpMode_Linear.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Copyright (c) 2021 FIRST. All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted (subject to the limitations in the disclaimer below) provided that 
+ * the following conditions are met: 
+ * 
+ * Redistributions of source code must retain the above copyright notice, this list 
+ * of conditions and the following disclaimer. 
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this 
+ * list of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or 
+ * promote products derived from this software without specific prior written permission. 
+ * 
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ * &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">DcMotor</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">ElapsedTime</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This file contains an example of a Linear &quot;OpMode&quot;. 
+ * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match. 
+ * The names of OpModes appear on the menu of the FTC Driver Station. 
+ * When a selection is made from the menu, the corresponding OpMode is executed. 
+ * 
+ * This particular OpMode illustrates driving a 4-motor Omni-Directional (or Holonomic) robot. 
+ * This code will work with either a Mecanum-Drive or an X-Drive train. 
+ * Both of these drives are illustrated at https://gm0.org/en/latest/docs/robot-design/drivetrains/holonomic.html 
+ * Note that a Mecanum drive must display an X roller-pattern when viewed from above. 
+ * 
+ * Also note that it is critical to set the correct rotation direction for each motor.  See details below. 
+ * 
+ * Holonomic drives provide the ability for the robot to move in three axes (directions) simultaneously. 
+ * Each motion axis is controlled by one Joystick axis. 
+ * 
+ * 1) Axial:    Driving forward and backward               Left-joystick Forward/Backward 
+ * 2) Lateral:  Strafing right and left                     Left-joystick Right and Left 
+ * 3) Yaw:      Rotating Clockwise and counter clockwise    Right-joystick Right and Left 
+ * 
+ * This code is written assuming that the right-side motors need to be reversed for the robot to drive forward. 
+ * When you first test your robot, if it moves backward when you push the left stick forward, then you must flip 
+ * the direction of all 4 motors (see code below). 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list 
+ */</span>
+
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name</span><span class="s3">=</span><span class="s4">&quot;Basic: Omni Linear OpMode&quot;</span><span class="s3">, </span><span class="s1">group</span><span class="s3">=</span><span class="s4">&quot;Linear OpMode&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">BasicOmniOpMode_Linear </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+
+    <span class="s0">// Declare OpMode members for each of the 4 motors.</span>
+    <span class="s2">private </span><span class="s1">ElapsedTime runtime </span><span class="s3">= </span><span class="s2">new </span><span class="s1">ElapsedTime</span><span class="s3">();</span>
+    <span class="s2">private </span><span class="s1">DcMotor leftFrontDrive </span><span class="s3">= </span><span class="s2">null</span><span class="s3">;</span>
+    <span class="s2">private </span><span class="s1">DcMotor leftBackDrive </span><span class="s3">= </span><span class="s2">null</span><span class="s3">;</span>
+    <span class="s2">private </span><span class="s1">DcMotor rightFrontDrive </span><span class="s3">= </span><span class="s2">null</span><span class="s3">;</span>
+    <span class="s2">private </span><span class="s1">DcMotor rightBackDrive </span><span class="s3">= </span><span class="s2">null</span><span class="s3">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() {</span>
+
+        <span class="s0">// Initialize the hardware variables. Note that the strings used here must correspond</span>
+        <span class="s0">// to the names assigned during the robot configuration step on the DS or RC devices.</span>
+        <span class="s1">leftFrontDrive  </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;left_front_drive&quot;</span><span class="s3">);</span>
+        <span class="s1">leftBackDrive  </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;left_back_drive&quot;</span><span class="s3">);</span>
+        <span class="s1">rightFrontDrive </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;right_front_drive&quot;</span><span class="s3">);</span>
+        <span class="s1">rightBackDrive </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;right_back_drive&quot;</span><span class="s3">);</span>
+
+        <span class="s0">// ########################################################################################</span>
+        <span class="s0">// !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!</span>
+        <span class="s0">// ########################################################################################</span>
+        <span class="s0">// Most robots need the motors on one side to be reversed to drive forward.</span>
+        <span class="s0">// The motor reversals shown here are for a &quot;direct drive&quot; robot (the wheels turn the same direction as the motor shaft)</span>
+        <span class="s0">// If your robot has additional gear reductions or uses a right-angled drive, it's important to ensure</span>
+        <span class="s0">// that your motors are turning in the correct direction.  So, start out with the reversals here, BUT</span>
+        <span class="s0">// when you first test your robot, push the left joystick forward and observe the direction the wheels turn.</span>
+        <span class="s0">// Reverse the direction (flip FORWARD &lt;-&gt; REVERSE ) of any wheel that runs backward</span>
+        <span class="s0">// Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.</span>
+        <span class="s1">leftFrontDrive</span><span class="s3">.</span><span class="s1">setDirection</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">Direction</span><span class="s3">.</span><span class="s1">REVERSE</span><span class="s3">);</span>
+        <span class="s1">leftBackDrive</span><span class="s3">.</span><span class="s1">setDirection</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">Direction</span><span class="s3">.</span><span class="s1">REVERSE</span><span class="s3">);</span>
+        <span class="s1">rightFrontDrive</span><span class="s3">.</span><span class="s1">setDirection</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">Direction</span><span class="s3">.</span><span class="s1">FORWARD</span><span class="s3">);</span>
+        <span class="s1">rightBackDrive</span><span class="s3">.</span><span class="s1">setDirection</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">Direction</span><span class="s3">.</span><span class="s1">FORWARD</span><span class="s3">);</span>
+
+        <span class="s0">// Wait for the game to start (driver presses START)</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Status&quot;</span><span class="s3">, </span><span class="s4">&quot;Initialized&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+        <span class="s1">waitForStart</span><span class="s3">();</span>
+        <span class="s1">runtime</span><span class="s3">.</span><span class="s1">reset</span><span class="s3">();</span>
+
+        <span class="s0">// run until the end of the match (driver presses STOP)</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">()) {</span>
+            <span class="s2">double </span><span class="s1">max</span><span class="s3">;</span>
+
+            <span class="s0">// POV Mode uses left joystick to go forward &amp; strafe, and right joystick to rotate.</span>
+            <span class="s2">double </span><span class="s1">axial   </span><span class="s3">= -</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">left_stick_y</span><span class="s3">;  </span><span class="s0">// Note: pushing stick forward gives negative value</span>
+            <span class="s2">double </span><span class="s1">lateral </span><span class="s3">=  </span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">left_stick_x</span><span class="s3">;</span>
+            <span class="s2">double </span><span class="s1">yaw     </span><span class="s3">=  </span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">right_stick_x</span><span class="s3">;</span>
+
+            <span class="s0">// Combine the joystick requests for each axis-motion to determine each wheel's power.</span>
+            <span class="s0">// Set up a variable for each drive wheel to save the power level for telemetry.</span>
+            <span class="s2">double </span><span class="s1">leftFrontPower  </span><span class="s3">= </span><span class="s1">axial </span><span class="s3">+ </span><span class="s1">lateral </span><span class="s3">+ </span><span class="s1">yaw</span><span class="s3">;</span>
+            <span class="s2">double </span><span class="s1">rightFrontPower </span><span class="s3">= </span><span class="s1">axial </span><span class="s3">- </span><span class="s1">lateral </span><span class="s3">- </span><span class="s1">yaw</span><span class="s3">;</span>
+            <span class="s2">double </span><span class="s1">leftBackPower   </span><span class="s3">= </span><span class="s1">axial </span><span class="s3">- </span><span class="s1">lateral </span><span class="s3">+ </span><span class="s1">yaw</span><span class="s3">;</span>
+            <span class="s2">double </span><span class="s1">rightBackPower  </span><span class="s3">= </span><span class="s1">axial </span><span class="s3">+ </span><span class="s1">lateral </span><span class="s3">- </span><span class="s1">yaw</span><span class="s3">;</span>
+
+            <span class="s0">// Normalize the values so no wheel power exceeds 100%</span>
+            <span class="s0">// This ensures that the robot maintains the desired motion.</span>
+            <span class="s1">max </span><span class="s3">= </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">max</span><span class="s3">(</span><span class="s1">Math</span><span class="s3">.</span><span class="s1">abs</span><span class="s3">(</span><span class="s1">leftFrontPower</span><span class="s3">), </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">abs</span><span class="s3">(</span><span class="s1">rightFrontPower</span><span class="s3">));</span>
+            <span class="s1">max </span><span class="s3">= </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">max</span><span class="s3">(</span><span class="s1">max</span><span class="s3">, </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">abs</span><span class="s3">(</span><span class="s1">leftBackPower</span><span class="s3">));</span>
+            <span class="s1">max </span><span class="s3">= </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">max</span><span class="s3">(</span><span class="s1">max</span><span class="s3">, </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">abs</span><span class="s3">(</span><span class="s1">rightBackPower</span><span class="s3">));</span>
+
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">max </span><span class="s3">&gt; </span><span class="s5">1.0</span><span class="s3">) {</span>
+                <span class="s1">leftFrontPower  </span><span class="s3">/= </span><span class="s1">max</span><span class="s3">;</span>
+                <span class="s1">rightFrontPower </span><span class="s3">/= </span><span class="s1">max</span><span class="s3">;</span>
+                <span class="s1">leftBackPower   </span><span class="s3">/= </span><span class="s1">max</span><span class="s3">;</span>
+                <span class="s1">rightBackPower  </span><span class="s3">/= </span><span class="s1">max</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// This is test code:</span>
+            <span class="s0">//</span>
+            <span class="s0">// Uncomment the following code to test your motor directions.</span>
+            <span class="s0">// Each button should make the corresponding motor run FORWARD.</span>
+            <span class="s0">//   1) First get all the motors to take to correct positions on the robot</span>
+            <span class="s0">//      by adjusting your Robot Configuration if necessary.</span>
+            <span class="s0">//   2) Then make sure they run in the correct direction by modifying the</span>
+            <span class="s0">//      the setDirection() calls above.</span>
+            <span class="s0">// Once the correct motors move in the correct direction re-comment this code.</span>
+
+            <span class="s0">/* 
+            leftFrontPower  = gamepad1.x ? 1.0 : 0.0;  // X gamepad 
+            leftBackPower   = gamepad1.a ? 1.0 : 0.0;  // A gamepad 
+            rightFrontPower = gamepad1.y ? 1.0 : 0.0;  // Y gamepad 
+            rightBackPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad 
+            */</span>
+
+            <span class="s0">// Send calculated power to wheels</span>
+            <span class="s1">leftFrontDrive</span><span class="s3">.</span><span class="s1">setPower</span><span class="s3">(</span><span class="s1">leftFrontPower</span><span class="s3">);</span>
+            <span class="s1">rightFrontDrive</span><span class="s3">.</span><span class="s1">setPower</span><span class="s3">(</span><span class="s1">rightFrontPower</span><span class="s3">);</span>
+            <span class="s1">leftBackDrive</span><span class="s3">.</span><span class="s1">setPower</span><span class="s3">(</span><span class="s1">leftBackPower</span><span class="s3">);</span>
+            <span class="s1">rightBackDrive</span><span class="s3">.</span><span class="s1">setPower</span><span class="s3">(</span><span class="s1">rightBackPower</span><span class="s3">);</span>
+
+            <span class="s0">// Show the elapsed game time and wheel power.</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Status&quot;</span><span class="s3">, </span><span class="s4">&quot;Run Time: &quot; </span><span class="s3">+ </span><span class="s1">runtime</span><span class="s3">.</span><span class="s1">toString</span><span class="s3">());</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Front left/Right&quot;</span><span class="s3">, </span><span class="s4">&quot;%4.2f, %4.2f&quot;</span><span class="s3">, </span><span class="s1">leftFrontPower</span><span class="s3">, </span><span class="s1">rightFrontPower</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Back  left/Right&quot;</span><span class="s3">, </span><span class="s4">&quot;%4.2f, %4.2f&quot;</span><span class="s3">, </span><span class="s1">leftBackPower</span><span class="s3">, </span><span class="s1">rightBackPower</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s3">}</span>
+    <span class="s3">}}</span>
+</pre>
+</body>
+</html>

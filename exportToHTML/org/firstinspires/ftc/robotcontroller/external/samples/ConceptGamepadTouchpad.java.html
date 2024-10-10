@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>ConceptGamepadTouchpad.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ConceptGamepadTouchpad.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">robotcontroller</span><span class="s2">.</span><span class="s1">external</span><span class="s2">.</span><span class="s1">samples</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">eventloop</span><span class="s2">.</span><span class="s1">opmode</span><span class="s2">.</span><span class="s1">Disabled</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">eventloop</span><span class="s2">.</span><span class="s1">opmode</span><span class="s2">.</span><span class="s1">LinearOpMode</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">eventloop</span><span class="s2">.</span><span class="s1">opmode</span><span class="s2">.</span><span class="s1">TeleOp</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">external</span><span class="s2">.</span><span class="s1">Telemetry</span><span class="s2">;</span>
+
+<span class="s3">/* 
+ * This OpMode illustrates using the touchpad feature found on some gamepads. 
+ * 
+ * The Sony PS4 gamepad can detect two distinct touches on the central touchpad. 
+ * Other gamepads with different touchpads may provide mixed results. 
+ * 
+ * The touchpads are accessed through the standard gamepad1 and gamepad2 objects. 
+ *   Several new members were added to the Gamepad class in FTC SDK Rev 7 
+ * 
+ *   .touchpad_finger_1     returns true if at least one finger is detected. 
+ *   .touchpad_finger_1_x   finger 1 X coordinate.  Valid if touchpad_finger_1 is true 
+ *   .touchpad_finger_1_y   finger 1 Y coordinate.  Valid if touchpad_finger_1 is true 
+ * 
+ *   .touchpad_finger_2     returns true if a second finger is detected 
+ *   .touchpad_finger_2_x   finger 2 X coordinate.  Valid if touchpad_finger_2 is true 
+ *   .touchpad_finger_2_y   finger 2 Y coordinate.  Valid if touchpad_finger_2 is true 
+ * 
+ * Finger touches are reported with an X and Y coordinate in following coordinate system. 
+ * 
+ *   1) X is the Horizontal axis, and Y is the vertical axis 
+ *   2) The 0,0 origin is at the center of the touchpad. 
+ *   3)  1.0, 1.0 is at the top right corner of the touchpad. 
+ *   4) -1.0,-1.0 is at the bottom left corner of the touchpad. 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list. 
+ */</span>
+
+<span class="s1">@Disabled</span>
+<span class="s1">@TeleOp</span><span class="s2">(</span><span class="s1">name</span><span class="s2">=</span><span class="s4">&quot;Concept: Gamepad Touchpad&quot;</span><span class="s2">, </span><span class="s1">group </span><span class="s2">=</span><span class="s4">&quot;Concept&quot;</span><span class="s2">)</span>
+<span class="s0">public class </span><span class="s1">ConceptGamepadTouchpad </span><span class="s0">extends </span><span class="s1">LinearOpMode</span>
+<span class="s2">{</span>
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">runOpMode</span><span class="s2">()</span>
+    <span class="s2">{</span>
+        <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">setDisplayFormat</span><span class="s2">(</span><span class="s1">Telemetry</span><span class="s2">.</span><span class="s1">DisplayFormat</span><span class="s2">.</span><span class="s1">MONOSPACE</span><span class="s2">);</span>
+
+        <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s4">&quot;&gt;&quot;</span><span class="s2">, </span><span class="s4">&quot;Press Start&quot;</span><span class="s2">);</span>
+        <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">update</span><span class="s2">();</span>
+
+        <span class="s1">waitForStart</span><span class="s2">();</span>
+
+        <span class="s0">while </span><span class="s2">(</span><span class="s1">opModeIsActive</span><span class="s2">())</span>
+        <span class="s2">{</span>
+            <span class="s0">boolean </span><span class="s1">finger </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+
+            <span class="s3">// Display finger 1 x &amp; y position if finger detected</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">touchpad_finger_1</span><span class="s2">)</span>
+            <span class="s2">{</span>
+                <span class="s1">finger </span><span class="s2">= </span><span class="s0">true</span><span class="s2">;</span>
+                <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addLine</span><span class="s2">(</span><span class="s1">String</span><span class="s2">.</span><span class="s1">format</span><span class="s2">(</span><span class="s4">&quot;Finger 1: x=%5.2f y=%5.2f</span><span class="s0">\n</span><span class="s4">&quot;</span><span class="s2">, </span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">touchpad_finger_1_x</span><span class="s2">, </span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">touchpad_finger_1_y</span><span class="s2">));</span>
+            <span class="s2">}</span>
+
+            <span class="s3">// Display finger 2 x &amp; y position if finger detected</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">touchpad_finger_2</span><span class="s2">)</span>
+            <span class="s2">{</span>
+                <span class="s1">finger </span><span class="s2">= </span><span class="s0">true</span><span class="s2">;</span>
+                <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addLine</span><span class="s2">(</span><span class="s1">String</span><span class="s2">.</span><span class="s1">format</span><span class="s2">(</span><span class="s4">&quot;Finger 2: x=%5.2f y=%5.2f</span><span class="s0">\n</span><span class="s4">&quot;</span><span class="s2">, </span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">touchpad_finger_2_x</span><span class="s2">, </span><span class="s1">gamepad1</span><span class="s2">.</span><span class="s1">touchpad_finger_2_y</span><span class="s2">));</span>
+            <span class="s2">}</span>
+
+            <span class="s0">if</span><span class="s2">(!</span><span class="s1">finger</span><span class="s2">)</span>
+            <span class="s2">{</span>
+                <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addLine</span><span class="s2">(</span><span class="s4">&quot;No fingers&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span>
+
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">update</span><span class="s2">();</span>
+            <span class="s1">sleep</span><span class="s2">(</span><span class="s5">10</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

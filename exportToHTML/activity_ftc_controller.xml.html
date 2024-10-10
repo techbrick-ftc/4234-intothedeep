@@ -1,0 +1,204 @@
+<html>
+<head>
+<title>activity_ftc_controller.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #d5b778;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+activity_ftc_controller.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;!--</span>
+<span class="s0">Copyright (c) 2014, 2015 Qualcomm Technologies Inc 
+ 
+All rights reserved. 
+ 
+Redistribution and use in source and binary forms, with or without modification, 
+are permitted (subject to the limitations in the disclaimer below) provided that 
+the following conditions are met: 
+ 
+Redistributions of source code must retain the above copyright notice, this list 
+of conditions and the following disclaimer. 
+ 
+Redistributions in binary form must reproduce the above copyright notice, this 
+list of conditions and the following disclaimer in the documentation and/or 
+other materials provided with the distribution. 
+ 
+Neither the name of Qualcomm Technologies Inc nor the names of its contributors 
+may be used to endorse or promote products derived from this software without 
+specific prior written permission. 
+ 
+NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+&quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+--&gt;</span>
+
+<span class="s2">&lt;LinearLayout </span><span class="s3">xmlns:android</span><span class="s4">=&quot;http://schemas.android.com/apk/res/android&quot;</span>
+              <span class="s3">xmlns:tools</span><span class="s4">=&quot;http://schemas.android.com/tools&quot;</span>
+              <span class="s3">android:layout_width</span><span class="s4">=&quot;match_parent&quot;</span>
+              <span class="s3">android:layout_height</span><span class="s4">=&quot;match_parent&quot;</span>
+              <span class="s3">xmlns:style</span><span class="s4">=&quot;http://schemas.android.com/apk/res-auto&quot;</span>
+              <span class="s3">tools:context</span><span class="s4">=&quot;org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity&quot;</span>
+              <span class="s3">android:focusable</span><span class="s4">=&quot;true&quot;</span>
+              <span class="s3">android:id</span><span class="s4">=&quot;@+id/entire_screen&quot;</span>
+              <span class="s3">android:orientation</span><span class="s4">=&quot;vertical&quot;</span><span class="s2">&gt;</span>
+
+  <span class="s0">&lt;!-- black bar on top --&gt;</span>
+  <span class="s2">&lt;RelativeLayout</span>
+    <span class="s3">android:id</span><span class="s4">=&quot;@+id/top_bar&quot;</span>
+    <span class="s3">android:layout_width</span><span class="s4">=&quot;fill_parent&quot;</span>
+    <span class="s3">android:layout_height</span><span class="s4">=&quot;80dp&quot;</span>
+    <span class="s3">android:background</span><span class="s4">=&quot;@color/background_black&quot;</span><span class="s2">&gt;</span>
+
+    <span class="s2">&lt;ImageView</span>
+      <span class="s3">android:id</span><span class="s4">=&quot;@+id/robotIcon&quot;</span>
+      <span class="s3">android:src</span><span class="s4">=&quot;@drawable/icon_robotcontroller&quot;</span>
+      <span class="s3">android:layout_width</span><span class="s4">=&quot;wrap_content&quot;</span>
+      <span class="s3">android:layout_height</span><span class="s4">=&quot;fill_parent&quot;</span>
+      <span class="s3">android:adjustViewBounds</span><span class="s4">=&quot;true&quot;</span>
+      <span class="s3">android:layout_margin</span><span class="s4">=&quot;1dp&quot;</span><span class="s2">/&gt;</span>
+
+    <span class="s2">&lt;TextView</span>
+      <span class="s3">android:id</span><span class="s4">=&quot;@+id/textDeviceName&quot;</span>
+      <span class="s3">android:layout_toEndOf</span><span class="s4">=&quot;@id/robotIcon&quot;</span>
+      <span class="s3">android:layout_width</span><span class="s4">=&quot;wrap_content&quot;</span>
+      <span class="s3">android:layout_height</span><span class="s4">=&quot;wrap_content&quot;</span>
+      <span class="s3">android:textColor</span><span class="s4">=&quot;?attr/textWhite&quot;</span>
+      <span class="s3">android:textAppearance</span><span class="s4">=&quot;?android:attr/textAppearanceMedium&quot;</span>
+      <span class="s3">android:padding</span><span class="s4">=&quot;8dp&quot;</span>
+      <span class="s3">android:textStyle</span><span class="s4">=&quot;bold&quot;</span><span class="s2">/&gt;</span>
+
+    <span class="s2">&lt;ImageButton</span>
+      <span class="s3">android:id</span><span class="s4">=&quot;@+id/menu_buttons&quot;</span>
+      <span class="s3">android:scaleType</span><span class="s4">=&quot;fitXY&quot;</span>
+      <span class="s3">android:layout_width</span><span class="s4">=&quot;wrap_content&quot;</span>
+      <span class="s3">android:layout_height</span><span class="s4">=&quot;wrap_content&quot;</span>
+      <span class="s3">android:src</span><span class="s4">=&quot;@drawable/icon_menu&quot;</span>
+      <span class="s3">android:background</span><span class="s4">=&quot;@android:color/transparent&quot;</span>
+      <span class="s3">android:padding</span><span class="s4">=&quot;15dp&quot;</span>
+      <span class="s3">android:adjustViewBounds</span><span class="s4">=&quot;true&quot;</span>
+      <span class="s3">android:layout_alignParentEnd</span><span class="s4">=&quot;true&quot;</span>
+      <span class="s3">android:layout_centerInParent</span><span class="s4">=&quot;true&quot;</span>
+      <span class="s3">android:layout_centerHorizontal</span><span class="s4">=&quot;true&quot;</span>
+      <span class="s3">android:layout_margin</span><span class="s4">=&quot;10dp&quot;</span><span class="s2">/&gt;</span>
+
+  <span class="s2">&lt;/RelativeLayout&gt;</span>
+  <span class="s0">&lt;!-- end of black bar --&gt;</span>
+
+  <span class="s2">&lt;include </span><span class="s3">layout</span><span class="s4">=&quot;@layout/header&quot;</span>
+           <span class="s3">android:id</span><span class="s4">=&quot;@+id/included_header&quot;</span><span class="s2">/&gt;</span>
+
+  <span class="s2">&lt;RelativeLayout</span>
+    <span class="s3">android:background</span><span class="s4">=&quot;@color/background_very_light_grey&quot;</span>
+    <span class="s3">android:id</span><span class="s4">=&quot;@+id/RelativeLayout&quot;</span>
+    <span class="s3">android:layout_width</span><span class="s4">=&quot;match_parent&quot;</span>
+    <span class="s3">android:layout_height</span><span class="s4">=&quot;match_parent&quot;</span>
+    <span class="s3">android:keepScreenOn</span><span class="s4">=&quot;true&quot;</span>
+    <span class="s3">android:paddingBottom</span><span class="s4">=&quot;@dimen/activity_vertical_margin&quot;</span>
+    <span class="s3">android:paddingLeft</span><span class="s4">=&quot;@dimen/activity_horizontal_margin&quot;</span>
+    <span class="s3">android:paddingRight</span><span class="s4">=&quot;@dimen/activity_horizontal_margin&quot;</span>
+    <span class="s3">android:paddingTop</span><span class="s4">=&quot;@dimen/activity_vertical_margin&quot; </span><span class="s2">&gt;</span>
+
+    <span class="s2">&lt;TextView</span>
+      <span class="s3">android:id</span><span class="s4">=&quot;@+id/textNetworkConnectionStatus&quot;</span>
+      <span class="s3">android:layout_width</span><span class="s4">=&quot;match_parent&quot;</span>
+      <span class="s3">android:layout_height</span><span class="s4">=&quot;wrap_content&quot;</span>
+      <span class="s3">android:visibility</span><span class="s4">=&quot;invisible&quot;</span>
+      <span class="s3">android:text</span><span class="s4">=&quot;&quot; </span><span class="s2">/&gt;</span>
+
+    <span class="s2">&lt;TextView</span>
+      <span class="s3">android:id</span><span class="s4">=&quot;@+id/textRobotStatus&quot;</span>
+      <span class="s3">android:layout_width</span><span class="s4">=&quot;match_parent&quot;</span>
+      <span class="s3">android:layout_height</span><span class="s4">=&quot;wrap_content&quot;</span>
+      <span class="s3">android:layout_below</span><span class="s4">=&quot;@+id/textNetworkConnectionStatus&quot;</span>
+      <span class="s3">android:visibility</span><span class="s4">=&quot;invisible&quot;</span>
+      <span class="s3">android:text</span><span class="s4">=&quot;&quot; </span><span class="s2">/&gt;</span>
+
+    <span class="s2">&lt;TextView</span>
+      <span class="s3">android:id</span><span class="s4">=&quot;@+id/textOpMode&quot;</span>
+      <span class="s3">android:layout_width</span><span class="s4">=&quot;match_parent&quot;</span>
+      <span class="s3">android:layout_height</span><span class="s4">=&quot;wrap_content&quot;</span>
+      <span class="s3">android:layout_below</span><span class="s4">=&quot;@+id/textRobotStatus&quot;</span>
+      <span class="s3">android:visibility</span><span class="s4">=&quot;invisible&quot;</span>
+      <span class="s3">android:text</span><span class="s4">=&quot;&quot; </span><span class="s2">/&gt;</span>
+
+    <span class="s2">&lt;FrameLayout</span>
+      <span class="s3">android:layout_width</span><span class="s4">=&quot;match_parent&quot;</span>
+      <span class="s3">android:layout_height</span><span class="s4">=&quot;wrap_content&quot;</span>
+      <span class="s3">android:layout_below</span><span class="s4">=&quot;@+id/textOpMode&quot;</span>
+      <span class="s3">android:layout_above</span><span class="s4">=&quot;@+id/textGamepad1&quot;</span><span class="s2">&gt;</span>
+
+      <span class="s2">&lt;LinearLayout</span>
+          <span class="s3">android:id</span><span class="s4">=&quot;@+id/monitorContainer&quot;</span>
+          <span class="s3">android:layout_width</span><span class="s4">=&quot;match_parent&quot;</span>
+          <span class="s3">android:layout_height</span><span class="s4">=&quot;match_parent&quot;</span>
+          <span class="s3">android:orientation</span><span class="s4">=&quot;vertical&quot;</span><span class="s2">&gt;</span>
+
+        <span class="s2">&lt;LinearLayout</span>
+            <span class="s3">android:id</span><span class="s4">=&quot;@+id/cameraMonitorViewId&quot;</span>
+            <span class="s3">android:visibility</span><span class="s4">=&quot;gone&quot;</span>
+            <span class="s3">android:layout_width</span><span class="s4">=&quot;match_parent&quot;</span>
+            <span class="s3">android:layout_height</span><span class="s4">=&quot;0dp&quot;</span>
+            <span class="s3">android:layout_weight</span><span class="s4">=&quot;1&quot;</span>
+            <span class="s3">android:orientation</span><span class="s4">=&quot;vertical&quot;</span>
+            <span class="s2">/&gt;</span>
+
+        <span class="s2">&lt;/LinearLayout&gt;</span>
+
+      <span class="s0">&lt;!-- When visible, the error message will overlay and thus partially 
+           obscure part of the camera monitor. We make this trade off so as to 
+           allow for a bigger camera monitor view in the common case when the 
+           error is not in fact present 
+        --&gt;</span>
+        <span class="s2">&lt;TextView </span><span class="s3">style</span><span class="s4">=&quot;@style/FtcTextViewStyleBold&quot;</span>
+            <span class="s3">android:id</span><span class="s4">=&quot;@+id/textErrorMessage&quot;</span>
+            <span class="s3">android:layout_width</span><span class="s4">=&quot;match_parent&quot;</span>
+            <span class="s3">android:layout_height</span><span class="s4">=&quot;wrap_content&quot;</span>
+            <span class="s3">android:text</span><span class="s4">=&quot;&quot;</span>
+            <span class="s3">android:visibility</span><span class="s4">=&quot;invisible&quot;</span>
+            <span class="s3">android:textColor</span><span class="s4">=&quot;?attr/textMediumDark&quot; </span><span class="s2">/&gt;</span>
+
+    <span class="s2">&lt;/FrameLayout&gt;</span>
+
+    <span class="s2">&lt;TextView</span>
+      <span class="s3">android:id</span><span class="s4">=&quot;@+id/textGamepad1&quot;</span>
+      <span class="s3">android:layout_width</span><span class="s4">=&quot;match_parent&quot;</span>
+      <span class="s3">android:layout_height</span><span class="s4">=&quot;wrap_content&quot;</span>
+      <span class="s3">android:layout_above</span><span class="s4">=&quot;@+id/textGamepad2&quot;</span>
+      <span class="s3">android:visibility</span><span class="s4">=&quot;invisible&quot;</span>
+      <span class="s3">android:text</span><span class="s4">=&quot;&quot; </span><span class="s2">/&gt;</span>
+
+    <span class="s2">&lt;TextView</span>
+      <span class="s3">android:id</span><span class="s4">=&quot;@+id/textGamepad2&quot;</span>
+      <span class="s3">android:layout_width</span><span class="s4">=&quot;match_parent&quot;</span>
+      <span class="s3">android:layout_height</span><span class="s4">=&quot;wrap_content&quot;</span>
+      <span class="s3">android:layout_alignParentBottom</span><span class="s4">=&quot;true&quot;</span>
+      <span class="s3">android:visibility</span><span class="s4">=&quot;invisible&quot;</span>
+      <span class="s3">android:text</span><span class="s4">=&quot;&quot; </span><span class="s2">/&gt;</span>
+
+  <span class="s2">&lt;/RelativeLayout&gt;</span>
+
+  <span class="s2">&lt;WebView</span>
+    <span class="s3">android:id</span><span class="s4">=&quot;@+id/webViewBlocksRuntime&quot;</span>
+    <span class="s3">android:layout_width</span><span class="s4">=&quot;1dp&quot;</span>
+    <span class="s3">android:layout_height</span><span class="s4">=&quot;1dp&quot; </span><span class="s2">/&gt;</span>
+
+<span class="s2">&lt;/LinearLayout&gt;</span></pre>
+</body>
+</html>

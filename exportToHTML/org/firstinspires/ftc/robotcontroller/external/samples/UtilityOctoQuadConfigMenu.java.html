@@ -1,0 +1,836 @@
+<html>
+<head>
+<title>UtilityOctoQuadConfigMenu.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+.s6 { color: #5f826b; font-style: italic;}
+.s7 { color: #67a37c; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+UtilityOctoQuadConfigMenu.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2024 DigitalChickenLabs 
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions: 
+ * 
+ * The above copyright notice and this permission notice shall be included in all 
+ * copies or substantial portions of the Software. 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+ * SOFTWARE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">digitalchickenlabs</span><span class="s3">.</span><span class="s1">OctoQuad</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">Gamepad</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">Telemetry</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">java</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">ArrayList</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">java</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">Stack</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode illustrates how to use the DigitalChickenLabs OctoQuad Quadrature Encoder &amp; Pulse Width Interface Module. 
+ * 
+ *   The OctoQuad has 8 input channels that can used to read either Relative Quadrature Encoders or Pulse-Width Absolute Encoder inputs. 
+ *   Relative Quadrature encoders are found on most FTC motors, and some stand-alone position sensors like the REV Thru-Bore encoder. 
+ *   Pulse-Width encoders are less common. The REV Thru-Bore encoder can provide its absolute position via a variable pulse width, 
+ *   as can several sonar rangefinders such as the MaxBotix MB1000 series. 
+ * 
+ * This OpMode assumes that the OctoQuad is attached to an I2C interface named &quot;octoquad&quot; in the robot configuration. 
+ * 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list 
+ * 
+ * Select, Init and run the &quot;OctoQuad Configuration Tool&quot; OpMode 
+ * Read the blue User-Interface tips at the top of the telemetry screen. 
+ * Use the UI buttons to navigate the menu and make any desired changes to the OctoQuad configuration. 
+ * Use the Program Settings To FLASH option to make any changes permanent. 
+ * 
+ * See the sensor's product page: https://www.tindie.com/products/digitalchickenlabs/octoquad-8ch-quadrature-pulse-width-decoder/ 
+ */</span>
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name </span><span class="s3">= </span><span class="s4">&quot;OctoQuad Configuration Tool&quot;</span><span class="s3">, </span><span class="s1">group</span><span class="s3">=</span><span class="s4">&quot;OctoQuad&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">UtilityOctoQuadConfigMenu </span><span class="s2">extends </span><span class="s1">LinearOpMode</span>
+<span class="s3">{</span>
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">MenuElement rootMenu </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">MenuElement</span><span class="s3">(</span><span class="s4">&quot;OctoQuad Config Menu&quot;</span><span class="s3">, </span><span class="s2">true</span><span class="s3">);</span>
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">MenuElement menuHwInfo </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">MenuElement</span><span class="s3">(</span><span class="s4">&quot;Hardware Information&quot;</span><span class="s3">, </span><span class="s2">false</span><span class="s3">);</span>
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">EnumOption optionI2cResetMode</span><span class="s3">;</span>
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">EnumOption optionChannelBankConfig</span><span class="s3">;</span>
+
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">MenuElement menuEncoderDirections </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">MenuElement</span><span class="s3">(</span><span class="s4">&quot;Set Encoder Directions&quot;</span><span class="s3">, </span><span class="s2">false</span><span class="s3">);</span>
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">BooleanOption</span><span class="s3">[] </span><span class="s1">optionsEncoderDirections </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">BooleanOption</span><span class="s3">[</span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">NUM_ENCODERS</span><span class="s3">];</span>
+
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">MenuElement menuVelocityIntervals </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">MenuElement</span><span class="s3">(</span><span class="s4">&quot;Velocity Measurement Intervals&quot;</span><span class="s3">, </span><span class="s2">false</span><span class="s3">);</span>
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">IntegerOption</span><span class="s3">[] </span><span class="s1">optionsVelocityIntervals </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">IntegerOption</span><span class="s3">[</span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">NUM_ENCODERS</span><span class="s3">];</span>
+
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">MenuElement menuAbsParams </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">MenuElement</span><span class="s3">(</span><span class="s4">&quot;Abs. Encoder Pulse Width Params&quot;</span><span class="s3">, </span><span class="s2">false</span><span class="s3">);</span>
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">IntegerOption</span><span class="s3">[] </span><span class="s1">optionsAbsParamsMax </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">IntegerOption</span><span class="s3">[</span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">NUM_ENCODERS</span><span class="s3">];</span>
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">IntegerOption</span><span class="s3">[] </span><span class="s1">optionsAbsParamsMin </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">IntegerOption</span><span class="s3">[</span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">NUM_ENCODERS</span><span class="s3">];</span>
+
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">OptionElement optionProgramToFlash</span><span class="s3">;</span>
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">OptionElement optionSendToRAM</span><span class="s3">;</span>
+
+    <span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">StaticClickableOption optionExit</span><span class="s3">;</span>
+
+    <span class="s1">OctoQuad octoquad</span><span class="s3">;</span>
+
+    <span class="s2">boolean </span><span class="s1">error </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">()</span>
+    <span class="s3">{</span>
+        <span class="s1">octoquad </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">getAll</span><span class="s3">(</span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s2">class</span><span class="s3">).</span><span class="s1">get</span><span class="s3">(</span><span class="s5">0</span><span class="s3">);</span>
+
+        <span class="s2">if</span><span class="s3">(</span><span class="s1">octoquad</span><span class="s3">.</span><span class="s1">getChipId</span><span class="s3">() != </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">OCTOQUAD_CHIP_ID</span><span class="s3">)</span>
+        <span class="s3">{</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot;Error: cannot communicate with OctoQuad. Check your wiring and configuration and try again&quot;</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+            <span class="s1">error </span><span class="s3">= </span><span class="s2">true</span><span class="s3">;</span>
+        <span class="s3">}</span>
+        <span class="s2">else</span>
+        <span class="s3">{</span>
+            <span class="s2">if</span><span class="s3">(</span><span class="s1">octoquad</span><span class="s3">.</span><span class="s1">getFirmwareVersion</span><span class="s3">().</span><span class="s1">maj </span><span class="s3">!= </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">SUPPORTED_FW_VERSION_MAJ</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot;Error: The OctoQuad is running a different major firmware version than this driver was built for. Cannot run configuration tool&quot;</span><span class="s3">);</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+                <span class="s1">error </span><span class="s3">= </span><span class="s2">true</span><span class="s3">;</span>
+            <span class="s3">}</span>
+        <span class="s3">}</span>
+
+        <span class="s2">if</span><span class="s3">(</span><span class="s1">error</span><span class="s3">)</span>
+        <span class="s3">{</span>
+            <span class="s1">waitForStart</span><span class="s3">();</span>
+            <span class="s2">return</span><span class="s3">;</span>
+        <span class="s3">}</span>
+
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot;Retrieving current configuration from OctoQuad&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+        <span class="s1">optionExit </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">StaticClickableOption</span><span class="s3">(</span><span class="s4">&quot;Exit configuration menu&quot;</span><span class="s3">)</span>
+        <span class="s3">{</span>
+            <span class="s1">@Override</span>
+            <span class="s2">void </span><span class="s1">onClick</span><span class="s3">() </span><span class="s0">// called on OpMode thread</span>
+            <span class="s3">{</span>
+                <span class="s1">requestOpModeStop</span><span class="s3">();</span>
+            <span class="s3">}</span>
+        <span class="s3">};</span>
+
+        <span class="s1">optionI2cResetMode </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">EnumOption</span><span class="s3">(</span><span class="s4">&quot;I2C Reset Mode&quot;</span><span class="s3">, </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">I2cRecoveryMode</span><span class="s3">.</span><span class="s1">values</span><span class="s3">(), </span><span class="s1">octoquad</span><span class="s3">.</span><span class="s1">getI2cRecoveryMode</span><span class="s3">());</span>
+        <span class="s1">optionChannelBankConfig </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">EnumOption</span><span class="s3">(</span><span class="s4">&quot;Channel Bank Modes&quot;</span><span class="s3">, </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">ChannelBankConfig</span><span class="s3">.</span><span class="s1">values</span><span class="s3">(), </span><span class="s1">octoquad</span><span class="s3">.</span><span class="s1">getChannelBankConfig</span><span class="s3">());</span>
+
+        <span class="s1">menuHwInfo</span><span class="s3">.</span><span class="s1">addChild</span><span class="s3">(</span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">StaticItem</span><span class="s3">(</span><span class="s4">&quot;Board Firmware: v&quot; </span><span class="s3">+ </span><span class="s1">octoquad</span><span class="s3">.</span><span class="s1">getFirmwareVersion</span><span class="s3">()));</span>
+        <span class="s0">//menuHwInfo.addChild(new TelemetryMenu.StaticItem(&quot;Board unique ID: FIXME&quot;));</span>
+
+        <span class="s2">for</span><span class="s3">(</span><span class="s2">int </span><span class="s1">i </span><span class="s3">= </span><span class="s5">0</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">NUM_ENCODERS</span><span class="s3">; </span><span class="s1">i</span><span class="s3">++)</span>
+        <span class="s3">{</span>
+            <span class="s1">optionsEncoderDirections</span><span class="s3">[</span><span class="s1">i</span><span class="s3">] = </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">BooleanOption</span><span class="s3">(</span>
+                    <span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;Encoder %d direction&quot;</span><span class="s3">, </span><span class="s1">i</span><span class="s3">),</span>
+                    <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">getSingleEncoderDirection</span><span class="s3">(</span><span class="s1">i</span><span class="s3">) == </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">EncoderDirection</span><span class="s3">.</span><span class="s1">REVERSE</span><span class="s3">,</span>
+                    <span class="s4">&quot;-&quot;</span><span class="s3">,</span>
+                    <span class="s4">&quot;+&quot;</span><span class="s3">);</span>
+        <span class="s3">}</span>
+        <span class="s1">menuEncoderDirections</span><span class="s3">.</span><span class="s1">addChildren</span><span class="s3">(</span><span class="s1">optionsEncoderDirections</span><span class="s3">);</span>
+
+        <span class="s2">for</span><span class="s3">(</span><span class="s2">int </span><span class="s1">i </span><span class="s3">= </span><span class="s5">0</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">NUM_ENCODERS</span><span class="s3">; </span><span class="s1">i</span><span class="s3">++)</span>
+        <span class="s3">{</span>
+            <span class="s1">optionsVelocityIntervals</span><span class="s3">[</span><span class="s1">i</span><span class="s3">] = </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">IntegerOption</span><span class="s3">(</span>
+                    <span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;Chan %d velocity intvl&quot;</span><span class="s3">, </span><span class="s1">i</span><span class="s3">),</span>
+                    <span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">MIN_VELOCITY_MEASUREMENT_INTERVAL_MS</span><span class="s3">,</span>
+                    <span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">MAX_VELOCITY_MEASUREMENT_INTERVAL_MS</span><span class="s3">,</span>
+                    <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">getSingleVelocitySampleInterval</span><span class="s3">(</span><span class="s1">i</span><span class="s3">));</span>
+        <span class="s3">}</span>
+        <span class="s1">menuVelocityIntervals</span><span class="s3">.</span><span class="s1">addChildren</span><span class="s3">(</span><span class="s1">optionsVelocityIntervals</span><span class="s3">);</span>
+
+        <span class="s2">for</span><span class="s3">(</span><span class="s2">int </span><span class="s1">i </span><span class="s3">= </span><span class="s5">0</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">NUM_ENCODERS</span><span class="s3">; </span><span class="s1">i</span><span class="s3">++)</span>
+        <span class="s3">{</span>
+            <span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">ChannelPulseWidthParams params </span><span class="s3">= </span><span class="s1">octoquad</span><span class="s3">.</span><span class="s1">getSingleChannelPulseWidthParams</span><span class="s3">(</span><span class="s1">i</span><span class="s3">);</span>
+
+            <span class="s1">optionsAbsParamsMax</span><span class="s3">[</span><span class="s1">i</span><span class="s3">] = </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">IntegerOption</span><span class="s3">(</span>
+                    <span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;Chan %d max pulse length&quot;</span><span class="s3">, </span><span class="s1">i</span><span class="s3">),</span>
+                    <span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">MIN_PULSE_WIDTH_US</span><span class="s3">,</span>
+                    <span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">MAX_PULSE_WIDTH_US</span><span class="s3">,</span>
+                    <span class="s1">params</span><span class="s3">.</span><span class="s1">max_length_us</span><span class="s3">);</span>
+
+            <span class="s1">optionsAbsParamsMin</span><span class="s3">[</span><span class="s1">i</span><span class="s3">] = </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">IntegerOption</span><span class="s3">(</span>
+                    <span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;Chan %d min pulse length&quot;</span><span class="s3">, </span><span class="s1">i</span><span class="s3">),</span>
+                    <span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">MIN_PULSE_WIDTH_US</span><span class="s3">,</span>
+                    <span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">MAX_PULSE_WIDTH_US</span><span class="s3">,</span>
+                    <span class="s1">params</span><span class="s3">.</span><span class="s1">min_length_us</span><span class="s3">);</span>
+        <span class="s3">}</span>
+        <span class="s1">menuAbsParams</span><span class="s3">.</span><span class="s1">addChildren</span><span class="s3">(</span><span class="s1">optionsAbsParamsMin</span><span class="s3">);</span>
+        <span class="s1">menuAbsParams</span><span class="s3">.</span><span class="s1">addChildren</span><span class="s3">(</span><span class="s1">optionsAbsParamsMax</span><span class="s3">);</span>
+
+        <span class="s1">optionProgramToFlash </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">OptionElement</span><span class="s3">()</span>
+        <span class="s3">{</span>
+            <span class="s1">String name </span><span class="s3">= </span><span class="s4">&quot;Program Settings to FLASH&quot;</span><span class="s3">;</span>
+            <span class="s2">long </span><span class="s1">lastClickTime </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">protected </span><span class="s1">String getDisplayText</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s2">if</span><span class="s3">(</span><span class="s1">lastClickTime </span><span class="s3">== </span><span class="s5">0</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s2">return </span><span class="s1">name</span><span class="s3">;</span>
+                <span class="s3">}</span>
+                <span class="s2">else</span>
+                <span class="s3">{</span>
+                    <span class="s2">if</span><span class="s3">(</span><span class="s1">System</span><span class="s3">.</span><span class="s1">currentTimeMillis</span><span class="s3">() - </span><span class="s1">lastClickTime </span><span class="s3">&lt; </span><span class="s5">1000</span><span class="s3">)</span>
+                    <span class="s3">{</span>
+                        <span class="s2">return </span><span class="s1">name </span><span class="s3">+ </span><span class="s4">&quot; **OK**&quot;</span><span class="s3">;</span>
+                    <span class="s3">}</span>
+                    <span class="s2">else</span>
+                    <span class="s3">{</span>
+                        <span class="s1">lastClickTime </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+                        <span class="s2">return </span><span class="s1">name</span><span class="s3">;</span>
+                    <span class="s3">}</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">void </span><span class="s1">onClick</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s1">sendSettingsToRam</span><span class="s3">();</span>
+                <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">saveParametersToFlash</span><span class="s3">();</span>
+                <span class="s1">lastClickTime </span><span class="s3">= </span><span class="s1">System</span><span class="s3">.</span><span class="s1">currentTimeMillis</span><span class="s3">();</span>
+            <span class="s3">}</span>
+        <span class="s3">};</span>
+
+        <span class="s1">optionSendToRAM </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">.</span><span class="s1">OptionElement</span><span class="s3">()</span>
+        <span class="s3">{</span>
+            <span class="s1">String name </span><span class="s3">= </span><span class="s4">&quot;Send Settings to RAM&quot;</span><span class="s3">;</span>
+            <span class="s2">long </span><span class="s1">lastClickTime </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">protected </span><span class="s1">String getDisplayText</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s2">if</span><span class="s3">(</span><span class="s1">lastClickTime </span><span class="s3">== </span><span class="s5">0</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s2">return </span><span class="s1">name</span><span class="s3">;</span>
+                <span class="s3">}</span>
+                <span class="s2">else</span>
+                <span class="s3">{</span>
+                    <span class="s2">if</span><span class="s3">(</span><span class="s1">System</span><span class="s3">.</span><span class="s1">currentTimeMillis</span><span class="s3">() - </span><span class="s1">lastClickTime </span><span class="s3">&lt; </span><span class="s5">1000</span><span class="s3">)</span>
+                    <span class="s3">{</span>
+                        <span class="s2">return </span><span class="s1">name </span><span class="s3">+ </span><span class="s4">&quot; **OK**&quot;</span><span class="s3">;</span>
+                    <span class="s3">}</span>
+                    <span class="s2">else</span>
+                    <span class="s3">{</span>
+                        <span class="s1">lastClickTime </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+                        <span class="s2">return </span><span class="s1">name</span><span class="s3">;</span>
+                    <span class="s3">}</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">void </span><span class="s1">onClick</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s1">sendSettingsToRam</span><span class="s3">();</span>
+                <span class="s1">lastClickTime </span><span class="s3">= </span><span class="s1">System</span><span class="s3">.</span><span class="s1">currentTimeMillis</span><span class="s3">();</span>
+            <span class="s3">}</span>
+        <span class="s3">};</span>
+
+        <span class="s1">rootMenu</span><span class="s3">.</span><span class="s1">addChild</span><span class="s3">(</span><span class="s1">menuHwInfo</span><span class="s3">);</span>
+        <span class="s1">rootMenu</span><span class="s3">.</span><span class="s1">addChild</span><span class="s3">(</span><span class="s1">optionI2cResetMode</span><span class="s3">);</span>
+        <span class="s1">rootMenu</span><span class="s3">.</span><span class="s1">addChild</span><span class="s3">(</span><span class="s1">optionChannelBankConfig</span><span class="s3">);</span>
+        <span class="s1">rootMenu</span><span class="s3">.</span><span class="s1">addChild</span><span class="s3">(</span><span class="s1">menuEncoderDirections</span><span class="s3">);</span>
+        <span class="s1">rootMenu</span><span class="s3">.</span><span class="s1">addChild</span><span class="s3">(</span><span class="s1">menuVelocityIntervals</span><span class="s3">);</span>
+        <span class="s1">rootMenu</span><span class="s3">.</span><span class="s1">addChild</span><span class="s3">(</span><span class="s1">menuAbsParams</span><span class="s3">);</span>
+        <span class="s1">rootMenu</span><span class="s3">.</span><span class="s1">addChild</span><span class="s3">(</span><span class="s1">optionProgramToFlash</span><span class="s3">);</span>
+        <span class="s1">rootMenu</span><span class="s3">.</span><span class="s1">addChild</span><span class="s3">(</span><span class="s1">optionSendToRAM</span><span class="s3">);</span>
+        <span class="s1">rootMenu</span><span class="s3">.</span><span class="s1">addChild</span><span class="s3">(</span><span class="s1">optionExit</span><span class="s3">);</span>
+
+        <span class="s1">TelemetryMenu menu </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TelemetryMenu</span><span class="s3">(</span><span class="s1">telemetry</span><span class="s3">, </span><span class="s1">rootMenu</span><span class="s3">);</span>
+
+        <span class="s2">while </span><span class="s3">(!</span><span class="s1">isStopRequested</span><span class="s3">())</span>
+        <span class="s3">{</span>
+            <span class="s1">menu</span><span class="s3">.</span><span class="s1">loop</span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+            <span class="s1">sleep</span><span class="s3">(</span><span class="s5">20</span><span class="s3">);</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+
+    <span class="s2">void </span><span class="s1">sendSettingsToRam</span><span class="s3">()</span>
+    <span class="s3">{</span>
+        <span class="s2">for</span><span class="s3">(</span><span class="s2">int </span><span class="s1">i </span><span class="s3">= </span><span class="s5">0</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">NUM_ENCODERS</span><span class="s3">; </span><span class="s1">i</span><span class="s3">++)</span>
+        <span class="s3">{</span>
+            <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">setSingleEncoderDirection</span><span class="s3">(</span><span class="s1">i</span><span class="s3">, </span><span class="s1">optionsEncoderDirections</span><span class="s3">[</span><span class="s1">i</span><span class="s3">].</span><span class="s1">getValue</span><span class="s3">() ? </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">EncoderDirection</span><span class="s3">.</span><span class="s1">REVERSE </span><span class="s3">: </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">EncoderDirection</span><span class="s3">.</span><span class="s1">FORWARD</span><span class="s3">);</span>
+            <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">setSingleVelocitySampleInterval</span><span class="s3">(</span><span class="s1">i</span><span class="s3">, </span><span class="s1">optionsVelocityIntervals</span><span class="s3">[</span><span class="s1">i</span><span class="s3">].</span><span class="s1">getValue</span><span class="s3">());</span>
+
+            <span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">ChannelPulseWidthParams params </span><span class="s3">= </span><span class="s2">new </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">ChannelPulseWidthParams</span><span class="s3">();</span>
+            <span class="s1">params</span><span class="s3">.</span><span class="s1">max_length_us </span><span class="s3">= </span><span class="s1">optionsAbsParamsMax</span><span class="s3">[</span><span class="s1">i</span><span class="s3">].</span><span class="s1">getValue</span><span class="s3">();</span>
+            <span class="s1">params</span><span class="s3">.</span><span class="s1">min_length_us </span><span class="s3">= </span><span class="s1">optionsAbsParamsMin</span><span class="s3">[</span><span class="s1">i</span><span class="s3">].</span><span class="s1">getValue</span><span class="s3">();</span>
+
+            <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">setSingleChannelPulseWidthParams</span><span class="s3">(</span><span class="s1">i</span><span class="s3">, </span><span class="s1">params</span><span class="s3">);</span>
+        <span class="s3">}</span>
+
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">setI2cRecoveryMode</span><span class="s3">((</span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">I2cRecoveryMode</span><span class="s3">) </span><span class="s1">optionI2cResetMode</span><span class="s3">.</span><span class="s1">getValue</span><span class="s3">());</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">setChannelBankConfig</span><span class="s3">((</span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">ChannelBankConfig</span><span class="s3">) </span><span class="s1">optionChannelBankConfig</span><span class="s3">.</span><span class="s1">getValue</span><span class="s3">());</span>
+    <span class="s3">}</span>
+
+    <span class="s0">/* 
+     * Copyright (c) 2023 OpenFTC Team 
+     * 
+     * Permission is hereby granted, free of charge, to any person obtaining a copy 
+     * of this software and associated documentation files (the &quot;Software&quot;), to deal 
+     * in the Software without restriction, including without limitation the rights 
+     * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+     * copies of the Software, and to permit persons to whom the Software is 
+     * furnished to do so, subject to the following conditions: 
+     * 
+     * The above copyright notice and this permission notice shall be included in all 
+     * copies or substantial portions of the Software. 
+     * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+     * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+     * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+     * SOFTWARE. 
+     */</span>
+
+    <span class="s2">public static class </span><span class="s1">TelemetryMenu</span>
+    <span class="s3">{</span>
+        <span class="s2">private final </span><span class="s1">MenuElement root</span><span class="s3">;</span>
+        <span class="s2">private </span><span class="s1">MenuElement currentLevel</span><span class="s3">;</span>
+
+        <span class="s2">private boolean </span><span class="s1">dpadUpPrev</span><span class="s3">;</span>
+        <span class="s2">private boolean </span><span class="s1">dpadDnPrev</span><span class="s3">;</span>
+        <span class="s2">private boolean </span><span class="s1">dpadRightPrev</span><span class="s3">;</span>
+        <span class="s2">private boolean </span><span class="s1">dpadLeftPrev</span><span class="s3">;</span>
+        <span class="s2">private boolean </span><span class="s1">xPrev</span><span class="s3">;</span>
+        <span class="s2">private boolean </span><span class="s1">lbPrev</span><span class="s3">;</span>
+
+        <span class="s2">private int </span><span class="s1">selectedIdx </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+        <span class="s2">private </span><span class="s1">Stack</span><span class="s3">&lt;</span><span class="s1">Integer</span><span class="s3">&gt; </span><span class="s1">selectedIdxStack </span><span class="s3">= </span><span class="s2">new </span><span class="s1">Stack</span><span class="s3">&lt;&gt;();</span>
+
+        <span class="s2">private final </span><span class="s1">Telemetry telemetry</span><span class="s3">;</span>
+
+        <span class="s6">/**</span>
+         <span class="s6">* TelemetryMenu constructor</span>
+         <span class="s6">* </span><span class="s7">@param </span><span class="s6">telemetry pass in 'telemetry' from your OpMode</span>
+         <span class="s6">* </span><span class="s7">@param </span><span class="s6">root the root menu element</span>
+         <span class="s6">*/</span>
+        <span class="s2">public </span><span class="s1">TelemetryMenu</span><span class="s3">(</span><span class="s1">Telemetry telemetry</span><span class="s3">, </span><span class="s1">MenuElement root</span><span class="s3">)</span>
+        <span class="s3">{</span>
+            <span class="s2">this</span><span class="s3">.</span><span class="s1">root </span><span class="s3">= </span><span class="s1">root</span><span class="s3">;</span>
+            <span class="s2">this</span><span class="s3">.</span><span class="s1">currentLevel </span><span class="s3">= </span><span class="s1">root</span><span class="s3">;</span>
+            <span class="s2">this</span><span class="s3">.</span><span class="s1">telemetry </span><span class="s3">= </span><span class="s1">telemetry</span><span class="s3">;</span>
+
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">setDisplayFormat</span><span class="s3">(</span><span class="s1">Telemetry</span><span class="s3">.</span><span class="s1">DisplayFormat</span><span class="s3">.</span><span class="s1">HTML</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">setMsTransmissionInterval</span><span class="s3">(</span><span class="s5">50</span><span class="s3">);</span>
+        <span class="s3">}</span>
+
+        <span class="s6">/**</span>
+         <span class="s6">* Call this from inside your loop to put the current menu state into</span>
+         <span class="s6">* telemetry, and process gamepad inputs for navigating the menu</span>
+         <span class="s6">* </span><span class="s7">@param </span><span class="s6">gamepad the gamepad you want to use to navigate the menu</span>
+         <span class="s6">*/</span>
+        <span class="s2">public void </span><span class="s1">loop</span><span class="s3">(</span><span class="s1">Gamepad gamepad</span><span class="s3">)</span>
+        <span class="s3">{</span>
+            <span class="s0">// Capture current state of the gamepad buttons we care about;</span>
+            <span class="s0">// We can only look once or we risk a race condition</span>
+            <span class="s2">boolean </span><span class="s1">dpadUp </span><span class="s3">= </span><span class="s1">gamepad</span><span class="s3">.</span><span class="s1">dpad_up</span><span class="s3">;</span>
+            <span class="s2">boolean </span><span class="s1">dpadDn </span><span class="s3">= </span><span class="s1">gamepad</span><span class="s3">.</span><span class="s1">dpad_down</span><span class="s3">;</span>
+            <span class="s2">boolean </span><span class="s1">dpadRight </span><span class="s3">= </span><span class="s1">gamepad</span><span class="s3">.</span><span class="s1">dpad_right</span><span class="s3">;</span>
+            <span class="s2">boolean </span><span class="s1">dpadLeft </span><span class="s3">= </span><span class="s1">gamepad</span><span class="s3">.</span><span class="s1">dpad_left</span><span class="s3">;</span>
+            <span class="s2">boolean </span><span class="s1">x </span><span class="s3">= </span><span class="s1">gamepad</span><span class="s3">.</span><span class="s1">x</span><span class="s3">;</span>
+            <span class="s2">boolean </span><span class="s1">lb </span><span class="s3">= </span><span class="s1">gamepad</span><span class="s3">.</span><span class="s1">left_bumper</span><span class="s3">;</span>
+
+            <span class="s0">// Figure out who our children our at this level</span>
+            <span class="s0">// and figure out which item is currently highlighted</span>
+            <span class="s0">// with the selection pointer</span>
+            <span class="s1">ArrayList</span><span class="s3">&lt;</span><span class="s1">Element</span><span class="s3">&gt; </span><span class="s1">children </span><span class="s3">= </span><span class="s1">currentLevel</span><span class="s3">.</span><span class="s1">children</span><span class="s3">();</span>
+            <span class="s1">Element currentSelection </span><span class="s3">= </span><span class="s1">children</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">selectedIdx</span><span class="s3">);</span>
+
+            <span class="s0">// Left and right are inputs to the selected item (if it's an Option)</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">currentSelection </span><span class="s2">instanceof </span><span class="s1">OptionElement</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s2">if </span><span class="s3">(</span><span class="s1">dpadRight </span><span class="s3">&amp;&amp; !</span><span class="s1">dpadRightPrev</span><span class="s3">) </span><span class="s0">// rising edge</span>
+                <span class="s3">{</span>
+                    <span class="s3">((</span><span class="s1">OptionElement</span><span class="s3">) </span><span class="s1">currentSelection</span><span class="s3">).</span><span class="s1">onRightInput</span><span class="s3">();</span>
+                <span class="s3">}</span>
+                <span class="s2">else if </span><span class="s3">(</span><span class="s1">dpadLeft </span><span class="s3">&amp;&amp; !</span><span class="s1">dpadLeftPrev</span><span class="s3">) </span><span class="s0">// rising edge</span>
+                <span class="s3">{</span>
+                    <span class="s3">((</span><span class="s1">OptionElement</span><span class="s3">) </span><span class="s1">currentSelection</span><span class="s3">).</span><span class="s1">onLeftInput</span><span class="s3">();</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Up and down navigate the current selection pointer</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">dpadUp </span><span class="s3">&amp;&amp; !</span><span class="s1">dpadUpPrev</span><span class="s3">) </span><span class="s0">// rising edge</span>
+            <span class="s3">{</span>
+                <span class="s1">selectedIdx</span><span class="s3">--; </span><span class="s0">// Move selection pointer up</span>
+            <span class="s3">}</span>
+            <span class="s2">else if </span><span class="s3">(</span><span class="s1">dpadDn </span><span class="s3">&amp;&amp; !</span><span class="s1">dpadDnPrev</span><span class="s3">) </span><span class="s0">// rising edge</span>
+            <span class="s3">{</span>
+                <span class="s1">selectedIdx</span><span class="s3">++; </span><span class="s0">// Move selection pointer down</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Make selected index sane (don't let it go out of bounds) :eyes:</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">selectedIdx </span><span class="s3">&gt;= </span><span class="s1">children</span><span class="s3">.</span><span class="s1">size</span><span class="s3">())</span>
+            <span class="s3">{</span>
+                <span class="s1">selectedIdx </span><span class="s3">= </span><span class="s1">children</span><span class="s3">.</span><span class="s1">size</span><span class="s3">()-</span><span class="s5">1</span><span class="s3">;</span>
+            <span class="s3">}</span>
+            <span class="s2">else if </span><span class="s3">(</span><span class="s1">selectedIdx </span><span class="s3">&lt; </span><span class="s5">0</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s1">selectedIdx </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Select: either enter submenu or input to option</span>
+            <span class="s2">else if </span><span class="s3">(</span><span class="s1">x </span><span class="s3">&amp;&amp; !</span><span class="s1">xPrev</span><span class="s3">) </span><span class="s0">// rising edge</span>
+            <span class="s3">{</span>
+                <span class="s0">// Select up element</span>
+                <span class="s2">if </span><span class="s3">(</span><span class="s1">currentSelection </span><span class="s2">instanceof </span><span class="s1">SpecialUpElement</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s0">// We can only go up if we're not at the root level</span>
+                    <span class="s2">if </span><span class="s3">(</span><span class="s1">currentLevel </span><span class="s3">!= </span><span class="s1">root</span><span class="s3">)</span>
+                    <span class="s3">{</span>
+                        <span class="s0">// Restore selection pointer to where it was before</span>
+                        <span class="s1">selectedIdx </span><span class="s3">= </span><span class="s1">selectedIdxStack</span><span class="s3">.</span><span class="s1">pop</span><span class="s3">();</span>
+
+                        <span class="s0">// Change to the parent level</span>
+                        <span class="s1">currentLevel </span><span class="s3">= </span><span class="s1">currentLevel</span><span class="s3">.</span><span class="s1">parent</span><span class="s3">();</span>
+                    <span class="s3">}</span>
+                <span class="s3">}</span>
+                <span class="s0">// Input to option</span>
+                <span class="s2">else if </span><span class="s3">(</span><span class="s1">currentSelection </span><span class="s2">instanceof </span><span class="s1">OptionElement</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s3">((</span><span class="s1">OptionElement</span><span class="s3">) </span><span class="s1">currentSelection</span><span class="s3">).</span><span class="s1">onClick</span><span class="s3">();</span>
+                <span class="s3">}</span>
+                <span class="s0">// Enter submenu</span>
+                <span class="s2">else if </span><span class="s3">(</span><span class="s1">currentSelection </span><span class="s2">instanceof </span><span class="s1">MenuElement</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s0">// Save our current selection pointer so we can restore it</span>
+                    <span class="s0">// later if the user navigates back up a level</span>
+                    <span class="s1">selectedIdxStack</span><span class="s3">.</span><span class="s1">push</span><span class="s3">(</span><span class="s1">selectedIdx</span><span class="s3">);</span>
+
+                    <span class="s0">// We have no idea what's in the submenu :monkey: so best to</span>
+                    <span class="s0">// just set the selection pointer to the first element</span>
+                    <span class="s1">selectedIdx </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+
+                    <span class="s0">// Now the current level becomes the submenu that the selection</span>
+                    <span class="s0">// pointer was on</span>
+                    <span class="s1">currentLevel </span><span class="s3">= (</span><span class="s1">MenuElement</span><span class="s3">) </span><span class="s1">currentSelection</span><span class="s3">;</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Go up a level</span>
+            <span class="s2">else if </span><span class="s3">(</span><span class="s1">lb </span><span class="s3">&amp;&amp; !</span><span class="s1">lbPrev</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s0">// We can only go up if we're not at the root level</span>
+                <span class="s2">if </span><span class="s3">(</span><span class="s1">currentLevel </span><span class="s3">!= </span><span class="s1">root</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s0">// Restore selection pointer to where it was before</span>
+                    <span class="s1">selectedIdx </span><span class="s3">= </span><span class="s1">selectedIdxStack</span><span class="s3">.</span><span class="s1">pop</span><span class="s3">();</span>
+
+                    <span class="s0">// Change to the parent level</span>
+                    <span class="s1">currentLevel </span><span class="s3">= </span><span class="s1">currentLevel</span><span class="s3">.</span><span class="s1">parent</span><span class="s3">();</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Save the current button states so that we can look for</span>
+            <span class="s0">// the rising edge the next time around the loop :)</span>
+            <span class="s1">dpadUpPrev </span><span class="s3">= </span><span class="s1">dpadUp</span><span class="s3">;</span>
+            <span class="s1">dpadDnPrev </span><span class="s3">= </span><span class="s1">dpadDn</span><span class="s3">;</span>
+            <span class="s1">dpadRightPrev </span><span class="s3">= </span><span class="s1">dpadRight</span><span class="s3">;</span>
+            <span class="s1">dpadLeftPrev </span><span class="s3">= </span><span class="s1">dpadLeft</span><span class="s3">;</span>
+            <span class="s1">xPrev </span><span class="s3">= </span><span class="s1">x</span><span class="s3">;</span>
+            <span class="s1">lbPrev </span><span class="s3">= </span><span class="s1">lb</span><span class="s3">;</span>
+
+            <span class="s0">// Start building the text display.</span>
+            <span class="s0">// First, we add the static directions for gamepad operation</span>
+            <span class="s1">StringBuilder builder </span><span class="s3">= </span><span class="s2">new </span><span class="s1">StringBuilder</span><span class="s3">();</span>
+            <span class="s1">builder</span><span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;&lt;font color='#119af5' face=monospace&gt;&quot;</span><span class="s3">);</span>
+            <span class="s1">builder</span><span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;Navigate items.....dpad up/down</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">)</span>
+                    <span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;Select.............X or Square</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">)</span>
+                    <span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;Edit option........dpad left/right</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">)</span>
+                    <span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;Up one level.......left bumper</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+            <span class="s1">builder</span><span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;&lt;/font&gt;&quot;</span><span class="s3">);</span>
+            <span class="s1">builder</span><span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+
+            <span class="s0">// Now actually add the menu options. We start by adding the name of the current menu level.</span>
+            <span class="s1">builder</span><span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;&lt;font face=monospace&gt;&quot;</span><span class="s3">);</span>
+            <span class="s1">builder</span><span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;Current Menu: &quot;</span><span class="s3">).</span><span class="s1">append</span><span class="s3">(</span><span class="s1">currentLevel</span><span class="s3">.</span><span class="s1">name</span><span class="s3">).</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+
+            <span class="s0">// Now we loop through all the child elements of this level and add them</span>
+            <span class="s2">for </span><span class="s3">(</span><span class="s2">int </span><span class="s1">i </span><span class="s3">= </span><span class="s5">0</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">children</span><span class="s3">.</span><span class="s1">size</span><span class="s3">(); </span><span class="s1">i</span><span class="s3">++)</span>
+            <span class="s3">{</span>
+                <span class="s0">// If the selection pointer is at this index, put a green dot in the box :)</span>
+                <span class="s2">if </span><span class="s3">(</span><span class="s1">selectedIdx </span><span class="s3">== </span><span class="s1">i</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s1">builder</span><span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;[&lt;font color=green face=monospace&gt;•&lt;/font&gt;] &quot;</span><span class="s3">);</span>
+                <span class="s3">}</span>
+                <span class="s0">// Otherwise, just put an empty box</span>
+                <span class="s2">else</span>
+                <span class="s3">{</span>
+                    <span class="s1">builder</span><span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;[ ] &quot;</span><span class="s3">);</span>
+                <span class="s3">}</span>
+
+                <span class="s0">// Figure out who the selection pointer is pointing at :eyes:</span>
+                <span class="s1">Element e </span><span class="s3">= </span><span class="s1">children</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">i</span><span class="s3">);</span>
+
+                <span class="s0">// If it's pointing at a submenu, indicate that it's a submenu to the user</span>
+                <span class="s0">// by prefixing &quot;&gt; &quot; to the name.</span>
+                <span class="s2">if </span><span class="s3">(</span><span class="s1">e </span><span class="s2">instanceof </span><span class="s1">MenuElement</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s1">builder</span><span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;&gt; &quot;</span><span class="s3">);</span>
+                <span class="s3">}</span>
+
+                <span class="s0">// Finally, add the element's name</span>
+                <span class="s1">builder</span><span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s1">e</span><span class="s3">.</span><span class="s1">getDisplayText</span><span class="s3">());</span>
+
+                <span class="s0">// We musn't forget the newline</span>
+                <span class="s1">builder</span><span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Don't forget to close the font tag either</span>
+            <span class="s1">builder</span><span class="s3">.</span><span class="s1">append</span><span class="s3">(</span><span class="s4">&quot;&lt;/font&gt;&quot;</span><span class="s3">);</span>
+
+            <span class="s0">// Build the string!!!! :nerd:</span>
+            <span class="s1">String menu </span><span class="s3">= </span><span class="s1">builder</span><span class="s3">.</span><span class="s1">toString</span><span class="s3">();</span>
+
+            <span class="s0">// Add it to telemetry</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">menu</span><span class="s3">);</span>
+        <span class="s3">}</span>
+
+        <span class="s2">public static class </span><span class="s1">MenuElement </span><span class="s2">extends </span><span class="s1">Element</span>
+        <span class="s3">{</span>
+            <span class="s2">private </span><span class="s1">String name</span><span class="s3">;</span>
+            <span class="s2">private </span><span class="s1">ArrayList</span><span class="s3">&lt;</span><span class="s1">Element</span><span class="s3">&gt; </span><span class="s1">children </span><span class="s3">= </span><span class="s2">new </span><span class="s1">ArrayList</span><span class="s3">&lt;&gt;();</span>
+
+            <span class="s6">/**</span>
+             <span class="s6">* Create a new MenuElement; may either be the root menu, or a submenu (set isRoot accordingly)</span>
+             <span class="s6">* </span><span class="s7">@param </span><span class="s6">name the name for this menu</span>
+             <span class="s6">* </span><span class="s7">@param </span><span class="s6">isRoot whether this is a root menu, or a submenu</span>
+             <span class="s6">*/</span>
+            <span class="s2">public </span><span class="s1">MenuElement</span><span class="s3">(</span><span class="s1">String name</span><span class="s3">, </span><span class="s2">boolean </span><span class="s1">isRoot</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">name </span><span class="s3">= </span><span class="s1">name</span><span class="s3">;</span>
+
+                <span class="s0">// If it's not the root menu, we add the up one level option as the first element</span>
+                <span class="s2">if </span><span class="s3">(!</span><span class="s1">isRoot</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s1">children</span><span class="s3">.</span><span class="s1">add</span><span class="s3">(</span><span class="s2">new </span><span class="s1">SpecialUpElement</span><span class="s3">());</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+
+            <span class="s6">/**</span>
+             <span class="s6">* Add a child element to this menu (may either be an Option or another menu)</span>
+             <span class="s6">* </span><span class="s7">@param </span><span class="s6">child the child element to add</span>
+             <span class="s6">*/</span>
+            <span class="s2">public void </span><span class="s1">addChild</span><span class="s3">(</span><span class="s1">Element child</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s1">child</span><span class="s3">.</span><span class="s1">setParent</span><span class="s3">(</span><span class="s2">this</span><span class="s3">);</span>
+                <span class="s1">children</span><span class="s3">.</span><span class="s1">add</span><span class="s3">(</span><span class="s1">child</span><span class="s3">);</span>
+            <span class="s3">}</span>
+
+            <span class="s6">/**</span>
+             <span class="s6">* Add multiple child elements to this menu (may either be option, or another menu)</span>
+             <span class="s6">* </span><span class="s7">@param </span><span class="s6">children the children to add</span>
+             <span class="s6">*/</span>
+            <span class="s2">public void </span><span class="s1">addChildren</span><span class="s3">(</span><span class="s1">Element</span><span class="s3">[] </span><span class="s1">children</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s2">for </span><span class="s3">(</span><span class="s1">Element e </span><span class="s3">: </span><span class="s1">children</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s1">e</span><span class="s3">.</span><span class="s1">setParent</span><span class="s3">(</span><span class="s2">this</span><span class="s3">);</span>
+                    <span class="s2">this</span><span class="s3">.</span><span class="s1">children</span><span class="s3">.</span><span class="s1">add</span><span class="s3">(</span><span class="s1">e</span><span class="s3">);</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">protected </span><span class="s1">String getDisplayText</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s2">return </span><span class="s1">name</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s2">private </span><span class="s1">ArrayList</span><span class="s3">&lt;</span><span class="s1">Element</span><span class="s3">&gt; </span><span class="s1">children</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s2">return </span><span class="s1">children</span><span class="s3">;</span>
+            <span class="s3">}</span>
+        <span class="s3">}</span>
+
+        <span class="s2">public static abstract class </span><span class="s1">OptionElement </span><span class="s2">extends </span><span class="s1">Element</span>
+        <span class="s3">{</span>
+            <span class="s6">/**</span>
+             <span class="s6">* Override this to get notified when the element is clicked</span>
+             <span class="s6">*/</span>
+            <span class="s2">void </span><span class="s1">onClick</span><span class="s3">() {}</span>
+
+            <span class="s6">/**</span>
+             <span class="s6">* Override this to get notified when the element gets a &quot;left edit&quot; input</span>
+             <span class="s6">*/</span>
+            <span class="s2">protected void </span><span class="s1">onLeftInput</span><span class="s3">() {}</span>
+
+            <span class="s6">/**</span>
+             <span class="s6">* Override this to get notified when the element gets a &quot;right edit&quot; input</span>
+             <span class="s6">*/</span>
+            <span class="s2">protected void </span><span class="s1">onRightInput</span><span class="s3">() {}</span>
+        <span class="s3">}</span>
+
+        <span class="s2">public static class </span><span class="s1">EnumOption </span><span class="s2">extends </span><span class="s1">OptionElement</span>
+        <span class="s3">{</span>
+            <span class="s2">protected int </span><span class="s1">idx </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+            <span class="s2">protected </span><span class="s1">Enum</span><span class="s3">[] </span><span class="s1">e</span><span class="s3">;</span>
+            <span class="s2">protected </span><span class="s1">String name</span><span class="s3">;</span>
+
+            <span class="s2">public </span><span class="s1">EnumOption</span><span class="s3">(</span><span class="s1">String name</span><span class="s3">, </span><span class="s1">Enum</span><span class="s3">[] </span><span class="s1">e</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">e </span><span class="s3">= </span><span class="s1">e</span><span class="s3">;</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">name </span><span class="s3">= </span><span class="s1">name</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s2">public </span><span class="s1">EnumOption</span><span class="s3">(</span><span class="s1">String name</span><span class="s3">, </span><span class="s1">Enum</span><span class="s3">[] </span><span class="s1">e</span><span class="s3">, </span><span class="s1">Enum def</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s2">this</span><span class="s3">(</span><span class="s1">name</span><span class="s3">, </span><span class="s1">e</span><span class="s3">);</span>
+                <span class="s1">idx </span><span class="s3">= </span><span class="s1">def</span><span class="s3">.</span><span class="s1">ordinal</span><span class="s3">();</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">public void </span><span class="s1">onLeftInput</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s1">idx</span><span class="s3">++;</span>
+
+                <span class="s2">if</span><span class="s3">(</span><span class="s1">idx </span><span class="s3">&gt; </span><span class="s1">e</span><span class="s3">.</span><span class="s1">length</span><span class="s3">-</span><span class="s5">1</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s1">idx </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">public void </span><span class="s1">onRightInput</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s1">idx</span><span class="s3">--;</span>
+
+                <span class="s2">if</span><span class="s3">(</span><span class="s1">idx </span><span class="s3">&lt; </span><span class="s5">0</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s1">idx </span><span class="s3">= </span><span class="s1">e</span><span class="s3">.</span><span class="s1">length</span><span class="s3">-</span><span class="s5">1</span><span class="s3">;</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">public void </span><span class="s1">onClick</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s0">//onRightInput();</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">protected </span><span class="s1">String getDisplayText</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s2">return </span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;%s: &lt;font color='#e37c07' face=monospace&gt;%s&lt;/font&gt;&quot;</span><span class="s3">, </span><span class="s1">name</span><span class="s3">, </span><span class="s1">e</span><span class="s3">[</span><span class="s1">idx</span><span class="s3">].</span><span class="s1">name</span><span class="s3">());</span>
+            <span class="s3">}</span>
+
+            <span class="s2">public </span><span class="s1">Enum getValue</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s2">return </span><span class="s1">e</span><span class="s3">[</span><span class="s1">idx</span><span class="s3">];</span>
+            <span class="s3">}</span>
+        <span class="s3">}</span>
+
+        <span class="s2">public static class </span><span class="s1">IntegerOption </span><span class="s2">extends </span><span class="s1">OptionElement</span>
+        <span class="s3">{</span>
+            <span class="s2">protected int </span><span class="s1">i</span><span class="s3">;</span>
+            <span class="s2">protected int </span><span class="s1">min</span><span class="s3">;</span>
+            <span class="s2">protected int </span><span class="s1">max</span><span class="s3">;</span>
+            <span class="s2">protected </span><span class="s1">String name</span><span class="s3">;</span>
+
+            <span class="s2">public </span><span class="s1">IntegerOption</span><span class="s3">(</span><span class="s1">String name</span><span class="s3">, </span><span class="s2">int </span><span class="s1">min</span><span class="s3">, </span><span class="s2">int </span><span class="s1">max</span><span class="s3">, </span><span class="s2">int </span><span class="s1">def</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">name </span><span class="s3">= </span><span class="s1">name</span><span class="s3">;</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">min </span><span class="s3">= </span><span class="s1">min</span><span class="s3">;</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">max </span><span class="s3">= </span><span class="s1">max</span><span class="s3">;</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">i </span><span class="s3">= </span><span class="s1">def</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">public void </span><span class="s1">onLeftInput</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s1">i</span><span class="s3">--;</span>
+
+                <span class="s2">if</span><span class="s3">(</span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">min</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s1">i </span><span class="s3">= </span><span class="s1">max</span><span class="s3">;</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">public void </span><span class="s1">onRightInput</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s1">i</span><span class="s3">++;</span>
+
+                <span class="s2">if</span><span class="s3">(</span><span class="s1">i </span><span class="s3">&gt; </span><span class="s1">max</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s1">i </span><span class="s3">= </span><span class="s1">min</span><span class="s3">;</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">public void </span><span class="s1">onClick</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s0">//onRightInput();</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">protected </span><span class="s1">String getDisplayText</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s2">return </span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;%s: &lt;font color='#e37c07' face=monospace&gt;%d&lt;/font&gt;&quot;</span><span class="s3">, </span><span class="s1">name</span><span class="s3">, </span><span class="s1">i</span><span class="s3">);</span>
+            <span class="s3">}</span>
+
+            <span class="s2">public int </span><span class="s1">getValue</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s2">return </span><span class="s1">i</span><span class="s3">;</span>
+            <span class="s3">}</span>
+        <span class="s3">}</span>
+
+        <span class="s2">static class </span><span class="s1">BooleanOption </span><span class="s2">extends </span><span class="s1">OptionElement</span>
+        <span class="s3">{</span>
+            <span class="s2">private </span><span class="s1">String name</span><span class="s3">;</span>
+            <span class="s2">private boolean </span><span class="s1">val </span><span class="s3">= </span><span class="s2">true</span><span class="s3">;</span>
+
+            <span class="s2">private </span><span class="s1">String customTrue</span><span class="s3">;</span>
+            <span class="s2">private </span><span class="s1">String customFalse</span><span class="s3">;</span>
+
+            <span class="s1">BooleanOption</span><span class="s3">(</span><span class="s1">String name</span><span class="s3">, </span><span class="s2">boolean </span><span class="s1">def</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">name </span><span class="s3">= </span><span class="s1">name</span><span class="s3">;</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">val </span><span class="s3">= </span><span class="s1">def</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s1">BooleanOption</span><span class="s3">(</span><span class="s1">String name</span><span class="s3">, </span><span class="s2">boolean </span><span class="s1">def</span><span class="s3">, </span><span class="s1">String customTrue</span><span class="s3">, </span><span class="s1">String customFalse</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s2">this</span><span class="s3">(</span><span class="s1">name</span><span class="s3">, </span><span class="s1">def</span><span class="s3">);</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">customTrue </span><span class="s3">= </span><span class="s1">customTrue</span><span class="s3">;</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">customFalse </span><span class="s3">= </span><span class="s1">customFalse</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">public void </span><span class="s1">onLeftInput</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s1">val </span><span class="s3">= !</span><span class="s1">val</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">public void </span><span class="s1">onRightInput</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s1">val </span><span class="s3">= !</span><span class="s1">val</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">public void </span><span class="s1">onClick</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s1">val </span><span class="s3">= !</span><span class="s1">val</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">protected </span><span class="s1">String getDisplayText</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s1">String valStr</span><span class="s3">;</span>
+
+                <span class="s2">if</span><span class="s3">(</span><span class="s1">customTrue </span><span class="s3">!= </span><span class="s2">null </span><span class="s3">&amp;&amp; </span><span class="s1">customFalse </span><span class="s3">!= </span><span class="s2">null</span><span class="s3">)</span>
+                <span class="s3">{</span>
+                    <span class="s1">valStr </span><span class="s3">= </span><span class="s1">val </span><span class="s3">? </span><span class="s1">customTrue </span><span class="s3">: </span><span class="s1">customFalse</span><span class="s3">;</span>
+                <span class="s3">}</span>
+                <span class="s2">else</span>
+                <span class="s3">{</span>
+                    <span class="s1">valStr </span><span class="s3">= </span><span class="s1">val </span><span class="s3">? </span><span class="s4">&quot;true&quot; </span><span class="s3">: </span><span class="s4">&quot;false&quot;</span><span class="s3">;</span>
+                <span class="s3">}</span>
+
+                <span class="s2">return </span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;%s: &lt;font color='#e37c07' face=monospace&gt;%s&lt;/font&gt;&quot;</span><span class="s3">, </span><span class="s1">name</span><span class="s3">, </span><span class="s1">valStr</span><span class="s3">);</span>
+            <span class="s3">}</span>
+
+            <span class="s2">public boolean </span><span class="s1">getValue</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s2">return </span><span class="s1">val</span><span class="s3">;</span>
+            <span class="s3">}</span>
+        <span class="s3">}</span>
+
+        <span class="s6">/**</span>
+         <span class="s6">*</span>
+         <span class="s6">*/</span>
+        <span class="s2">public static class </span><span class="s1">StaticItem </span><span class="s2">extends </span><span class="s1">OptionElement</span>
+        <span class="s3">{</span>
+            <span class="s2">private </span><span class="s1">String name</span><span class="s3">;</span>
+
+            <span class="s2">public </span><span class="s1">StaticItem</span><span class="s3">(</span><span class="s1">String name</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">name </span><span class="s3">= </span><span class="s1">name</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">protected </span><span class="s1">String getDisplayText</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s2">return </span><span class="s1">name</span><span class="s3">;</span>
+            <span class="s3">}</span>
+        <span class="s3">}</span>
+
+        <span class="s2">public static abstract class </span><span class="s1">StaticClickableOption </span><span class="s2">extends </span><span class="s1">OptionElement</span>
+        <span class="s3">{</span>
+            <span class="s2">private </span><span class="s1">String name</span><span class="s3">;</span>
+
+            <span class="s2">public </span><span class="s1">StaticClickableOption</span><span class="s3">(</span><span class="s1">String name</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">name </span><span class="s3">= </span><span class="s1">name</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s2">abstract void </span><span class="s1">onClick</span><span class="s3">();</span>
+
+            <span class="s1">@Override</span>
+            <span class="s2">protected </span><span class="s1">String getDisplayText</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s2">return </span><span class="s1">name</span><span class="s3">;</span>
+            <span class="s3">}</span>
+        <span class="s3">}</span>
+
+        <span class="s2">private static abstract class </span><span class="s1">Element</span>
+        <span class="s3">{</span>
+            <span class="s2">private </span><span class="s1">MenuElement parent</span><span class="s3">;</span>
+
+            <span class="s2">protected void </span><span class="s1">setParent</span><span class="s3">(</span><span class="s1">MenuElement parent</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s2">this</span><span class="s3">.</span><span class="s1">parent </span><span class="s3">= </span><span class="s1">parent</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s2">protected </span><span class="s1">MenuElement parent</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s2">return </span><span class="s1">parent</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s2">protected abstract </span><span class="s1">String getDisplayText</span><span class="s3">();</span>
+        <span class="s3">}</span>
+
+        <span class="s2">private static class </span><span class="s1">SpecialUpElement </span><span class="s2">extends </span><span class="s1">Element</span>
+        <span class="s3">{</span>
+            <span class="s1">@Override</span>
+            <span class="s2">protected </span><span class="s1">String getDisplayText</span><span class="s3">()</span>
+            <span class="s3">{</span>
+                <span class="s2">return </span><span class="s4">&quot;&lt;font color='#119af5' face=monospace&gt;.. ↰ Up One Level&lt;/font&gt;&quot;</span><span class="s3">;</span>
+            <span class="s3">}</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

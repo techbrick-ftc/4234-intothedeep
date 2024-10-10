@@ -1,0 +1,302 @@
+<html>
+<head>
+<title>SensorOctoQuadAdv.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+.s6 { color: #5f826b; font-style: italic;}
+.s7 { color: #67a37c; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SensorOctoQuadAdv.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2024 DigitalChickenLabs 
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions: 
+ * 
+ * The above copyright notice and this permission notice shall be included in all 
+ * copies or substantial portions of the Software. 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+ * SOFTWARE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">digitalchickenlabs</span><span class="s3">.</span><span class="s1">OctoQuad</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">digitalchickenlabs</span><span class="s3">.</span><span class="s1">OctoQuadBase</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">ElapsedTime</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">MovingStatistics</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+
+
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">Telemetry</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">AngleUnit</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">java</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">ArrayList</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">java</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">List</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode illustrates how to use advanced features of the DigitalChickenLabs OctoQuad Quadrature Encoder &amp; Pulse Width Interface Module 
+ * 
+ * The OctoQuad has 8 input channels that can used to read either Quadrature Encoder signals (like with most FTC motors) 
+ * or Pulse-Width style Absolute Encoder inputs (eg: REV Through Bore encoder pulse width output). 
+ * 
+ * This OpMode illustrates several of the more advanced features of an OctoQuad, including Pulse Width measurement and velocity measurement. 
+ * For a more basic OpMode just showing how to read encoder inputs, see the SensorOctoQuad sample. 
+ * 
+ * This OpMode assumes that the OctoQuad is attached to an I2C interface named &quot;octoquad&quot; in the robot configuration. 
+ * 
+ * One system that requires a lot of encoder inputs is a Swerve Drive system. 
+ * Such a drive requires two encoders per drive module: one for position &amp; velocity of the Drive motor/wheel, and one for position/angle of the Steering motor. 
+ * The Drive motor usually requires a quadrature encoder, and the Steering motor requires an Absolute encoder. 
+ * This quantity and combination of encoder inputs is a challenge, but a single OctoQuad could be used to read them all. 
+ * 
+ * This sample will configure an OctoQuad for a swerve drive, as follows 
+ *  - Configure 4 Relative Quadrature Encoder inputs and 4 Absolute Pulse-Width Encoder inputs 
+ *  - Configure a velocity sample interval of 25 mSec 
+ *  - Configure a pulse width input range of 1-1024 uSec for a REV Through Bore Encoder's Absolute Pulse output. 
+ * 
+ * An OctoSwerveDrive class will be created to initialize the OctoQuad, and manage the 4 swerve modules. 
+ * An OctoSwerveModule class will be created to configure and read a single swerve module. 
+ * 
+ * Wiring: 
+ *  The OctoQuad will be configured to accept Quadrature encoders on the first four channels and Absolute (pulse width) encoders on the last four channels. 
+ * 
+ *  The standard 4-pin to 4-pin cable can be used to connect each Driver Motor encoder to the OctoQuad. (channels 0-3) 
+ * 
+ *  A modified version of the REV 6-4 pin cable (shipped with the encoder) connects the steering encoder to the OctoQuad. (channels 4-7) 
+ *  To connect the Absolute position signal from a REV Thru-Bore encoder to the OctoQuad, the Provided 6-pin to 4-pin cable will need to be modified. 
+ *    At the 6-pin connector end, move the yellow wire from its initial pin-3 position to the ABS pin-5 position. This can be done easily 
+ *    by using a small flathead screwdriver to lift the small white tab holding the metal wire crimp in place and gently pulling the wire out. 
+ *  See the OctoSwerveDrive() constructor below for the correct wheel/channel assignment. 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list 
+ * 
+ * Note: If you prefer, you can move the two support classes from this file, and place them in their own files. 
+ *       But leaving them in place is simpler for this example. 
+ * 
+ * See the sensor's product page: https://www.tindie.com/products/35114/ 
+ */</span>
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name</span><span class="s3">=</span><span class="s4">&quot;OctoQuad Advanced&quot;</span><span class="s3">, </span><span class="s1">group</span><span class="s3">=</span><span class="s4">&quot;OctoQuad&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">SensorOctoQuadAdv </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() </span><span class="s2">throws </span><span class="s1">InterruptedException </span><span class="s3">{</span>
+        <span class="s0">// Connect to the OctoQuad by looking up its name in the hardwareMap.</span>
+        <span class="s1">OctoQuad octoquad </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;octoquad&quot;</span><span class="s3">);</span>
+
+        <span class="s0">// Create the interface for the Swerve Drive Encoders</span>
+        <span class="s1">OctoSwerveDrive octoSwerveDrive </span><span class="s3">= </span><span class="s2">new </span><span class="s1">OctoSwerveDrive</span><span class="s3">(</span><span class="s1">octoquad</span><span class="s3">);</span>
+
+        <span class="s0">// Display the OctoQuad firmware revision</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot;OctoQuad Firmware v&quot; </span><span class="s3">+ </span><span class="s1">octoquad</span><span class="s3">.</span><span class="s1">getFirmwareVersion</span><span class="s3">());</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s2">\n</span><span class="s4">Press START to read encoder values&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+        <span class="s1">waitForStart</span><span class="s3">();</span>
+
+        <span class="s0">// Configure the telemetry for optimal display of data.</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">setDisplayFormat</span><span class="s3">(</span><span class="s1">Telemetry</span><span class="s3">.</span><span class="s1">DisplayFormat</span><span class="s3">.</span><span class="s1">MONOSPACE</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">setMsTransmissionInterval</span><span class="s3">(</span><span class="s5">50</span><span class="s3">);</span>
+
+        <span class="s0">// Run stats to determine cycle times.</span>
+        <span class="s1">MovingStatistics avgTime </span><span class="s3">= </span><span class="s2">new </span><span class="s1">MovingStatistics</span><span class="s3">(</span><span class="s5">100</span><span class="s3">);</span>
+        <span class="s1">ElapsedTime elapsedTime </span><span class="s3">= </span><span class="s2">new </span><span class="s1">ElapsedTime</span><span class="s3">();</span>
+
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">()) {</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Press X to Reset Encoders</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+
+            <span class="s2">if</span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">x</span><span class="s3">) {</span>
+                <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">resetAllPositions</span><span class="s3">();</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// read all the swerve drive encoders and update positions and velocities.</span>
+            <span class="s1">octoSwerveDrive</span><span class="s3">.</span><span class="s1">updateModules</span><span class="s3">();</span>
+            <span class="s1">octoSwerveDrive</span><span class="s3">.</span><span class="s1">show</span><span class="s3">(</span><span class="s1">telemetry</span><span class="s3">);</span>
+
+            <span class="s0">// Update cycle time stats</span>
+            <span class="s1">avgTime</span><span class="s3">.</span><span class="s1">add</span><span class="s3">(</span><span class="s1">elapsedTime</span><span class="s3">.</span><span class="s1">nanoseconds</span><span class="s3">());</span>
+            <span class="s1">elapsedTime</span><span class="s3">.</span><span class="s1">reset</span><span class="s3">();</span>
+
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Loop time&quot;</span><span class="s3">, </span><span class="s4">&quot;%.1f mS&quot;</span><span class="s3">, </span><span class="s1">avgTime</span><span class="s3">.</span><span class="s1">getMean</span><span class="s3">()/</span><span class="s5">1000000</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+
+<span class="s0">// ============================  Internal (Inner) Classes  =============================</span>
+
+<span class="s6">/***</span>
+ <span class="s6">* OctoSwerveDrive class manages 4 Swerve Modules</span>
+ <span class="s6">* - Performs general OctoQuad initialization</span>
+ <span class="s6">* - Creates 4 module classes, one for each swerve module</span>
+ <span class="s6">* - Updates swerve drive status by reading all data from OctoQuad and Updating each module</span>
+ <span class="s6">* - Displays all swerve drive data as telemetry</span>
+ <span class="s6">*/</span>
+<span class="s2">class </span><span class="s1">OctoSwerveDrive </span><span class="s3">{</span>
+
+    <span class="s2">private final </span><span class="s1">OctoQuad octoquad</span><span class="s3">;</span>
+    <span class="s2">private final </span><span class="s1">List</span><span class="s3">&lt;</span><span class="s1">OctoSwerveModule</span><span class="s3">&gt; </span><span class="s1">allModules </span><span class="s3">= </span><span class="s2">new </span><span class="s1">ArrayList</span><span class="s3">&lt;&gt;();</span>
+
+    <span class="s0">// members to hold encoder data for each module.</span>
+    <span class="s2">public final </span><span class="s1">OctoSwerveModule LeftFront</span><span class="s3">;</span>
+    <span class="s2">public final </span><span class="s1">OctoSwerveModule RightFront</span><span class="s3">;</span>
+    <span class="s2">public final </span><span class="s1">OctoSwerveModule LeftBack</span><span class="s3">;</span>
+    <span class="s2">public final </span><span class="s1">OctoSwerveModule RightBack</span><span class="s3">;</span>
+
+    <span class="s0">// Prepare an object to hold an entire OctoQuad encoder readable register bank (pos and vel)</span>
+    <span class="s2">private final </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">EncoderDataBlock encoderDataBlock </span><span class="s3">= </span><span class="s2">new </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">EncoderDataBlock</span><span class="s3">();</span>
+
+    <span class="s2">public </span><span class="s1">OctoSwerveDrive</span><span class="s3">(</span><span class="s1">OctoQuad octoquad</span><span class="s3">) {</span>
+        <span class="s2">this</span><span class="s3">.</span><span class="s1">octoquad </span><span class="s3">= </span><span class="s1">octoquad</span><span class="s3">;</span>
+
+        <span class="s0">// Clear out all prior settings and encoder data before setting up desired configuration</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">resetEverything</span><span class="s3">();</span>
+
+        <span class="s0">// Assume first 4 channels are relative encoders and the next 4 are absolute encoders</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">setChannelBankConfig</span><span class="s3">(</span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">ChannelBankConfig</span><span class="s3">.</span><span class="s1">BANK1_QUADRATURE_BANK2_PULSE_WIDTH</span><span class="s3">);</span>
+
+        <span class="s0">// Create the four OctoSwerveModules, and add them to a 'list' for easier reference.</span>
+
+        <span class="s0">// Note: The wheel/channel order is set here.  Ensure your encoder cables match.</span>
+        <span class="s0">//</span>
+        <span class="s0">// Note: The angleOffset must be set for each module so a forward facing wheel shows a steer angle of 0 degrees.</span>
+        <span class="s0">//       The process for determining the correct angleOffsets is as follows:</span>
+        <span class="s0">//        1) Set all the angleValues (below) to zero then build and deploy the code.</span>
+        <span class="s0">//        2) Physically rotate all the swerve drives so the wheels are facing forward in the desired 0 degree position</span>
+        <span class="s0">//        3) Run the OpMode, view the telemetry and record the &quot;Degrees&quot; value for each module.</span>
+        <span class="s0">//        4) Update the code by entering the recorded Degrees value for each module as the angleOffset (last) parameter in the lines below.</span>
+        <span class="s0">//</span>
+        <span class="s0">// Rebuild and deploy the new code.  Verify that the telemetry now indicates 0 degrees when the wheels are facing forward.</span>
+        <span class="s0">// Also verify that the correct module values change appropriately when you manually spin (drive) and rotate (steer) a wheel.</span>
+
+        <span class="s1">allModules</span><span class="s3">.</span><span class="s1">add</span><span class="s3">(</span><span class="s1">LeftFront  </span><span class="s3">= </span><span class="s2">new </span><span class="s1">OctoSwerveModule</span><span class="s3">(</span><span class="s1">octoquad</span><span class="s3">, </span><span class="s4">&quot;LF &quot;</span><span class="s3">,</span><span class="s5">0</span><span class="s3">,</span><span class="s5">0</span><span class="s3">));</span><span class="s0">//  Drive = 0, Steer = 4</span>
+        <span class="s1">allModules</span><span class="s3">.</span><span class="s1">add</span><span class="s3">(</span><span class="s1">RightFront </span><span class="s3">= </span><span class="s2">new </span><span class="s1">OctoSwerveModule</span><span class="s3">(</span><span class="s1">octoquad</span><span class="s3">, </span><span class="s4">&quot;RF &quot;</span><span class="s3">,</span><span class="s5">1</span><span class="s3">,</span><span class="s5">0</span><span class="s3">));</span><span class="s0">//  Drive = 1, Steer = 5</span>
+        <span class="s1">allModules</span><span class="s3">.</span><span class="s1">add</span><span class="s3">(</span><span class="s1">LeftBack   </span><span class="s3">= </span><span class="s2">new </span><span class="s1">OctoSwerveModule</span><span class="s3">(</span><span class="s1">octoquad</span><span class="s3">, </span><span class="s4">&quot;LB &quot;</span><span class="s3">,</span><span class="s5">2</span><span class="s3">,</span><span class="s5">0</span><span class="s3">));</span><span class="s0">//  Drive = 2, Steer = 6</span>
+        <span class="s1">allModules</span><span class="s3">.</span><span class="s1">add</span><span class="s3">(</span><span class="s1">RightBack  </span><span class="s3">= </span><span class="s2">new </span><span class="s1">OctoSwerveModule</span><span class="s3">(</span><span class="s1">octoquad</span><span class="s3">, </span><span class="s4">&quot;RB &quot;</span><span class="s3">,</span><span class="s5">3</span><span class="s3">,</span><span class="s5">0</span><span class="s3">));</span><span class="s0">//  Drive = 3, Steer = 7</span>
+
+        <span class="s0">// now make sure the settings persist through any power glitches.</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">saveParametersToFlash</span><span class="s3">();</span>
+    <span class="s3">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Updates all 4 swerve modules</span>
+     <span class="s6">*/</span>
+    <span class="s2">public void </span><span class="s1">updateModules</span><span class="s3">() {</span>
+        <span class="s0">// Read full OctoQuad data block and then pass DataBlock to each swerve module to update themselves.</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">readAllEncoderData</span><span class="s3">(</span><span class="s1">encoderDataBlock</span><span class="s3">);</span>
+        <span class="s2">for </span><span class="s3">(</span><span class="s1">OctoSwerveModule module </span><span class="s3">: </span><span class="s1">allModules</span><span class="s3">) {</span>
+            <span class="s1">module</span><span class="s3">.</span><span class="s1">updateModule</span><span class="s3">(</span><span class="s1">encoderDataBlock</span><span class="s3">);</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Generate telemetry data for all modules.</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">telemetry OpMode Telemetry object</span>
+     <span class="s6">*/</span>
+    <span class="s2">public void </span><span class="s1">show</span><span class="s3">(</span><span class="s1">Telemetry telemetry</span><span class="s3">) {</span>
+        <span class="s0">//  create general header block and then have each module add its own telemetry</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;pos&quot;</span><span class="s3">, </span><span class="s4">&quot;   Count     CPS  Degree    DPS&quot;</span><span class="s3">);</span>
+        <span class="s2">for </span><span class="s3">(</span><span class="s1">OctoSwerveModule module </span><span class="s3">: </span><span class="s1">allModules</span><span class="s3">) {</span>
+            <span class="s1">module</span><span class="s3">.</span><span class="s1">show</span><span class="s3">(</span><span class="s1">telemetry</span><span class="s3">);</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+
+<span class="s6">/***</span>
+ <span class="s6">* The OctoSwerveModule class manages a single swerve module</span>
+ <span class="s6">*/</span>
+<span class="s2">class </span><span class="s1">OctoSwerveModule </span><span class="s3">{</span>
+
+    <span class="s2">public  double </span><span class="s1">driveCounts</span><span class="s3">;</span>
+    <span class="s2">public  double </span><span class="s1">driveCountsPerSec</span><span class="s3">;</span>
+    <span class="s2">public  double </span><span class="s1">steerDegrees</span><span class="s3">;</span>
+    <span class="s2">public  double </span><span class="s1">steerDegreesPerSec</span><span class="s3">;</span>
+
+    <span class="s2">private final </span><span class="s1">String   name</span><span class="s3">;</span>
+    <span class="s2">private final int      </span><span class="s1">channel</span><span class="s3">;</span>
+    <span class="s2">private final double   </span><span class="s1">angleOffset</span><span class="s3">;</span>
+    <span class="s2">private final double   </span><span class="s1">steerDirMult</span><span class="s3">;</span>
+
+    <span class="s2">private static final int    </span><span class="s1">VELOCITY_SAMPLE_INTERVAL_MS </span><span class="s3">= </span><span class="s5">25</span><span class="s3">;   </span><span class="s0">// To provide 40 updates per second.</span>
+    <span class="s2">private static final double </span><span class="s1">DEGREES_PER_US </span><span class="s3">= (</span><span class="s5">360.0 </span><span class="s3">/ </span><span class="s5">1024.0</span><span class="s3">);  </span><span class="s0">// based on REV Through Bore Encoder</span>
+    <span class="s2">private static final double </span><span class="s1">VELOCITY_SAMPLES_PER_S </span><span class="s3">= (</span><span class="s5">1000.0 </span><span class="s3">/ </span><span class="s1">VELOCITY_SAMPLE_INTERVAL_MS</span><span class="s3">);</span>
+
+    <span class="s0">// The correct drive and turn directions must be set for the Swerve Module based on the specific hardware geometry.</span>
+    <span class="s0">// Forward motion must generate an increasing drive count.</span>
+    <span class="s0">// Counter Clockwise steer rotation must generate an increasing Steer Angle (degrees)</span>
+    <span class="s2">private static final boolean </span><span class="s1">INVERT_DRIVE_ENCODER </span><span class="s3">= </span><span class="s2">false</span><span class="s3">; </span><span class="s0">// Set true if forward motion decreases drive &quot;Count&quot;</span>
+    <span class="s2">private static final boolean </span><span class="s1">INVERT_STEER_ENCODER </span><span class="s3">= </span><span class="s2">false</span><span class="s3">; </span><span class="s0">// Set true if counter clockwise steer action decreases steer &quot;Degree&quot;</span>
+
+    <span class="s6">/***</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">octoquad provide access to configure OctoQuad</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">name name used for telemetry display</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">quadChannel Quadrature encoder channel.  Pulse Width channel is this + 4</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">angleOffset Angle to subtract from absolute encoder to calibrate zero position. (see comments above)</span>
+     <span class="s6">*/</span>
+    <span class="s2">public </span><span class="s1">OctoSwerveModule </span><span class="s3">(</span><span class="s1">OctoQuad octoquad</span><span class="s3">, </span><span class="s1">String name</span><span class="s3">, </span><span class="s2">int </span><span class="s1">quadChannel</span><span class="s3">, </span><span class="s2">double </span><span class="s1">angleOffset</span><span class="s3">) {</span>
+        <span class="s2">this</span><span class="s3">.</span><span class="s1">name </span><span class="s3">= </span><span class="s1">name</span><span class="s3">;</span>
+        <span class="s2">this</span><span class="s3">.</span><span class="s1">channel </span><span class="s3">= </span><span class="s1">quadChannel</span><span class="s3">;</span>
+        <span class="s2">this</span><span class="s3">.</span><span class="s1">angleOffset </span><span class="s3">= </span><span class="s1">angleOffset</span><span class="s3">;</span>
+        <span class="s2">this</span><span class="s3">.</span><span class="s1">steerDirMult </span><span class="s3">= </span><span class="s1">INVERT_STEER_ENCODER  </span><span class="s3">? -</span><span class="s5">1 </span><span class="s3">: </span><span class="s5">1 </span><span class="s3">;  </span><span class="s0">// create a multiplier to flip the steer angle.</span>
+
+        <span class="s0">// Set the drive encoder direction.  Note the absolute encoder does not have built-in direction inversion.</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">setSingleEncoderDirection</span><span class="s3">(</span><span class="s1">channel</span><span class="s3">, </span><span class="s1">INVERT_DRIVE_ENCODER </span><span class="s3">? </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">EncoderDirection</span><span class="s3">.</span><span class="s1">REVERSE </span><span class="s3">: </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">EncoderDirection</span><span class="s3">.</span><span class="s1">FORWARD</span><span class="s3">);</span>
+
+        <span class="s0">// Set the velocity sample interval on both encoders</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">setSingleVelocitySampleInterval</span><span class="s3">(</span><span class="s1">channel</span><span class="s3">, </span><span class="s1">VELOCITY_SAMPLE_INTERVAL_MS</span><span class="s3">);</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">setSingleVelocitySampleInterval</span><span class="s3">(</span><span class="s1">channel </span><span class="s3">+ </span><span class="s5">4</span><span class="s3">, </span><span class="s1">VELOCITY_SAMPLE_INTERVAL_MS</span><span class="s3">);</span>
+
+        <span class="s0">// Setup Absolute encoder pulse range to match REV Through Bore encoder.</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">setSingleChannelPulseWidthParams </span><span class="s3">(</span><span class="s1">channel </span><span class="s3">+ </span><span class="s5">4</span><span class="s3">, </span><span class="s2">new </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">ChannelPulseWidthParams</span><span class="s3">(</span><span class="s5">1</span><span class="s3">,</span><span class="s5">1024</span><span class="s3">));</span>
+    <span class="s3">}</span>
+
+    <span class="s6">/***</span>
+     <span class="s6">* Calculate the Swerve module's position and velocity values</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">encoderDataBlock  most recent full data block read from OctoQuad.</span>
+     <span class="s6">*/</span>
+    <span class="s2">public void </span><span class="s1">updateModule</span><span class="s3">(</span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">EncoderDataBlock encoderDataBlock</span><span class="s3">) {</span>
+        <span class="s1">driveCounts </span><span class="s3">= </span><span class="s1">encoderDataBlock</span><span class="s3">.</span><span class="s1">positions</span><span class="s3">[</span><span class="s1">channel</span><span class="s3">];  </span><span class="s0">// get Counts.</span>
+        <span class="s1">driveCountsPerSec </span><span class="s3">= </span><span class="s1">encoderDataBlock</span><span class="s3">.</span><span class="s1">velocities</span><span class="s3">[</span><span class="s1">channel</span><span class="s3">] * </span><span class="s1">VELOCITY_SAMPLES_PER_S</span><span class="s3">; </span><span class="s0">// convert counts/interval to counts/sec</span>
+
+        <span class="s0">// convert uS to degrees.  Add in any possible direction flip.</span>
+        <span class="s1">steerDegrees </span><span class="s3">= </span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">normalizeDegrees</span><span class="s3">((</span><span class="s1">encoderDataBlock</span><span class="s3">.</span><span class="s1">positions</span><span class="s3">[</span><span class="s1">channel</span><span class="s3">+ </span><span class="s5">4</span><span class="s3">] * </span><span class="s1">DEGREES_PER_US </span><span class="s3">* </span><span class="s1">steerDirMult</span><span class="s3">) - </span><span class="s1">angleOffset</span><span class="s3">);</span>
+        <span class="s0">// convert uS/interval to deg per sec.  Add in any possible direction flip.</span>
+        <span class="s1">steerDegreesPerSec </span><span class="s3">= </span><span class="s1">encoderDataBlock</span><span class="s3">.</span><span class="s1">velocities</span><span class="s3">[</span><span class="s1">channel </span><span class="s3">+ </span><span class="s5">4</span><span class="s3">] * </span><span class="s1">DEGREES_PER_US </span><span class="s3">* </span><span class="s1">steerDirMult </span><span class="s3">* </span><span class="s1">VELOCITY_SAMPLES_PER_S</span><span class="s3">;</span>
+    <span class="s3">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Display the Swerve module's state as telemetry</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">telemetry OpMode Telemetry object</span>
+     <span class="s6">*/</span>
+    <span class="s2">public void </span><span class="s1">show</span><span class="s3">(</span><span class="s1">Telemetry telemetry</span><span class="s3">) {</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s1">name</span><span class="s3">, </span><span class="s4">&quot;%8.0f %7.0f %7.0f %6.0f&quot;</span><span class="s3">, </span><span class="s1">driveCounts</span><span class="s3">, </span><span class="s1">driveCountsPerSec</span><span class="s3">, </span><span class="s1">steerDegrees</span><span class="s3">, </span><span class="s1">steerDegreesPerSec</span><span class="s3">);</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

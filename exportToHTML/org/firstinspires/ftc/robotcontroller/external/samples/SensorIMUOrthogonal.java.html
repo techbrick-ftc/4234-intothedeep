@@ -1,0 +1,167 @@
+<html>
+<head>
+<title>SensorIMUOrthogonal.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SensorIMUOrthogonal.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Copyright (c) 2022 FIRST. All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted (subject to the limitations in the disclaimer below) provided that 
+ * the following conditions are met: 
+ * 
+ * Redistributions of source code must retain the above copyright notice, this list 
+ * of conditions and the following disclaimer. 
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this 
+ * list of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or 
+ * promote products derived from this software without specific prior written permission. 
+ * 
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ * &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">rev</span><span class="s3">.</span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">IMU</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">AngleUnit</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">AngularVelocity</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">YawPitchRollAngles</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode shows how to use the new universal IMU interface. This 
+ * interface may be used with the BNO055 IMU or the BHI260 IMU. It assumes that an IMU is configured 
+ * on the robot with the name &quot;imu&quot;. 
+ * 
+ * The sample will display the current Yaw, Pitch and Roll of the robot.&lt;br&gt; 
+ * With the correct orientation parameters selected, pitch/roll/yaw should act as follows: 
+ *   Pitch value should INCREASE as the robot is tipped UP at the front. (Rotation about X) &lt;br&gt; 
+ *   Roll value should INCREASE as the robot is tipped UP at the left side. (Rotation about Y) &lt;br&gt; 
+ *   Yaw value should INCREASE as the robot is rotated Counter Clockwise. (Rotation about Z) &lt;br&gt; 
+ * 
+ * The yaw can be reset (to zero) by pressing the Y button on the gamepad (Triangle on a PS4 controller) 
+ * 
+ * This specific sample assumes that the Hub is mounted on one of the three orthogonal planes 
+ * (X/Y, X/Z or Y/Z) and that the Hub has only been rotated in a range of 90 degree increments. 
+ * 
+ * Note: if your Hub is mounted on a surface angled at some non-90 Degree multiple (like 30) look at 
+ *       the alternative SensorIMUNonOrthogonal sample in this folder. 
+ * 
+ * This &quot;Orthogonal&quot; requirement means that: 
+ * 
+ * 1) The Logo printed on the top of the Hub can ONLY be pointing in one of six directions: 
+ *    FORWARD, BACKWARD, UP, DOWN, LEFT and RIGHT. 
+ * 
+ * 2) The USB ports can only be pointing in one of the same six directions:&lt;br&gt; 
+ *    FORWARD, BACKWARD, UP, DOWN, LEFT and RIGHT. 
+ * 
+ * So, To fully define how your Hub is mounted to the robot, you must simply specify:&lt;br&gt; 
+ *    logoFacingDirection&lt;br&gt; 
+ *    usbFacingDirection 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list. 
+ * 
+ * Finally, choose the two correct parameters to define how your Hub is mounted and edit this OpMode 
+ * to use those parameters. 
+ */</span>
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name </span><span class="s3">= </span><span class="s4">&quot;Sensor: IMU Orthogonal&quot;</span><span class="s3">, </span><span class="s1">group </span><span class="s3">= </span><span class="s4">&quot;Sensor&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled   </span><span class="s0">// Comment this out to add to the OpMode list</span>
+<span class="s2">public class </span><span class="s1">SensorIMUOrthogonal </span><span class="s2">extends </span><span class="s1">LinearOpMode</span>
+<span class="s3">{</span>
+    <span class="s0">// The IMU sensor object</span>
+    <span class="s1">IMU imu</span><span class="s3">;</span>
+
+    <span class="s0">//----------------------------------------------------------------------------------------------</span>
+    <span class="s0">// Main logic</span>
+    <span class="s0">//----------------------------------------------------------------------------------------------</span>
+
+    <span class="s1">@Override </span><span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() </span><span class="s2">throws </span><span class="s1">InterruptedException </span><span class="s3">{</span>
+
+        <span class="s0">// Retrieve and initialize the IMU.</span>
+        <span class="s0">// This sample expects the IMU to be in a REV Hub and named &quot;imu&quot;.</span>
+        <span class="s1">imu </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">IMU</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;imu&quot;</span><span class="s3">);</span>
+
+        <span class="s0">/* Define how the hub is mounted on the robot to get the correct Yaw, Pitch and Roll values. 
+         * 
+         * Two input parameters are required to fully specify the Orientation. 
+         * The first parameter specifies the direction the printed logo on the Hub is pointing. 
+         * The second parameter specifies the direction the USB connector on the Hub is pointing. 
+         * All directions are relative to the robot, and left/right is as-viewed from behind the robot. 
+         * 
+         * If you are using a REV 9-Axis IMU, you can use the Rev9AxisImuOrientationOnRobot class instead of the 
+         * RevHubOrientationOnRobot class, which has an I2cPortFacingDirection instead of a UsbFacingDirection. 
+         */</span>
+
+        <span class="s0">/* The next two lines define Hub orientation. 
+         * The Default Orientation (shown) is when a hub is mounted horizontally with the printed logo pointing UP and the USB port pointing FORWARD. 
+         * 
+         * To Do:  EDIT these two lines to match YOUR mounting configuration. 
+         */</span>
+        <span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">LogoFacingDirection logoDirection </span><span class="s3">= </span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">LogoFacingDirection</span><span class="s3">.</span><span class="s1">UP</span><span class="s3">;</span>
+        <span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">UsbFacingDirection  usbDirection  </span><span class="s3">= </span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">UsbFacingDirection</span><span class="s3">.</span><span class="s1">FORWARD</span><span class="s3">;</span>
+
+        <span class="s1">RevHubOrientationOnRobot orientationOnRobot </span><span class="s3">= </span><span class="s2">new </span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">(</span><span class="s1">logoDirection</span><span class="s3">, </span><span class="s1">usbDirection</span><span class="s3">);</span>
+
+        <span class="s0">// Now initialize the IMU with this mounting orientation</span>
+        <span class="s0">// Note: if you choose two conflicting directions, this initialization will cause a code exception.</span>
+        <span class="s1">imu</span><span class="s3">.</span><span class="s1">initialize</span><span class="s3">(</span><span class="s2">new </span><span class="s1">IMU</span><span class="s3">.</span><span class="s1">Parameters</span><span class="s3">(</span><span class="s1">orientationOnRobot</span><span class="s3">));</span>
+
+        <span class="s0">// Loop and update the dashboard</span>
+        <span class="s2">while </span><span class="s3">(!</span><span class="s1">isStopRequested</span><span class="s3">()) {</span>
+
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Hub orientation&quot;</span><span class="s3">, </span><span class="s4">&quot;Logo=%s   USB=%s</span><span class="s2">\n </span><span class="s4">&quot;</span><span class="s3">, </span><span class="s1">logoDirection</span><span class="s3">, </span><span class="s1">usbDirection</span><span class="s3">);</span>
+
+            <span class="s0">// Check to see if heading reset is requested</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">y</span><span class="s3">) {</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Yaw&quot;</span><span class="s3">, </span><span class="s4">&quot;Resetting</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+                <span class="s1">imu</span><span class="s3">.</span><span class="s1">resetYaw</span><span class="s3">();</span>
+            <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Yaw&quot;</span><span class="s3">, </span><span class="s4">&quot;Press Y (triangle) on Gamepad to reset</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Retrieve Rotational Angles and Velocities</span>
+            <span class="s1">YawPitchRollAngles orientation </span><span class="s3">= </span><span class="s1">imu</span><span class="s3">.</span><span class="s1">getRobotYawPitchRollAngles</span><span class="s3">();</span>
+            <span class="s1">AngularVelocity angularVelocity </span><span class="s3">= </span><span class="s1">imu</span><span class="s3">.</span><span class="s1">getRobotAngularVelocity</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">);</span>
+
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Yaw (Z)&quot;</span><span class="s3">, </span><span class="s4">&quot;%.2f Deg. (Heading)&quot;</span><span class="s3">, </span><span class="s1">orientation</span><span class="s3">.</span><span class="s1">getYaw</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">));</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Pitch (X)&quot;</span><span class="s3">, </span><span class="s4">&quot;%.2f Deg.&quot;</span><span class="s3">, </span><span class="s1">orientation</span><span class="s3">.</span><span class="s1">getPitch</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">));</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Roll (Y)&quot;</span><span class="s3">, </span><span class="s4">&quot;%.2f Deg.</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">, </span><span class="s1">orientation</span><span class="s3">.</span><span class="s1">getRoll</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">));</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Yaw (Z) velocity&quot;</span><span class="s3">, </span><span class="s4">&quot;%.2f Deg/Sec&quot;</span><span class="s3">, </span><span class="s1">angularVelocity</span><span class="s3">.</span><span class="s1">zRotationRate</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Pitch (X) velocity&quot;</span><span class="s3">, </span><span class="s4">&quot;%.2f Deg/Sec&quot;</span><span class="s3">, </span><span class="s1">angularVelocity</span><span class="s3">.</span><span class="s1">xRotationRate</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Roll (Y) velocity&quot;</span><span class="s3">, </span><span class="s4">&quot;%.2f Deg/Sec&quot;</span><span class="s3">, </span><span class="s1">angularVelocity</span><span class="s3">.</span><span class="s1">yRotationRate</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

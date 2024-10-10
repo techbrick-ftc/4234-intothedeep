@@ -1,0 +1,152 @@
+<html>
+<head>
+<title>SensorKLNavxMicro.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #5f826b; font-style: italic;}
+.s6 { color: #67a37c; font-style: italic;}
+.s7 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SensorKLNavxMicro.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Copyright (c) 2017 FIRST. All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted (subject to the limitations in the disclaimer below) provided that 
+ * the following conditions are met: 
+ * 
+ * Redistributions of source code must retain the above copyright notice, this list 
+ * of conditions and the following disclaimer. 
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this 
+ * list of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or 
+ * promote products derived from this software without specific prior written permission. 
+ * 
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ * &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">kauailabs</span><span class="s3">.</span><span class="s1">NavxMicroNavigationSensor</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">Gyroscope</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">IntegratingGyroscope</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">ElapsedTime</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">AngleUnit</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">AngularVelocity</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">AxesOrder</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">AxesReference</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">Orientation</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode shows how to use Kauai Labs navX Micro Robotics Navigation 
+ * Sensor. It assumes that the sensor is configured with a name of &quot;navx&quot;. 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list 
+ */</span>
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name </span><span class="s3">= </span><span class="s4">&quot;Sensor: KL navX Micro&quot;</span><span class="s3">, </span><span class="s1">group </span><span class="s3">= </span><span class="s4">&quot;Sensor&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">SensorKLNavxMicro </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+
+    <span class="s5">/** In this sample, for illustration purposes we use two interfaces on the one gyro object.</span>
+     <span class="s5">* That's likely atypical: you'll probably use one or the other in any given situation,</span>
+     <span class="s5">* depending on what you're trying to do. {</span><span class="s6">@link </span><span class="s5">IntegratingGyroscope} (and it's base interface,</span>
+     <span class="s5">* {</span><span class="s6">@link </span><span class="s5">Gyroscope}) are common interfaces supported by possibly several different gyro</span>
+     <span class="s5">* implementations. {</span><span class="s6">@link </span><span class="s5">NavxMicroNavigationSensor}, by contrast, provides functionality that</span>
+     <span class="s5">* is unique to the navX Micro sensor.</span>
+     <span class="s5">*/</span>
+    <span class="s1">IntegratingGyroscope gyro</span><span class="s3">;</span>
+    <span class="s1">NavxMicroNavigationSensor navxMicro</span><span class="s3">;</span>
+
+    <span class="s0">// A timer helps provide feedback while calibration is taking place</span>
+    <span class="s1">ElapsedTime timer </span><span class="s3">= </span><span class="s2">new </span><span class="s1">ElapsedTime</span><span class="s3">();</span>
+
+    <span class="s1">@Override </span><span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() </span><span class="s2">throws </span><span class="s1">InterruptedException </span><span class="s3">{</span>
+        <span class="s0">// Get a reference to a Modern Robotics GyroSensor object. We use several interfaces</span>
+        <span class="s0">// on this object to illustrate which interfaces support which functionality.</span>
+        <span class="s1">navxMicro </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">NavxMicroNavigationSensor</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;navx&quot;</span><span class="s3">);</span>
+        <span class="s1">gyro </span><span class="s3">= (</span><span class="s1">IntegratingGyroscope</span><span class="s3">)</span><span class="s1">navxMicro</span><span class="s3">;</span>
+        <span class="s0">// If you're only interested int the IntegratingGyroscope interface, the following will suffice.</span>
+        <span class="s0">// gyro = hardwareMap.get(IntegratingGyroscope.class, &quot;navx&quot;);</span>
+
+        <span class="s0">// The gyro automatically starts calibrating. This takes a few seconds.</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">log</span><span class="s3">().</span><span class="s1">add</span><span class="s3">(</span><span class="s4">&quot;Gyro Calibrating. Do Not Move!&quot;</span><span class="s3">);</span>
+
+        <span class="s0">// Wait until the gyro calibration is complete</span>
+        <span class="s1">timer</span><span class="s3">.</span><span class="s1">reset</span><span class="s3">();</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">navxMicro</span><span class="s3">.</span><span class="s1">isCalibrating</span><span class="s3">())  {</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;calibrating&quot;</span><span class="s3">, </span><span class="s4">&quot;%s&quot;</span><span class="s3">, </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">round</span><span class="s3">(</span><span class="s1">timer</span><span class="s3">.</span><span class="s1">seconds</span><span class="s3">())%</span><span class="s7">2</span><span class="s3">==</span><span class="s7">0 </span><span class="s3">? </span><span class="s4">&quot;|..&quot; </span><span class="s3">: </span><span class="s4">&quot;..|&quot;</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+            <span class="s1">Thread</span><span class="s3">.</span><span class="s1">sleep</span><span class="s3">(</span><span class="s7">50</span><span class="s3">);</span>
+        <span class="s3">}</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">log</span><span class="s3">().</span><span class="s1">clear</span><span class="s3">(); </span><span class="s1">telemetry</span><span class="s3">.</span><span class="s1">log</span><span class="s3">().</span><span class="s1">add</span><span class="s3">(</span><span class="s4">&quot;Gyro Calibrated. Press Start.&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">clear</span><span class="s3">(); </span><span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+        <span class="s0">// Wait for the start button to be pressed</span>
+        <span class="s1">waitForStart</span><span class="s3">();</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">log</span><span class="s3">().</span><span class="s1">clear</span><span class="s3">();</span>
+
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">()) {</span>
+
+            <span class="s0">// Read dimensionalized data from the gyro. This gyro can report angular velocities</span>
+            <span class="s0">// about all three axes. Additionally, it internally integrates the Z axis to</span>
+            <span class="s0">// be able to report an absolute angular Z orientation.</span>
+            <span class="s1">AngularVelocity rates </span><span class="s3">= </span><span class="s1">gyro</span><span class="s3">.</span><span class="s1">getAngularVelocity</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">);</span>
+            <span class="s1">Orientation angles </span><span class="s3">= </span><span class="s1">gyro</span><span class="s3">.</span><span class="s1">getAngularOrientation</span><span class="s3">(</span><span class="s1">AxesReference</span><span class="s3">.</span><span class="s1">INTRINSIC</span><span class="s3">, </span><span class="s1">AxesOrder</span><span class="s3">.</span><span class="s1">ZYX</span><span class="s3">, </span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">);</span>
+
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">()</span>
+                <span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;dx&quot;</span><span class="s3">, </span><span class="s1">formatRate</span><span class="s3">(</span><span class="s1">rates</span><span class="s3">.</span><span class="s1">xRotationRate</span><span class="s3">))</span>
+                <span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;dy&quot;</span><span class="s3">, </span><span class="s1">formatRate</span><span class="s3">(</span><span class="s1">rates</span><span class="s3">.</span><span class="s1">yRotationRate</span><span class="s3">))</span>
+                <span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;dz&quot;</span><span class="s3">, </span><span class="s4">&quot;%s deg/s&quot;</span><span class="s3">, </span><span class="s1">formatRate</span><span class="s3">(</span><span class="s1">rates</span><span class="s3">.</span><span class="s1">zRotationRate</span><span class="s3">));</span>
+
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">()</span>
+                <span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;heading&quot;</span><span class="s3">, </span><span class="s1">formatAngle</span><span class="s3">(</span><span class="s1">angles</span><span class="s3">.</span><span class="s1">angleUnit</span><span class="s3">, </span><span class="s1">angles</span><span class="s3">.</span><span class="s1">firstAngle</span><span class="s3">))</span>
+                <span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;roll&quot;</span><span class="s3">, </span><span class="s1">formatAngle</span><span class="s3">(</span><span class="s1">angles</span><span class="s3">.</span><span class="s1">angleUnit</span><span class="s3">, </span><span class="s1">angles</span><span class="s3">.</span><span class="s1">secondAngle</span><span class="s3">))</span>
+                <span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;pitch&quot;</span><span class="s3">, </span><span class="s4">&quot;%s deg&quot;</span><span class="s3">, </span><span class="s1">formatAngle</span><span class="s3">(</span><span class="s1">angles</span><span class="s3">.</span><span class="s1">angleUnit</span><span class="s3">, </span><span class="s1">angles</span><span class="s3">.</span><span class="s1">thirdAngle</span><span class="s3">));</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+            <span class="s1">idle</span><span class="s3">(); </span><span class="s0">// Always call idle() at the bottom of your while(opModeIsActive()) loop</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+
+    <span class="s1">String formatRate</span><span class="s3">(</span><span class="s2">float </span><span class="s1">rate</span><span class="s3">) {</span>
+        <span class="s2">return </span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;%.3f&quot;</span><span class="s3">, </span><span class="s1">rate</span><span class="s3">);</span>
+    <span class="s3">}</span>
+
+    <span class="s1">String formatAngle</span><span class="s3">(</span><span class="s1">AngleUnit angleUnit</span><span class="s3">, </span><span class="s2">double </span><span class="s1">angle</span><span class="s3">) {</span>
+        <span class="s2">return </span><span class="s1">formatDegrees</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">.</span><span class="s1">fromUnit</span><span class="s3">(</span><span class="s1">angleUnit</span><span class="s3">, </span><span class="s1">angle</span><span class="s3">));</span>
+    <span class="s3">}</span>
+
+    <span class="s1">String formatDegrees</span><span class="s3">(</span><span class="s2">double </span><span class="s1">degrees</span><span class="s3">){</span>
+        <span class="s2">return </span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;%.1f&quot;</span><span class="s3">, </span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">.</span><span class="s1">normalize</span><span class="s3">(</span><span class="s1">degrees</span><span class="s3">));</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

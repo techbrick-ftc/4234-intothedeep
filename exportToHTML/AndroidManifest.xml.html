@@ -1,0 +1,100 @@
+<html>
+<head>
+<title>AndroidManifest.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #d5b778;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #bcbec4;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+AndroidManifest.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;?</span><span class="s1">xml version</span><span class="s2">=&quot;1.0&quot; </span><span class="s1">encoding</span><span class="s2">=&quot;utf-8&quot;</span><span class="s0">?&gt;</span>
+<span class="s0">&lt;manifest </span><span class="s1">xmlns:android</span><span class="s2">=&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="s1">xmlns:tools</span><span class="s2">=&quot;http://schemas.android.com/tools&quot;</span>
+    <span class="s1">package</span><span class="s2">=&quot;com.qualcomm.ftcrobotcontroller&quot;</span>
+    <span class="s1">android:versionCode</span><span class="s2">=&quot;56&quot;</span>
+    <span class="s1">android:versionName</span><span class="s2">=&quot;10.1&quot; </span><span class="s0">&gt;</span>
+
+    <span class="s0">&lt;uses-sdk</span>
+        <span class="s1">android:minSdkVersion</span><span class="s2">=&quot;24&quot;</span>
+        <span class="s1">android:targetSdkVersion</span><span class="s2">=&quot;28&quot; </span><span class="s0">/&gt;</span>
+
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.RECEIVE_BOOT_COMPLETED&quot; </span><span class="s0">/&gt;</span>
+
+    <span class="s0">&lt;application</span>
+        <span class="s1">android:allowBackup</span><span class="s2">=&quot;true&quot;</span>
+        <span class="s1">android:icon</span><span class="s2">=&quot;@drawable/ic_launcher&quot;</span>
+        <span class="s1">android:label</span><span class="s2">=&quot;@string/app_name&quot;</span>
+        <span class="s1">android:largeHeap</span><span class="s2">=&quot;true&quot;</span>
+        <span class="s1">android:theme</span><span class="s2">=&quot;@style/AppThemeRedRC&quot;</span>
+        <span class="s1">android:usesCleartextTraffic</span><span class="s2">=&quot;true&quot; </span><span class="s0">&gt;</span>
+
+        <span class="s4">&lt;!-- Indicates to the ControlHubUpdater what the latest version of the Control Hub is that this app supports --&gt;</span>
+        <span class="s0">&lt;meta-data</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;org.firstinspires.latestSupportedControlHubVersion&quot;</span>
+            <span class="s1">android:value</span><span class="s2">=&quot;1&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s4">&lt;!-- The main robot controller activity --&gt;</span>
+        <span class="s0">&lt;activity</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;org.firstinspires.ftc.robotcontroller.internal.PermissionValidatorWrapper&quot;</span>
+            <span class="s1">android:configChanges</span><span class="s2">=&quot;orientation|screenSize&quot;</span>
+            <span class="s1">android:label</span><span class="s2">=&quot;@string/app_name&quot;</span>
+            <span class="s1">android:launchMode</span><span class="s2">=&quot;singleTask&quot;</span>
+            <span class="s1">android:screenOrientation</span><span class="s2">=&quot;fullUser&quot; </span><span class="s0">&gt;</span>
+            <span class="s0">&lt;intent-filter&gt;</span>
+                <span class="s0">&lt;category </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.category.LAUNCHER&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.action.MAIN&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+        <span class="s0">&lt;/activity&gt;</span>
+        <span class="s0">&lt;activity</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity&quot;</span>
+            <span class="s1">android:configChanges</span><span class="s2">=&quot;orientation|screenSize&quot;</span>
+            <span class="s1">android:label</span><span class="s2">=&quot;@string/app_name&quot;</span>
+            <span class="s1">android:launchMode</span><span class="s2">=&quot;singleTask&quot;</span>
+            <span class="s1">android:screenOrientation</span><span class="s2">=&quot;fullUser&quot; </span><span class="s0">&gt;</span>
+            <span class="s0">&lt;intent-filter&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.hardware.usb.action.USB_DEVICE_ATTACHED&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+
+            <span class="s0">&lt;meta-data</span>
+                <span class="s1">android:name</span><span class="s2">=&quot;android.hardware.usb.action.USB_DEVICE_ATTACHED&quot;</span>
+                <span class="s1">android:resource</span><span class="s2">=&quot;@xml/device_filter&quot; </span><span class="s0">/&gt;</span>
+
+            <span class="s4">&lt;!-- org.firstinspires.main.entry indicates that this app is compatible with the Dragonboard Control Hub --&gt;</span>
+            <span class="s0">&lt;meta-data</span>
+                <span class="s1">android:name</span><span class="s2">=&quot;org.firstinspires.main.entry&quot;</span>
+                <span class="s1">android:value</span><span class="s2">=&quot;true&quot; </span><span class="s0">/&gt;</span>
+        <span class="s0">&lt;/activity&gt;</span>
+
+        <span class="s4">&lt;!-- The robot controller service in which most of the robot functionality is managed --&gt;</span>
+        <span class="s0">&lt;service</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;com.qualcomm.ftccommon.FtcRobotControllerService&quot;</span>
+            <span class="s1">android:enabled</span><span class="s2">=&quot;true&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s4">&lt;!-- Assistant that autostarts the robot controller on android boot (if it's supposed to) --&gt;</span>
+        <span class="s0">&lt;receiver</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;org.firstinspires.ftc.ftccommon.internal.RunOnBoot&quot;</span>
+            <span class="s1">android:enabled</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:permission</span><span class="s2">=&quot;android.permission.RECEIVE_BOOT_COMPLETED&quot; </span><span class="s0">&gt;</span>
+            <span class="s0">&lt;intent-filter&gt;</span>
+                <span class="s0">&lt;category </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.category.DEFAULT&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.action.BOOT_COMPLETED&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.action.QUICKBOOT_POWERON&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+        <span class="s0">&lt;/receiver&gt;</span>
+    <span class="s0">&lt;/application&gt;</span>
+
+<span class="s0">&lt;/manifest&gt;</span></pre>
+</body>
+</html>

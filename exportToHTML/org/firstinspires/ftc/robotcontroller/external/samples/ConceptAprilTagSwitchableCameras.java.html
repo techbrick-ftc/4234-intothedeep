@@ -1,0 +1,219 @@
+<html>
+<head>
+<title>ConceptAprilTagSwitchableCameras.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #5f826b; font-style: italic;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ConceptAprilTagSwitchableCameras.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Copyright (c) 2023 FIRST. All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted (subject to the limitations in the disclaimer below) provided that 
+ * the following conditions are met: 
+ * 
+ * Redistributions of source code must retain the above copyright notice, this list 
+ * of conditions and the following disclaimer. 
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this 
+ * list of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or 
+ * promote products derived from this software without specific prior written permission. 
+ * 
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ * &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">ClassFactory</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">camera</span><span class="s3">.</span><span class="s1">CameraName</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">camera</span><span class="s3">.</span><span class="s1">WebcamName</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">VisionPortal</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">VisionPortal</span><span class="s3">.</span><span class="s1">CameraState</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">apriltag</span><span class="s3">.</span><span class="s1">AprilTagDetection</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">apriltag</span><span class="s3">.</span><span class="s1">AprilTagProcessor</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">java</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">List</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode illustrates the basics of AprilTag recognition and pose estimation, using 
+ * two webcams. 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list. 
+ */</span>
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name </span><span class="s3">= </span><span class="s4">&quot;Concept: AprilTag Switchable Cameras&quot;</span><span class="s3">, </span><span class="s1">group </span><span class="s3">= </span><span class="s4">&quot;Concept&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">ConceptAprilTagSwitchableCameras </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+
+    <span class="s0">/* 
+     * Variables used for switching cameras. 
+     */</span>
+    <span class="s2">private </span><span class="s1">WebcamName webcam1</span><span class="s3">, </span><span class="s1">webcam2</span><span class="s3">;</span>
+    <span class="s2">private boolean </span><span class="s1">oldLeftBumper</span><span class="s3">;</span>
+    <span class="s2">private boolean </span><span class="s1">oldRightBumper</span><span class="s3">;</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* The variable to store our instance of the AprilTag processor.</span>
+     <span class="s5">*/</span>
+    <span class="s2">private </span><span class="s1">AprilTagProcessor aprilTag</span><span class="s3">;</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* The variable to store our instance of the vision portal.</span>
+     <span class="s5">*/</span>
+    <span class="s2">private </span><span class="s1">VisionPortal visionPortal</span><span class="s3">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() {</span>
+
+        <span class="s1">initAprilTag</span><span class="s3">();</span>
+
+        <span class="s0">// Wait for the DS start button to be touched.</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;DS preview on/off&quot;</span><span class="s3">, </span><span class="s4">&quot;3 dots, Camera Stream&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Touch START to start OpMode&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s1">waitForStart</span><span class="s3">();</span>
+
+        <span class="s2">if </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">()) {</span>
+            <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">()) {</span>
+
+                <span class="s1">telemetryCameraSwitching</span><span class="s3">();</span>
+                <span class="s1">telemetryAprilTag</span><span class="s3">();</span>
+
+                <span class="s0">// Push telemetry to the Driver Station.</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+                <span class="s0">// Save CPU resources; can resume streaming when needed.</span>
+                <span class="s2">if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">dpad_down</span><span class="s3">) {</span>
+                    <span class="s1">visionPortal</span><span class="s3">.</span><span class="s1">stopStreaming</span><span class="s3">();</span>
+                <span class="s3">} </span><span class="s2">else if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">dpad_up</span><span class="s3">) {</span>
+                    <span class="s1">visionPortal</span><span class="s3">.</span><span class="s1">resumeStreaming</span><span class="s3">();</span>
+                <span class="s3">}</span>
+
+                <span class="s1">doCameraSwitching</span><span class="s3">();</span>
+
+                <span class="s0">// Share the CPU.</span>
+                <span class="s1">sleep</span><span class="s3">(</span><span class="s6">20</span><span class="s3">);</span>
+            <span class="s3">}</span>
+        <span class="s3">}</span>
+
+        <span class="s0">// Save more CPU resources when camera is no longer needed.</span>
+        <span class="s1">visionPortal</span><span class="s3">.</span><span class="s1">close</span><span class="s3">();</span>
+
+    <span class="s3">}   </span><span class="s0">// end runOpMode()</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Initialize the AprilTag processor.</span>
+     <span class="s5">*/</span>
+    <span class="s2">private void </span><span class="s1">initAprilTag</span><span class="s3">() {</span>
+
+        <span class="s0">// Create the AprilTag processor by using a builder.</span>
+        <span class="s1">aprilTag </span><span class="s3">= </span><span class="s2">new </span><span class="s1">AprilTagProcessor</span><span class="s3">.</span><span class="s1">Builder</span><span class="s3">().</span><span class="s1">build</span><span class="s3">();</span>
+
+        <span class="s1">webcam1 </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">WebcamName</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;Webcam 1&quot;</span><span class="s3">);</span>
+        <span class="s1">webcam2 </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">WebcamName</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;Webcam 2&quot;</span><span class="s3">);</span>
+        <span class="s1">CameraName switchableCamera </span><span class="s3">= </span><span class="s1">ClassFactory</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">()</span>
+            <span class="s3">.</span><span class="s1">getCameraManager</span><span class="s3">().</span><span class="s1">nameForSwitchableCamera</span><span class="s3">(</span><span class="s1">webcam1</span><span class="s3">, </span><span class="s1">webcam2</span><span class="s3">);</span>
+
+        <span class="s0">// Create the vision portal by using a builder.</span>
+        <span class="s1">visionPortal </span><span class="s3">= </span><span class="s2">new </span><span class="s1">VisionPortal</span><span class="s3">.</span><span class="s1">Builder</span><span class="s3">()</span>
+            <span class="s3">.</span><span class="s1">setCamera</span><span class="s3">(</span><span class="s1">switchableCamera</span><span class="s3">)</span>
+            <span class="s3">.</span><span class="s1">addProcessor</span><span class="s3">(</span><span class="s1">aprilTag</span><span class="s3">)</span>
+            <span class="s3">.</span><span class="s1">build</span><span class="s3">();</span>
+
+    <span class="s3">}   </span><span class="s0">// end method initAprilTag()</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Add telemetry about camera switching.</span>
+     <span class="s5">*/</span>
+    <span class="s2">private void </span><span class="s1">telemetryCameraSwitching</span><span class="s3">() {</span>
+
+        <span class="s2">if </span><span class="s3">(</span><span class="s1">visionPortal</span><span class="s3">.</span><span class="s1">getActiveCamera</span><span class="s3">().</span><span class="s1">equals</span><span class="s3">(</span><span class="s1">webcam1</span><span class="s3">)) {</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;activeCamera&quot;</span><span class="s3">, </span><span class="s4">&quot;Webcam 1&quot;</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Press RightBumper&quot;</span><span class="s3">, </span><span class="s4">&quot;to switch to Webcam 2&quot;</span><span class="s3">);</span>
+        <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;activeCamera&quot;</span><span class="s3">, </span><span class="s4">&quot;Webcam 2&quot;</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Press LeftBumper&quot;</span><span class="s3">, </span><span class="s4">&quot;to switch to Webcam 1&quot;</span><span class="s3">);</span>
+        <span class="s3">}</span>
+
+    <span class="s3">}   </span><span class="s0">// end method telemetryCameraSwitching()</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Add telemetry about AprilTag detections.</span>
+     <span class="s5">*/</span>
+    <span class="s2">private void </span><span class="s1">telemetryAprilTag</span><span class="s3">() {</span>
+
+        <span class="s1">List</span><span class="s3">&lt;</span><span class="s1">AprilTagDetection</span><span class="s3">&gt; </span><span class="s1">currentDetections </span><span class="s3">= </span><span class="s1">aprilTag</span><span class="s3">.</span><span class="s1">getDetections</span><span class="s3">();</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;# AprilTags Detected&quot;</span><span class="s3">, </span><span class="s1">currentDetections</span><span class="s3">.</span><span class="s1">size</span><span class="s3">());</span>
+
+        <span class="s0">// Step through the list of detections and display info for each one.</span>
+        <span class="s2">for </span><span class="s3">(</span><span class="s1">AprilTagDetection detection </span><span class="s3">: </span><span class="s1">currentDetections</span><span class="s3">) {</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">detection</span><span class="s3">.</span><span class="s1">metadata </span><span class="s3">!= </span><span class="s2">null</span><span class="s3">) {</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s2">\n</span><span class="s4">==== (ID %d) %s&quot;</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">id</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">metadata</span><span class="s3">.</span><span class="s1">name</span><span class="s3">));</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;XYZ %6.1f %6.1f %6.1f  (inch)&quot;</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">ftcPose</span><span class="s3">.</span><span class="s1">x</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">ftcPose</span><span class="s3">.</span><span class="s1">y</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">ftcPose</span><span class="s3">.</span><span class="s1">z</span><span class="s3">));</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;PRY %6.1f %6.1f %6.1f  (deg)&quot;</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">ftcPose</span><span class="s3">.</span><span class="s1">pitch</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">ftcPose</span><span class="s3">.</span><span class="s1">roll</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">ftcPose</span><span class="s3">.</span><span class="s1">yaw</span><span class="s3">));</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;RBE %6.1f %6.1f %6.1f  (inch, deg, deg)&quot;</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">ftcPose</span><span class="s3">.</span><span class="s1">range</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">ftcPose</span><span class="s3">.</span><span class="s1">bearing</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">ftcPose</span><span class="s3">.</span><span class="s1">elevation</span><span class="s3">));</span>
+            <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s2">\n</span><span class="s4">==== (ID %d) Unknown&quot;</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">id</span><span class="s3">));</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;Center %6.0f %6.0f   (pixels)&quot;</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">center</span><span class="s3">.</span><span class="s1">x</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">center</span><span class="s3">.</span><span class="s1">y</span><span class="s3">));</span>
+            <span class="s3">}</span>
+        <span class="s3">}   </span><span class="s0">// end for() loop</span>
+
+        <span class="s0">// Add &quot;key&quot; information to telemetry</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s2">\n</span><span class="s4">key:</span><span class="s2">\n</span><span class="s4">XYZ = X (Right), Y (Forward), Z (Up) dist.&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot;PRY = Pitch, Roll &amp; Yaw (XYZ Rotation)&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot;RBE = Range, Bearing &amp; Elevation&quot;</span><span class="s3">);</span>
+
+    <span class="s3">}   </span><span class="s0">// end method telemetryAprilTag()</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Set the active camera according to input from the gamepad.</span>
+     <span class="s5">*/</span>
+    <span class="s2">private void </span><span class="s1">doCameraSwitching</span><span class="s3">() {</span>
+        <span class="s2">if </span><span class="s3">(</span><span class="s1">visionPortal</span><span class="s3">.</span><span class="s1">getCameraState</span><span class="s3">() == </span><span class="s1">CameraState</span><span class="s3">.</span><span class="s1">STREAMING</span><span class="s3">) {</span>
+            <span class="s0">// If the left bumper is pressed, use Webcam 1.</span>
+            <span class="s0">// If the right bumper is pressed, use Webcam 2.</span>
+            <span class="s2">boolean </span><span class="s1">newLeftBumper </span><span class="s3">= </span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">left_bumper</span><span class="s3">;</span>
+            <span class="s2">boolean </span><span class="s1">newRightBumper </span><span class="s3">= </span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">right_bumper</span><span class="s3">;</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">newLeftBumper </span><span class="s3">&amp;&amp; !</span><span class="s1">oldLeftBumper</span><span class="s3">) {</span>
+                <span class="s1">visionPortal</span><span class="s3">.</span><span class="s1">setActiveCamera</span><span class="s3">(</span><span class="s1">webcam1</span><span class="s3">);</span>
+            <span class="s3">} </span><span class="s2">else if </span><span class="s3">(</span><span class="s1">newRightBumper </span><span class="s3">&amp;&amp; !</span><span class="s1">oldRightBumper</span><span class="s3">) {</span>
+                <span class="s1">visionPortal</span><span class="s3">.</span><span class="s1">setActiveCamera</span><span class="s3">(</span><span class="s1">webcam2</span><span class="s3">);</span>
+            <span class="s3">}</span>
+            <span class="s1">oldLeftBumper </span><span class="s3">= </span><span class="s1">newLeftBumper</span><span class="s3">;</span>
+            <span class="s1">oldRightBumper </span><span class="s3">= </span><span class="s1">newRightBumper</span><span class="s3">;</span>
+        <span class="s3">}</span>
+
+    <span class="s3">}   </span><span class="s0">// end method doCameraSwitching()</span>
+
+<span class="s3">}   </span><span class="s0">// end class</span>
+</pre>
+</body>
+</html>

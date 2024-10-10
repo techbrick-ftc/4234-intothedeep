@@ -1,0 +1,155 @@
+<html>
+<head>
+<title>ConceptSoundsASJava.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ConceptSoundsASJava.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Copyright (c) 2018 FIRST. All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted (subject to the limitations in the disclaimer below) provided that 
+ * the following conditions are met: 
+ * 
+ * Redistributions of source code must retain the above copyright notice, this list 
+ * of conditions and the following disclaimer. 
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this 
+ * list of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or 
+ * promote products derived from this software without specific prior written permission. 
+ * 
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ * &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">SoundPlayer</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode demonstrates how to play simple sounds on both the RC and DS phones. 
+ * It illustrates how to build sounds into your application as a resource. 
+ * This technique is best suited for use with Android Studio since it assumes you will be creating a new application 
+ * 
+ * If you are using OnBotJava, please see the ConceptSoundsOnBotJava sample 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list 
+ * 
+ * Operation: 
+ * 
+ * Gamepad X &amp; B buttons are used to trigger sounds in this example, but any event can be used. 
+ * Note: Time should be allowed for sounds to complete before playing other sounds. 
+ * 
+ * For sound files to be used as a compiled-in resource, they need to be located in a folder called &quot;raw&quot; under your &quot;res&quot; (resources) folder. 
+ * You can create your own &quot;raw&quot; folder from scratch, or you can copy the one from the FtcRobotController module. 
+ * 
+ *     Android Studio coders will ultimately need a folder in your path as follows: 
+ *       &lt;project root&gt;/TeamCode/src/main/res/raw 
+ * 
+ *     Copy any .wav files you want to play into this folder. 
+ *     Make sure that your files ONLY use lower-case characters, and have no spaces or special characters other than underscore. 
+ * 
+ *     The name you give your .wav files will become the resource ID for these sounds. 
+ *     eg:  gold.wav becomes R.raw.gold 
+ * 
+ *     If you wish to use the sounds provided for this sample, they are located in: 
+ *     &lt;project root&gt;/FtcRobotController/src/main/res/raw 
+ *     You can copy and paste the entire 'raw' folder using Android Studio. 
+ * 
+ */</span>
+
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name</span><span class="s3">=</span><span class="s4">&quot;Concept: Sound Resources&quot;</span><span class="s3">, </span><span class="s1">group</span><span class="s3">=</span><span class="s4">&quot;Concept&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">ConceptSoundsASJava </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+
+    <span class="s0">// Declare OpMode members.</span>
+    <span class="s2">private boolean </span><span class="s1">goldFound</span><span class="s3">;      </span><span class="s0">// Sound file present flags</span>
+    <span class="s2">private boolean </span><span class="s1">silverFound</span><span class="s3">;</span>
+
+    <span class="s2">private boolean </span><span class="s1">isX </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;    </span><span class="s0">// Gamepad button state variables</span>
+    <span class="s2">private boolean </span><span class="s1">isB </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+
+    <span class="s2">private boolean </span><span class="s1">wasX </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;   </span><span class="s0">// Gamepad button history variables</span>
+    <span class="s2">private boolean </span><span class="s1">WasB </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() {</span>
+
+        <span class="s0">// Determine Resource IDs for sounds built into the RC application.</span>
+        <span class="s2">int </span><span class="s1">silverSoundID </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">appContext</span><span class="s3">.</span><span class="s1">getResources</span><span class="s3">().</span><span class="s1">getIdentifier</span><span class="s3">(</span><span class="s4">&quot;silver&quot;</span><span class="s3">, </span><span class="s4">&quot;raw&quot;</span><span class="s3">, </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">appContext</span><span class="s3">.</span><span class="s1">getPackageName</span><span class="s3">());</span>
+        <span class="s2">int </span><span class="s1">goldSoundID   </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">appContext</span><span class="s3">.</span><span class="s1">getResources</span><span class="s3">().</span><span class="s1">getIdentifier</span><span class="s3">(</span><span class="s4">&quot;gold&quot;</span><span class="s3">,   </span><span class="s4">&quot;raw&quot;</span><span class="s3">, </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">appContext</span><span class="s3">.</span><span class="s1">getPackageName</span><span class="s3">());</span>
+
+        <span class="s0">// Determine if sound resources are found.</span>
+        <span class="s0">// Note: Preloading is NOT required, but it's a good way to verify all your sounds are available before you run.</span>
+        <span class="s2">if </span><span class="s3">(</span><span class="s1">goldSoundID </span><span class="s3">!= </span><span class="s5">0</span><span class="s3">)</span>
+            <span class="s1">goldFound   </span><span class="s3">= </span><span class="s1">SoundPlayer</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">preload</span><span class="s3">(</span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">appContext</span><span class="s3">, </span><span class="s1">goldSoundID</span><span class="s3">);</span>
+
+        <span class="s2">if </span><span class="s3">(</span><span class="s1">silverSoundID </span><span class="s3">!= </span><span class="s5">0</span><span class="s3">)</span>
+            <span class="s1">silverFound </span><span class="s3">= </span><span class="s1">SoundPlayer</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">preload</span><span class="s3">(</span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">appContext</span><span class="s3">, </span><span class="s1">silverSoundID</span><span class="s3">);</span>
+
+        <span class="s0">// Display sound status</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;gold resource&quot;</span><span class="s3">,   </span><span class="s1">goldFound </span><span class="s3">?   </span><span class="s4">&quot;Found&quot; </span><span class="s3">: </span><span class="s4">&quot;NOT found</span><span class="s2">\n </span><span class="s4">Add gold.wav to /src/main/res/raw&quot; </span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;silver resource&quot;</span><span class="s3">, </span><span class="s1">silverFound </span><span class="s3">? </span><span class="s4">&quot;Found&quot; </span><span class="s3">: </span><span class="s4">&quot;Not found</span><span class="s2">\n </span><span class="s4">Add silver.wav to /src/main/res/raw&quot; </span><span class="s3">);</span>
+
+        <span class="s0">// Wait for the game to start (driver presses START)</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Press Start to continue&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s1">waitForStart</span><span class="s3">();</span>
+
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Press X, B to play sounds.&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+        <span class="s0">// run until the end of the match (driver presses STOP)</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">()) {</span>
+
+            <span class="s0">// say Silver each time gamepad X is pressed (This sound is a resource)</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">silverFound </span><span class="s3">&amp;&amp; (</span><span class="s1">isX </span><span class="s3">= </span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">x</span><span class="s3">) &amp;&amp; !</span><span class="s1">wasX</span><span class="s3">) {</span>
+                <span class="s1">SoundPlayer</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">startPlaying</span><span class="s3">(</span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">appContext</span><span class="s3">, </span><span class="s1">silverSoundID</span><span class="s3">);</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Playing&quot;</span><span class="s3">, </span><span class="s4">&quot;Resource Silver&quot;</span><span class="s3">);</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// say Gold each time gamepad B is pressed  (This sound is a resource)</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">goldFound </span><span class="s3">&amp;&amp; (</span><span class="s1">isB </span><span class="s3">= </span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">b</span><span class="s3">) &amp;&amp; !</span><span class="s1">WasB</span><span class="s3">) {</span>
+                <span class="s1">SoundPlayer</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">startPlaying</span><span class="s3">(</span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">appContext</span><span class="s3">, </span><span class="s1">goldSoundID</span><span class="s3">);</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Playing&quot;</span><span class="s3">, </span><span class="s4">&quot;Resource Gold&quot;</span><span class="s3">);</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Save last button states</span>
+            <span class="s1">wasX </span><span class="s3">= </span><span class="s1">isX</span><span class="s3">;</span>
+            <span class="s1">WasB </span><span class="s3">= </span><span class="s1">isB</span><span class="s3">;</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

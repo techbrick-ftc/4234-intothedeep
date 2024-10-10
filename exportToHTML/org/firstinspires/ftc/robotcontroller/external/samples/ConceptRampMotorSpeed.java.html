@@ -1,0 +1,136 @@
+<html>
+<head>
+<title>ConceptRampMotorSpeed.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ConceptRampMotorSpeed.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Copyright (c) 2017 FIRST. All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted (subject to the limitations in the disclaimer below) provided that 
+ * the following conditions are met: 
+ * 
+ * Redistributions of source code must retain the above copyright notice, this list 
+ * of conditions and the following disclaimer. 
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this 
+ * list of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or 
+ * promote products derived from this software without specific prior written permission. 
+ * 
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ * &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">DcMotor</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode ramps a single motor speed up and down repeatedly until Stop is pressed. 
+ * The code is structured as a LinearOpMode 
+ * 
+ * This code assumes a DC motor configured with the name &quot;left_drive&quot; as is found on a Robot. 
+ * 
+ * INCREMENT sets how much to increase/decrease the power each cycle 
+ * CYCLE_MS sets the update period. 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list 
+ */</span>
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name </span><span class="s3">= </span><span class="s4">&quot;Concept: Ramp Motor Speed&quot;</span><span class="s3">, </span><span class="s1">group </span><span class="s3">= </span><span class="s4">&quot;Concept&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">ConceptRampMotorSpeed </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+
+    <span class="s2">static final double </span><span class="s1">INCREMENT   </span><span class="s3">= </span><span class="s5">0.01</span><span class="s3">;     </span><span class="s0">// amount to ramp motor each CYCLE_MS cycle</span>
+    <span class="s2">static final int    </span><span class="s1">CYCLE_MS    </span><span class="s3">=   </span><span class="s5">50</span><span class="s3">;     </span><span class="s0">// period of each cycle</span>
+    <span class="s2">static final double </span><span class="s1">MAX_FWD     </span><span class="s3">=  </span><span class="s5">1.0</span><span class="s3">;     </span><span class="s0">// Maximum FWD power applied to motor</span>
+    <span class="s2">static final double </span><span class="s1">MAX_REV     </span><span class="s3">= -</span><span class="s5">1.0</span><span class="s3">;     </span><span class="s0">// Maximum REV power applied to motor</span>
+
+    <span class="s0">// Define class members</span>
+    <span class="s1">DcMotor motor</span><span class="s3">;</span>
+    <span class="s2">double  </span><span class="s1">power   </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+    <span class="s2">boolean </span><span class="s1">rampUp  </span><span class="s3">= </span><span class="s2">true</span><span class="s3">;</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() {</span>
+
+        <span class="s0">// Connect to motor (Assume standard left wheel)</span>
+        <span class="s0">// Change the text in quotes to match any motor name on your robot.</span>
+        <span class="s1">motor </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;left_drive&quot;</span><span class="s3">);</span>
+
+        <span class="s0">// Wait for the start button</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Press Start to run Motors.&quot; </span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s1">waitForStart</span><span class="s3">();</span>
+
+        <span class="s0">// Ramp motor speeds till stop pressed.</span>
+        <span class="s2">while</span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">()) {</span>
+
+            <span class="s0">// Ramp the motors, according to the rampUp variable.</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">rampUp</span><span class="s3">) {</span>
+                <span class="s0">// Keep stepping up until we hit the max value.</span>
+                <span class="s1">power </span><span class="s3">+= </span><span class="s1">INCREMENT </span><span class="s3">;</span>
+                <span class="s2">if </span><span class="s3">(</span><span class="s1">power </span><span class="s3">&gt;= </span><span class="s1">MAX_FWD </span><span class="s3">) {</span>
+                    <span class="s1">power </span><span class="s3">= </span><span class="s1">MAX_FWD</span><span class="s3">;</span>
+                    <span class="s1">rampUp </span><span class="s3">= !</span><span class="s1">rampUp</span><span class="s3">;   </span><span class="s0">// Switch ramp direction</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+            <span class="s2">else </span><span class="s3">{</span>
+                <span class="s0">// Keep stepping down until we hit the min value.</span>
+                <span class="s1">power </span><span class="s3">-= </span><span class="s1">INCREMENT </span><span class="s3">;</span>
+                <span class="s2">if </span><span class="s3">(</span><span class="s1">power </span><span class="s3">&lt;= </span><span class="s1">MAX_REV </span><span class="s3">) {</span>
+                    <span class="s1">power </span><span class="s3">= </span><span class="s1">MAX_REV</span><span class="s3">;</span>
+                    <span class="s1">rampUp </span><span class="s3">= !</span><span class="s1">rampUp</span><span class="s3">;  </span><span class="s0">// Switch ramp direction</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Display the current value</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Motor Power&quot;</span><span class="s3">, </span><span class="s4">&quot;%5.2f&quot;</span><span class="s3">, </span><span class="s1">power</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Press Stop to end test.&quot; </span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+            <span class="s0">// Set the motor to the new power and pause;</span>
+            <span class="s1">motor</span><span class="s3">.</span><span class="s1">setPower</span><span class="s3">(</span><span class="s1">power</span><span class="s3">);</span>
+            <span class="s1">sleep</span><span class="s3">(</span><span class="s1">CYCLE_MS</span><span class="s3">);</span>
+            <span class="s1">idle</span><span class="s3">();</span>
+        <span class="s3">}</span>
+
+        <span class="s0">// Turn off motor and signal done;</span>
+        <span class="s1">motor</span><span class="s3">.</span><span class="s1">setPower</span><span class="s3">(</span><span class="s5">0</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Done&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

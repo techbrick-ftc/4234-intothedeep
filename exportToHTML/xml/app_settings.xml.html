@@ -1,0 +1,113 @@
+<html>
+<head>
+<title>app_settings.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #d5b778;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #bcbec4;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+app_settings.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;?</span><span class="s1">xml version</span><span class="s2">=&quot;1.0&quot; </span><span class="s1">encoding</span><span class="s2">=&quot;utf-8&quot;</span><span class="s0">?&gt;</span>
+
+<span class="s4">&lt;!--</span>
+
+<span class="s4">app_settings.xml in FtcRobotController 
+ 
+Copyright (c) 2014, 2015 Qualcomm Technologies Inc 
+ 
+All rights reserved. 
+ 
+Redistribution and use in source and binary forms, with or without modification, 
+are permitted (subject to the limitations in the disclaimer below) provided that 
+the following conditions are met: 
+ 
+Redistributions of source code must retain the above copyright notice, this list 
+of conditions and the following disclaimer. 
+ 
+Redistributions in binary form must reproduce the above copyright notice, this 
+list of conditions and the following disclaimer in the documentation and/or 
+other materials provided with the distribution. 
+ 
+Neither the name of Qualcomm Technologies Inc nor the names of its contributors 
+may be used to endorse or promote products derived from this software without 
+specific prior written permission. 
+ 
+NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+&quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ 
+See https://developer.android.com/guide/topics/ui/settings.html 
+--&gt;</span>
+
+<span class="s0">&lt;PreferenceScreen </span><span class="s1">xmlns:tools</span><span class="s2">=&quot;http://schemas.android.com/tools&quot;</span>
+                  <span class="s1">xmlns:android</span><span class="s2">=&quot;http://schemas.android.com/apk/res/android&quot;</span>
+                  <span class="s1">xmlns:app</span><span class="s2">=&quot;http://schemas.android.com/apk/res-auto&quot;</span>
+                  <span class="s1">tools:context</span><span class="s2">=&quot;.FtcRobotControllerActivity&quot;</span><span class="s0">&gt;</span>
+
+  <span class="s0">&lt;PreferenceCategory</span>
+    <span class="s1">android:title</span><span class="s2">=&quot;@string/prefcat_configure_robot&quot;</span><span class="s0">&gt;</span>
+
+    <span class="s0">&lt;EditTextPreference</span>
+        <span class="s1">android:title</span><span class="s2">=&quot;@string/prefedit_device_name_rc&quot;</span>
+        <span class="s1">android:summary</span><span class="s2">=&quot;@string/prefedit_device_name_summary_rc&quot;</span>
+        <span class="s1">android:key</span><span class="s2">=&quot;@string/pref_device_name&quot;</span>
+        <span class="s1">android:defaultValue</span><span class="s2">=&quot;&quot;</span>
+        <span class="s0">/&gt;</span>
+
+    <span class="s0">&lt;org.firstinspires.ftc.robotcore.internal.ui.ColorListPreference</span>
+        <span class="s1">android:title</span><span class="s2">=&quot;@string/prefedit_app_theme_rc&quot;</span>
+        <span class="s1">android:summary</span><span class="s2">=&quot;@string/prefedit_app_theme_summary_rc&quot;</span>
+        <span class="s1">android:key</span><span class="s2">=&quot;@string/pref_app_theme&quot;</span>
+        <span class="s1">android:entries</span><span class="s2">=&quot;@array/app_theme_names&quot;</span>
+        <span class="s1">android:entryValues</span><span class="s2">=&quot;@array/app_theme_tokens&quot;</span>
+        <span class="s1">app:colors</span><span class="s2">=&quot;@array/app_theme_colors&quot;</span>
+        <span class="s0">/&gt;</span>
+
+    <span class="s0">&lt;SwitchPreference</span>
+        <span class="s1">android:title</span><span class="s2">=&quot;@string/prefedit_sound_on_off&quot;</span>
+        <span class="s1">android:summary</span><span class="s2">=&quot;@string/prefedit_sound_on_off_summary_rc&quot;</span>
+        <span class="s1">android:key</span><span class="s2">=&quot;@string/pref_sound_on_off&quot;</span>
+        <span class="s1">android:defaultValue</span><span class="s2">=&quot;true&quot;</span>
+        <span class="s0">/&gt;</span>
+
+    <span class="s0">&lt;PreferenceScreen</span>
+        <span class="s1">android:title</span><span class="s2">=&quot;@string/titleAdvancedRCSettings&quot;</span>
+        <span class="s1">android:summary</span><span class="s2">=&quot;@string/summaryAdvancedRCSettings&quot;</span>
+        <span class="s1">android:key</span><span class="s2">=&quot;@string/pref_launch_advanced_rc_settings&quot;</span><span class="s0">&gt;</span>
+        <span class="s0">&lt;intent</span>
+            <span class="s1">android:targetPackage</span><span class="s2">=&quot;@string/packageName&quot;</span>
+            <span class="s1">android:targetClass</span><span class="s2">=&quot;com.qualcomm.ftccommon.FtcAdvancedRCSettingsActivity&quot;</span>
+            <span class="s0">/&gt;</span>
+    <span class="s0">&lt;/PreferenceScreen&gt;</span>
+
+    <span class="s0">&lt;PreferenceScreen</span>
+        <span class="s1">android:title</span><span class="s2">=&quot;@string/prefedit_view_logs&quot;</span>
+        <span class="s1">android:summary</span><span class="s2">=&quot;@string/prefedit_view_logs_summary&quot;</span>
+        <span class="s1">android:key</span><span class="s2">=&quot;@string/pref_launch_viewlogs&quot;</span><span class="s0">&gt;</span>
+      <span class="s0">&lt;intent</span>
+        <span class="s1">android:targetPackage</span><span class="s2">=&quot;@string/packageName&quot;</span>
+        <span class="s1">android:targetClass</span><span class="s2">=&quot;com.qualcomm.ftccommon.ViewLogsActivity&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;/PreferenceScreen&gt;</span>
+
+  <span class="s0">&lt;/PreferenceCategory&gt;</span>
+
+<span class="s0">&lt;/PreferenceScreen&gt;</span></pre>
+</body>
+</html>

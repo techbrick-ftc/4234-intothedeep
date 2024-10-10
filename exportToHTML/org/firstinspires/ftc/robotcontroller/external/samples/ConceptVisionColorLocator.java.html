@@ -1,0 +1,213 @@
+<html>
+<head>
+<title>ConceptVisionColorLocator.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ConceptVisionColorLocator.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2024 Phil Malone 
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions: 
+ * 
+ * The above copyright notice and this permission notice shall be included in all 
+ * copies or substantial portions of the Software. 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+ * SOFTWARE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">Size</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">SortOrder</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">Telemetry</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">camera</span><span class="s3">.</span><span class="s1">WebcamName</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">VisionPortal</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">opencv</span><span class="s3">.</span><span class="s1">ColorBlobLocatorProcessor</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">opencv</span><span class="s3">.</span><span class="s1">ColorRange</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">opencv</span><span class="s3">.</span><span class="s1">ImageRegion</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">opencv</span><span class="s3">.</span><span class="s1">core</span><span class="s3">.</span><span class="s1">RotatedRect</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">java</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">List</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode illustrates how to use a video source (camera) to locate specifically colored regions 
+ * 
+ * Unlike a &quot;color sensor&quot; which determines the color of an object in the field of view, this &quot;color locator&quot; 
+ * will search the Region Of Interest (ROI) in a camera image, and find any &quot;blobs&quot; of color that match the requested color range. 
+ * These blobs can be further filtered and sorted to find the one most likely to be the item the user is looking for. 
+ * 
+ * To perform this function, a VisionPortal runs a ColorBlobLocatorProcessor process. 
+ *   The ColorBlobLocatorProcessor process is created first, and then the VisionPortal is built to use this process. 
+ *   The ColorBlobLocatorProcessor analyses the ROI and locates pixels that match the ColorRange to form a &quot;mask&quot;. 
+ *   The matching pixels are then collected into contiguous &quot;blobs&quot; of pixels.  The outer boundaries of these blobs are called its &quot;contour&quot;. 
+ *   For each blob, the process then creates the smallest possible rectangle &quot;boxFit&quot; that will fully encase the contour. 
+ *   The user can then call getBlobs() to retrieve the list of Blobs, where each Blob contains the contour and the boxFit data. 
+ *   Note: The default sort order for Blobs is ContourArea, in descending order, so the biggest contours are listed first. 
+ * 
+ * To aid the user, a colored boxFit rectangle is drawn on the camera preview to show the location of each Blob 
+ * The original Blob contour can also be added to the preview.  This is helpful when configuring the ColorBlobLocatorProcessor parameters. 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list 
+ */</span>
+
+<span class="s1">@Disabled</span>
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name </span><span class="s3">= </span><span class="s4">&quot;Concept: Vision Color-Locator&quot;</span><span class="s3">, </span><span class="s1">group </span><span class="s3">= </span><span class="s4">&quot;Concept&quot;</span><span class="s3">)</span>
+<span class="s2">public class </span><span class="s1">ConceptVisionColorLocator </span><span class="s2">extends </span><span class="s1">LinearOpMode</span>
+<span class="s3">{</span>
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">()</span>
+    <span class="s3">{</span>
+        <span class="s0">/* Build a &quot;Color Locator&quot; vision processor based on the ColorBlobLocatorProcessor class. 
+         * - Specify the color range you are looking for.  You can use a predefined color, or create you own color range 
+         *     .setTargetColorRange(ColorRange.BLUE)                      // use a predefined color match 
+         *       Available predefined colors are: RED, BLUE YELLOW GREEN 
+         *     .setTargetColorRange(new ColorRange(ColorSpace.YCrCb,      // or define your own color match 
+         *                                           new Scalar( 32, 176,  0), 
+         *                                           new Scalar(255, 255, 132))) 
+         * 
+         * - Focus the color locator by defining a RegionOfInterest (ROI) which you want to search. 
+         *     This can be the entire frame, or a sub-region defined using: 
+         *     1) standard image coordinates or 2) a normalized +/- 1.0 coordinate system. 
+         *     Use one form of the ImageRegion class to define the ROI. 
+         *         ImageRegion.entireFrame() 
+         *         ImageRegion.asImageCoordinates(50, 50,  150, 150)  100x100 pixel square near the upper left corner 
+         *         ImageRegion.asUnityCenterCoordinates(-0.5, 0.5, 0.5, -0.5)  50% width/height square centered on screen 
+         * 
+         * - Define which contours are included. 
+         *     You can get ALL the contours, or you can skip any contours that are completely inside another contour. 
+         *        .setContourMode(ColorBlobLocatorProcessor.ContourMode.ALL_FLATTENED_HIERARCHY)  // return all contours 
+         *        .setContourMode(ColorBlobLocatorProcessor.ContourMode.EXTERNAL_ONLY)            // exclude contours inside other contours 
+         *        note: EXTERNAL_ONLY helps to avoid bright reflection spots from breaking up areas of solid color. 
+         * 
+         * - turn the display of contours ON or OFF.  Turning this on helps debugging but takes up valuable CPU time. 
+         *        .setDrawContours(true) 
+         * 
+         * - include any pre-processing of the image or mask before looking for Blobs. 
+         *     There are some extra processing you can include to improve the formation of blobs.  Using these features requires 
+         *     an understanding of how they may effect the final blobs.  The &quot;pixels&quot; argument sets the NxN kernel size. 
+         *        .setBlurSize(int pixels)    Blurring an image helps to provide a smooth color transition between objects, and smoother contours. 
+         *                                    The higher the number of pixels, the more blurred the image becomes. 
+         *                                    Note:  Even &quot;pixels&quot; values will be incremented to satisfy the &quot;odd number&quot; requirement. 
+         *                                    Blurring too much may hide smaller features.  A &quot;pixels&quot; size of 5 is good for a 320x240 image. 
+         *        .setErodeSize(int pixels)   Erosion removes floating pixels and thin lines so that only substantive objects remain. 
+         *                                    Erosion can grow holes inside regions, and also shrink objects. 
+         *                                    &quot;pixels&quot; in the range of 2-4 are suitable for low res images. 
+         *        .setDilateSize(int pixels)  Dilation makes objects more visible by filling in small holes, making lines appear thicker, 
+         *                                    and making filled shapes appear larger. Dilation is useful for joining broken parts of an 
+         *                                    object, such as when removing noise from an image. 
+         *                                    &quot;pixels&quot; in the range of 2-4 are suitable for low res images. 
+         */</span>
+        <span class="s1">ColorBlobLocatorProcessor colorLocator </span><span class="s3">= </span><span class="s2">new </span><span class="s1">ColorBlobLocatorProcessor</span><span class="s3">.</span><span class="s1">Builder</span><span class="s3">()</span>
+                <span class="s3">.</span><span class="s1">setTargetColorRange</span><span class="s3">(</span><span class="s1">ColorRange</span><span class="s3">.</span><span class="s1">BLUE</span><span class="s3">)         </span><span class="s0">// use a predefined color match</span>
+                <span class="s3">.</span><span class="s1">setContourMode</span><span class="s3">(</span><span class="s1">ColorBlobLocatorProcessor</span><span class="s3">.</span><span class="s1">ContourMode</span><span class="s3">.</span><span class="s1">EXTERNAL_ONLY</span><span class="s3">)    </span><span class="s0">// exclude blobs inside blobs</span>
+                <span class="s3">.</span><span class="s1">setRoi</span><span class="s3">(</span><span class="s1">ImageRegion</span><span class="s3">.</span><span class="s1">asUnityCenterCoordinates</span><span class="s3">(-</span><span class="s5">0.5</span><span class="s3">, </span><span class="s5">0.5</span><span class="s3">, </span><span class="s5">0.5</span><span class="s3">, -</span><span class="s5">0.5</span><span class="s3">))  </span><span class="s0">// search central 1/4 of camera view</span>
+                <span class="s3">.</span><span class="s1">setDrawContours</span><span class="s3">(</span><span class="s2">true</span><span class="s3">)                        </span><span class="s0">// Show contours on the Stream Preview</span>
+                <span class="s3">.</span><span class="s1">setBlurSize</span><span class="s3">(</span><span class="s5">5</span><span class="s3">)                               </span><span class="s0">// Smooth the transitions between different colors in image</span>
+                <span class="s3">.</span><span class="s1">build</span><span class="s3">();</span>
+
+        <span class="s0">/* 
+         * Build a vision portal to run the Color Locator process. 
+         * 
+         *  - Add the colorLocator process created above. 
+         *  - Set the desired video resolution. 
+         *      Since a high resolution will not improve this process, choose a lower resolution that is 
+         *      supported by your camera.  This will improve overall performance and reduce latency. 
+         *  - Choose your video source.  This may be 
+         *      .setCamera(hardwareMap.get(WebcamName.class, &quot;Webcam 1&quot;))  .....   for a webcam 
+         *  or 
+         *      .setCamera(BuiltinCameraDirection.BACK)    ... for a Phone Camera 
+         */</span>
+        <span class="s1">VisionPortal portal </span><span class="s3">= </span><span class="s2">new </span><span class="s1">VisionPortal</span><span class="s3">.</span><span class="s1">Builder</span><span class="s3">()</span>
+                <span class="s3">.</span><span class="s1">addProcessor</span><span class="s3">(</span><span class="s1">colorLocator</span><span class="s3">)</span>
+                <span class="s3">.</span><span class="s1">setCameraResolution</span><span class="s3">(</span><span class="s2">new </span><span class="s1">Size</span><span class="s3">(</span><span class="s5">320</span><span class="s3">, </span><span class="s5">240</span><span class="s3">))</span>
+                <span class="s3">.</span><span class="s1">setCamera</span><span class="s3">(</span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">WebcamName</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;Webcam 1&quot;</span><span class="s3">))</span>
+                <span class="s3">.</span><span class="s1">build</span><span class="s3">();</span>
+
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">setMsTransmissionInterval</span><span class="s3">(</span><span class="s5">50</span><span class="s3">);   </span><span class="s0">// Speed up telemetry updates, Just use for debugging.</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">setDisplayFormat</span><span class="s3">(</span><span class="s1">Telemetry</span><span class="s3">.</span><span class="s1">DisplayFormat</span><span class="s3">.</span><span class="s1">MONOSPACE</span><span class="s3">);</span>
+
+        <span class="s0">// WARNING:  To be able to view the stream preview on the Driver Station, this code runs in INIT mode.</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">() || </span><span class="s1">opModeInInit</span><span class="s3">())</span>
+        <span class="s3">{</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;preview on/off&quot;</span><span class="s3">, </span><span class="s4">&quot;... Camera Stream</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+
+            <span class="s0">// Read the current list</span>
+            <span class="s1">List</span><span class="s3">&lt;</span><span class="s1">ColorBlobLocatorProcessor</span><span class="s3">.</span><span class="s1">Blob</span><span class="s3">&gt; </span><span class="s1">blobs </span><span class="s3">= </span><span class="s1">colorLocator</span><span class="s3">.</span><span class="s1">getBlobs</span><span class="s3">();</span>
+
+            <span class="s0">/* 
+             * The list of Blobs can be filtered to remove unwanted Blobs. 
+             *   Note:  All contours will be still displayed on the Stream Preview, but only those that satisfy the filter 
+             *          conditions will remain in the current list of &quot;blobs&quot;.  Multiple filters may be used. 
+             * 
+             * Use any of the following filters. 
+             * 
+             * ColorBlobLocatorProcessor.Util.filterByArea(minArea, maxArea, blobs); 
+             *   A Blob's area is the number of pixels contained within the Contour.  Filter out any that are too big or small. 
+             *   Start with a large range and then refine the range based on the likely size of the desired object in the viewfinder. 
+             * 
+             * ColorBlobLocatorProcessor.Util.filterByDensity(minDensity, maxDensity, blobs); 
+             *   A blob's density is an indication of how &quot;full&quot; the contour is. 
+             *   If you put a rubber band around the contour you would get the &quot;Convex Hull&quot; of the contour. 
+             *   The density is the ratio of Contour-area to Convex Hull-area. 
+             * 
+             * ColorBlobLocatorProcessor.Util.filterByAspectRatio(minAspect, maxAspect, blobs); 
+             *   A blob's Aspect ratio is the ratio of boxFit long side to short side. 
+             *   A perfect Square has an aspect ratio of 1.  All others are &gt; 1 
+             */</span>
+            <span class="s1">ColorBlobLocatorProcessor</span><span class="s3">.</span><span class="s1">Util</span><span class="s3">.</span><span class="s1">filterByArea</span><span class="s3">(</span><span class="s5">50</span><span class="s3">, </span><span class="s5">20000</span><span class="s3">, </span><span class="s1">blobs</span><span class="s3">);  </span><span class="s0">// filter out very small blobs.</span>
+
+            <span class="s0">/* 
+             * The list of Blobs can be sorted using the same Blob attributes as listed above. 
+             * No more than one sort call should be made.  Sorting can use ascending or descending order. 
+             *     ColorBlobLocatorProcessor.Util.sortByArea(SortOrder.DESCENDING, blobs);      // Default 
+             *     ColorBlobLocatorProcessor.Util.sortByDensity(SortOrder.DESCENDING, blobs); 
+             *     ColorBlobLocatorProcessor.Util.sortByAspectRatio(SortOrder.DESCENDING, blobs); 
+             */</span>
+
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot; Area Density Aspect  Center&quot;</span><span class="s3">);</span>
+
+            <span class="s0">// Display the size (area) and center location for each Blob.</span>
+            <span class="s2">for</span><span class="s3">(</span><span class="s1">ColorBlobLocatorProcessor</span><span class="s3">.</span><span class="s1">Blob b </span><span class="s3">: </span><span class="s1">blobs</span><span class="s3">)</span>
+            <span class="s3">{</span>
+                <span class="s1">RotatedRect boxFit </span><span class="s3">= </span><span class="s1">b</span><span class="s3">.</span><span class="s1">getBoxFit</span><span class="s3">();</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;%5d  %4.2f   %5.2f  (%3d,%3d)&quot;</span><span class="s3">,</span>
+                          <span class="s1">b</span><span class="s3">.</span><span class="s1">getContourArea</span><span class="s3">(), </span><span class="s1">b</span><span class="s3">.</span><span class="s1">getDensity</span><span class="s3">(), </span><span class="s1">b</span><span class="s3">.</span><span class="s1">getAspectRatio</span><span class="s3">(), (</span><span class="s2">int</span><span class="s3">) </span><span class="s1">boxFit</span><span class="s3">.</span><span class="s1">center</span><span class="s3">.</span><span class="s1">x</span><span class="s3">, (</span><span class="s2">int</span><span class="s3">) </span><span class="s1">boxFit</span><span class="s3">.</span><span class="s1">center</span><span class="s3">.</span><span class="s1">y</span><span class="s3">));</span>
+            <span class="s3">}</span>
+
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+            <span class="s1">sleep</span><span class="s3">(</span><span class="s5">50</span><span class="s3">);</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

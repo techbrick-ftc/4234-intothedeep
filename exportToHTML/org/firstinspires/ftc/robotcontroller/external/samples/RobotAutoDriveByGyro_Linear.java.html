@@ -1,0 +1,454 @@
+<html>
+<head>
+<title>RobotAutoDriveByGyro_Linear.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+.s6 { color: #5f826b; font-style: italic;}
+.s7 { color: #67a37c; font-style: italic;}
+.s8 { color: #68a67e; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+RobotAutoDriveByGyro_Linear.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Copyright (c) 2022 FIRST. All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted (subject to the limitations in the disclaimer below) provided that 
+ * the following conditions are met: 
+ * 
+ * Redistributions of source code must retain the above copyright notice, this list 
+ * of conditions and the following disclaimer. 
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this 
+ * list of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or 
+ * promote products derived from this software without specific prior written permission. 
+ * 
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ * &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">rev</span><span class="s3">.</span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Autonomous</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">DcMotor</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">IMU</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">ElapsedTime</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">Range</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">AngleUnit</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">YawPitchRollAngles</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ *  This OpMode illustrates the concept of driving an autonomous path based on Gyro (IMU) heading and encoder counts. 
+ *  The code is structured as a LinearOpMode 
+ * 
+ *  The path to be followed by the robot is built from a series of drive, turn or pause steps. 
+ *  Each step on the path is defined by a single function call, and these can be strung together in any order. 
+ * 
+ *  The code REQUIRES that you have encoders on the drive motors, otherwise you should use: RobotAutoDriveByTime; 
+ * 
+ *  This code uses the Universal IMU interface so it will work with either the BNO055, or BHI260 IMU. 
+ *  To run as written, the Control/Expansion hub should be mounted horizontally on a flat part of the robot chassis. 
+ *  The REV Logo should be facing UP, and the USB port should be facing forward. 
+ *  If this is not the configuration of your REV Control Hub, then the code should be modified to reflect the correct orientation. 
+ * 
+ *  This sample requires that the drive Motors have been configured with names : left_drive and right_drive. 
+ *  It also requires that a positive power command moves both motors forward, and causes the encoders to count UP. 
+ *  So please verify that both of your motors move the robot forward on the first move.  If not, make the required correction. 
+ *  See the beginning of runOpMode() to set the FORWARD/REVERSE option for each motor. 
+ * 
+ *  This code uses RUN_TO_POSITION mode for driving straight, and RUN_USING_ENCODER mode for turning and holding. 
+ *  Note: This code implements the requirement of calling setTargetPosition() at least once before switching to RUN_TO_POSITION mode. 
+ * 
+ *  Notes: 
+ * 
+ *  All angles are referenced to the coordinate-frame that is set whenever resetHeading() is called. 
+ *  In this sample, the heading is reset when the Start button is touched on the Driver Station. 
+ *  Note: It would be possible to reset the heading after each move, but this would accumulate steering errors. 
+ * 
+ *  The angle of movement/rotation is assumed to be a standardized rotation around the robot Z axis, 
+ *  which means that a Positive rotation is Counter Clockwise, looking down on the field. 
+ *  This is consistent with the FTC field coordinate conventions set out in the document: 
+ *  https://ftc-docs.firstinspires.org/field-coordinate-system 
+ * 
+ *  Control Approach. 
+ * 
+ *  To reach, or maintain a required heading, this code implements a basic Proportional Controller where: 
+ * 
+ *      Steering power = Heading Error * Proportional Gain. 
+ * 
+ *      &quot;Heading Error&quot; is calculated by taking the difference between the desired heading and the actual heading, 
+ *      and then &quot;normalizing&quot; it by converting it to a value in the +/- 180 degree range. 
+ * 
+ *      &quot;Proportional Gain&quot; is a constant that YOU choose to set the &quot;strength&quot; of the steering response. 
+ * 
+ *  Use Android Studio to Copy this Class, and Paste it into your &quot;TeamCode&quot; folder with a new name. 
+ *  Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list 
+ */</span>
+
+<span class="s1">@Autonomous</span><span class="s3">(</span><span class="s1">name</span><span class="s3">=</span><span class="s4">&quot;Robot: Auto Drive By Gyro&quot;</span><span class="s3">, </span><span class="s1">group</span><span class="s3">=</span><span class="s4">&quot;Robot&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">RobotAutoDriveByGyro_Linear </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+
+    <span class="s0">/* Declare OpMode members. */</span>
+    <span class="s2">private </span><span class="s1">DcMotor         leftDrive   </span><span class="s3">= </span><span class="s2">null</span><span class="s3">;</span>
+    <span class="s2">private </span><span class="s1">DcMotor         rightDrive  </span><span class="s3">= </span><span class="s2">null</span><span class="s3">;</span>
+    <span class="s2">private </span><span class="s1">IMU             imu         </span><span class="s3">= </span><span class="s2">null</span><span class="s3">;      </span><span class="s0">// Control/Expansion Hub IMU</span>
+
+    <span class="s2">private double          </span><span class="s1">headingError  </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+
+    <span class="s0">// These variable are declared here (as class members) so they can be updated in various methods,</span>
+    <span class="s0">// but still be displayed by sendTelemetry()</span>
+    <span class="s2">private double  </span><span class="s1">targetHeading </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+    <span class="s2">private double  </span><span class="s1">driveSpeed    </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+    <span class="s2">private double  </span><span class="s1">turnSpeed     </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+    <span class="s2">private double  </span><span class="s1">leftSpeed     </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+    <span class="s2">private double  </span><span class="s1">rightSpeed    </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+    <span class="s2">private int     </span><span class="s1">leftTarget    </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+    <span class="s2">private int     </span><span class="s1">rightTarget   </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+
+    <span class="s0">// Calculate the COUNTS_PER_INCH for your specific drive train.</span>
+    <span class="s0">// Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV</span>
+    <span class="s0">// For external drive gearing, set DRIVE_GEAR_REDUCTION as needed.</span>
+    <span class="s0">// For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.</span>
+    <span class="s0">// This is gearing DOWN for less speed and more torque.</span>
+    <span class="s0">// For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.</span>
+    <span class="s2">static final double     </span><span class="s1">COUNTS_PER_MOTOR_REV    </span><span class="s3">= </span><span class="s5">537.7 </span><span class="s3">;   </span><span class="s0">// eg: GoBILDA 312 RPM Yellow Jacket</span>
+    <span class="s2">static final double     </span><span class="s1">DRIVE_GEAR_REDUCTION    </span><span class="s3">= </span><span class="s5">1.0 </span><span class="s3">;     </span><span class="s0">// No External Gearing.</span>
+    <span class="s2">static final double     </span><span class="s1">WHEEL_DIAMETER_INCHES   </span><span class="s3">= </span><span class="s5">4.0 </span><span class="s3">;     </span><span class="s0">// For figuring circumference</span>
+    <span class="s2">static final double     </span><span class="s1">COUNTS_PER_INCH         </span><span class="s3">= (</span><span class="s1">COUNTS_PER_MOTOR_REV </span><span class="s3">* </span><span class="s1">DRIVE_GEAR_REDUCTION</span><span class="s3">) /</span>
+                                                      <span class="s3">(</span><span class="s1">WHEEL_DIAMETER_INCHES </span><span class="s3">* </span><span class="s5">3.1415</span><span class="s3">);</span>
+
+    <span class="s0">// These constants define the desired driving/control characteristics</span>
+    <span class="s0">// They can/should be tweaked to suit the specific robot drive train.</span>
+    <span class="s2">static final double     </span><span class="s1">DRIVE_SPEED             </span><span class="s3">= </span><span class="s5">0.4</span><span class="s3">;     </span><span class="s0">// Max driving speed for better distance accuracy.</span>
+    <span class="s2">static final double     </span><span class="s1">TURN_SPEED              </span><span class="s3">= </span><span class="s5">0.2</span><span class="s3">;     </span><span class="s0">// Max turn speed to limit turn rate.</span>
+    <span class="s2">static final double     </span><span class="s1">HEADING_THRESHOLD       </span><span class="s3">= </span><span class="s5">1.0 </span><span class="s3">;    </span><span class="s0">// How close must the heading get to the target before moving to next step.</span>
+                                                               <span class="s0">// Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.</span>
+    <span class="s0">// Define the Proportional control coefficient (or GAIN) for &quot;heading control&quot;.</span>
+    <span class="s0">// We define one value when Turning (larger errors), and the other is used when Driving straight (smaller errors).</span>
+    <span class="s0">// Increase these numbers if the heading does not correct strongly enough (eg: a heavy robot or using tracks)</span>
+    <span class="s0">// Decrease these numbers if the heading does not settle on the correct value (eg: very agile robot with omni wheels)</span>
+    <span class="s2">static final double     </span><span class="s1">P_TURN_GAIN            </span><span class="s3">= </span><span class="s5">0.02</span><span class="s3">;     </span><span class="s0">// Larger is more responsive, but also less stable.</span>
+    <span class="s2">static final double     </span><span class="s1">P_DRIVE_GAIN           </span><span class="s3">= </span><span class="s5">0.03</span><span class="s3">;     </span><span class="s0">// Larger is more responsive, but also less stable.</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() {</span>
+
+        <span class="s0">// Initialize the drive system variables.</span>
+        <span class="s1">leftDrive  </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;left_drive&quot;</span><span class="s3">);</span>
+        <span class="s1">rightDrive </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;right_drive&quot;</span><span class="s3">);</span>
+
+        <span class="s0">// To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.</span>
+        <span class="s0">// When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.</span>
+        <span class="s0">// Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips</span>
+        <span class="s1">leftDrive</span><span class="s3">.</span><span class="s1">setDirection</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">Direction</span><span class="s3">.</span><span class="s1">REVERSE</span><span class="s3">);</span>
+        <span class="s1">rightDrive</span><span class="s3">.</span><span class="s1">setDirection</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">Direction</span><span class="s3">.</span><span class="s1">FORWARD</span><span class="s3">);</span>
+
+        <span class="s0">/* The next two lines define Hub orientation. 
+         * The Default Orientation (shown) is when a hub is mounted horizontally with the printed logo pointing UP and the USB port pointing FORWARD. 
+         * 
+         * To Do:  EDIT these two lines to match YOUR mounting configuration. 
+         */</span>
+        <span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">LogoFacingDirection logoDirection </span><span class="s3">= </span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">LogoFacingDirection</span><span class="s3">.</span><span class="s1">UP</span><span class="s3">;</span>
+        <span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">UsbFacingDirection  usbDirection  </span><span class="s3">= </span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">.</span><span class="s1">UsbFacingDirection</span><span class="s3">.</span><span class="s1">FORWARD</span><span class="s3">;</span>
+        <span class="s1">RevHubOrientationOnRobot orientationOnRobot </span><span class="s3">= </span><span class="s2">new </span><span class="s1">RevHubOrientationOnRobot</span><span class="s3">(</span><span class="s1">logoDirection</span><span class="s3">, </span><span class="s1">usbDirection</span><span class="s3">);</span>
+
+        <span class="s0">// Now initialize the IMU with this mounting orientation</span>
+        <span class="s0">// This sample expects the IMU to be in a REV Hub and named &quot;imu&quot;.</span>
+        <span class="s1">imu </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">IMU</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;imu&quot;</span><span class="s3">);</span>
+        <span class="s1">imu</span><span class="s3">.</span><span class="s1">initialize</span><span class="s3">(</span><span class="s2">new </span><span class="s1">IMU</span><span class="s3">.</span><span class="s1">Parameters</span><span class="s3">(</span><span class="s1">orientationOnRobot</span><span class="s3">));</span>
+
+        <span class="s0">// Ensure the robot is stationary.  Reset the encoders and set the motors to BRAKE mode</span>
+        <span class="s1">leftDrive</span><span class="s3">.</span><span class="s1">setMode</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">RunMode</span><span class="s3">.</span><span class="s1">STOP_AND_RESET_ENCODER</span><span class="s3">);</span>
+        <span class="s1">rightDrive</span><span class="s3">.</span><span class="s1">setMode</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">RunMode</span><span class="s3">.</span><span class="s1">STOP_AND_RESET_ENCODER</span><span class="s3">);</span>
+        <span class="s1">leftDrive</span><span class="s3">.</span><span class="s1">setZeroPowerBehavior</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">ZeroPowerBehavior</span><span class="s3">.</span><span class="s1">BRAKE</span><span class="s3">);</span>
+        <span class="s1">rightDrive</span><span class="s3">.</span><span class="s1">setZeroPowerBehavior</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">ZeroPowerBehavior</span><span class="s3">.</span><span class="s1">BRAKE</span><span class="s3">);</span>
+
+        <span class="s0">// Wait for the game to start (Display Gyro value while waiting)</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeInInit</span><span class="s3">()) {</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Robot Heading = %4.0f&quot;</span><span class="s3">, </span><span class="s1">getHeading</span><span class="s3">());</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s3">}</span>
+
+        <span class="s0">// Set the encoders for closed loop speed control, and reset the heading.</span>
+        <span class="s1">leftDrive</span><span class="s3">.</span><span class="s1">setMode</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">RunMode</span><span class="s3">.</span><span class="s1">RUN_USING_ENCODER</span><span class="s3">);</span>
+        <span class="s1">rightDrive</span><span class="s3">.</span><span class="s1">setMode</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">RunMode</span><span class="s3">.</span><span class="s1">RUN_USING_ENCODER</span><span class="s3">);</span>
+        <span class="s1">imu</span><span class="s3">.</span><span class="s1">resetYaw</span><span class="s3">();</span>
+
+        <span class="s0">// Step through each leg of the path,</span>
+        <span class="s0">// Notes:   Reverse movement is obtained by setting a negative distance (not speed)</span>
+        <span class="s0">//          holdHeading() is used after turns to let the heading stabilize</span>
+        <span class="s0">//          Add a sleep(2000) after any step to keep the telemetry data visible for review</span>
+
+        <span class="s1">driveStraight</span><span class="s3">(</span><span class="s1">DRIVE_SPEED</span><span class="s3">, </span><span class="s5">24.0</span><span class="s3">, </span><span class="s5">0.0</span><span class="s3">);    </span><span class="s0">// Drive Forward 24&quot;</span>
+        <span class="s1">turnToHeading</span><span class="s3">( </span><span class="s1">TURN_SPEED</span><span class="s3">, -</span><span class="s5">45.0</span><span class="s3">);               </span><span class="s0">// Turn  CW to -45 Degrees</span>
+        <span class="s1">holdHeading</span><span class="s3">( </span><span class="s1">TURN_SPEED</span><span class="s3">, -</span><span class="s5">45.0</span><span class="s3">, </span><span class="s5">0.5</span><span class="s3">);   </span><span class="s0">// Hold -45 Deg heading for a 1/2 second</span>
+
+        <span class="s1">driveStraight</span><span class="s3">(</span><span class="s1">DRIVE_SPEED</span><span class="s3">, </span><span class="s5">17.0</span><span class="s3">, -</span><span class="s5">45.0</span><span class="s3">);  </span><span class="s0">// Drive Forward 17&quot; at -45 degrees (12&quot;x and 12&quot;y)</span>
+        <span class="s1">turnToHeading</span><span class="s3">( </span><span class="s1">TURN_SPEED</span><span class="s3">,  </span><span class="s5">45.0</span><span class="s3">);               </span><span class="s0">// Turn  CCW  to  45 Degrees</span>
+        <span class="s1">holdHeading</span><span class="s3">( </span><span class="s1">TURN_SPEED</span><span class="s3">,  </span><span class="s5">45.0</span><span class="s3">, </span><span class="s5">0.5</span><span class="s3">);    </span><span class="s0">// Hold  45 Deg heading for a 1/2 second</span>
+
+        <span class="s1">driveStraight</span><span class="s3">(</span><span class="s1">DRIVE_SPEED</span><span class="s3">, </span><span class="s5">17.0</span><span class="s3">, </span><span class="s5">45.0</span><span class="s3">);  </span><span class="s0">// Drive Forward 17&quot; at 45 degrees (-12&quot;x and 12&quot;y)</span>
+        <span class="s1">turnToHeading</span><span class="s3">( </span><span class="s1">TURN_SPEED</span><span class="s3">,   </span><span class="s5">0.0</span><span class="s3">);               </span><span class="s0">// Turn  CW  to 0 Degrees</span>
+        <span class="s1">holdHeading</span><span class="s3">( </span><span class="s1">TURN_SPEED</span><span class="s3">,   </span><span class="s5">0.0</span><span class="s3">, </span><span class="s5">1.0</span><span class="s3">);    </span><span class="s0">// Hold  0 Deg heading for 1 second</span>
+
+        <span class="s1">driveStraight</span><span class="s3">(</span><span class="s1">DRIVE_SPEED</span><span class="s3">,-</span><span class="s5">48.0</span><span class="s3">, </span><span class="s5">0.0</span><span class="s3">);    </span><span class="s0">// Drive in Reverse 48&quot; (should return to approx. staring position)</span>
+
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Path&quot;</span><span class="s3">, </span><span class="s4">&quot;Complete&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s1">sleep</span><span class="s3">(</span><span class="s5">1000</span><span class="s3">);  </span><span class="s0">// Pause to display last telemetry message.</span>
+    <span class="s3">}</span>
+
+    <span class="s0">/* 
+     * ==================================================================================================== 
+     * Driving &quot;Helper&quot; functions are below this line. 
+     * These provide the high and low level methods that handle driving straight and turning. 
+     * ==================================================================================================== 
+     */</span>
+
+    <span class="s0">// **********  HIGH Level driving functions.  ********************</span>
+
+    <span class="s6">/**</span>
+    <span class="s6">*  Drive in a straight line, on a fixed compass heading (angle), based on encoder counts.</span>
+    <span class="s6">*  Move will stop if either of these conditions occur:</span>
+    <span class="s6">*  1) Move gets to the desired position</span>
+    <span class="s6">*  2) Driver stops the OpMode running.</span>
+    <span class="s6">*</span>
+    <span class="s6">* </span><span class="s7">@param </span><span class="s6">maxDriveSpeed MAX Speed for forward/rev motion (range 0 to +1.0) .</span>
+    <span class="s6">* </span><span class="s7">@param </span><span class="s6">distance   Distance (in inches) to move from current position.  Negative distance means move backward.</span>
+    <span class="s6">* </span><span class="s7">@param </span><span class="s6">heading      Absolute Heading Angle (in Degrees) relative to last gyro reset.</span>
+    <span class="s6">*                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.</span>
+    <span class="s6">*                   If a relative angle is required, add/subtract from the current robotHeading.</span>
+    <span class="s6">*/</span>
+    <span class="s2">public void </span><span class="s1">driveStraight</span><span class="s3">(</span><span class="s2">double </span><span class="s1">maxDriveSpeed</span><span class="s3">,</span>
+                              <span class="s2">double </span><span class="s1">distance</span><span class="s3">,</span>
+                              <span class="s2">double </span><span class="s1">heading</span><span class="s3">) {</span>
+
+        <span class="s0">// Ensure that the OpMode is still active</span>
+        <span class="s2">if </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">()) {</span>
+
+            <span class="s0">// Determine new target position, and pass to motor controller</span>
+            <span class="s2">int </span><span class="s1">moveCounts </span><span class="s3">= (</span><span class="s2">int</span><span class="s3">)(</span><span class="s1">distance </span><span class="s3">* </span><span class="s1">COUNTS_PER_INCH</span><span class="s3">);</span>
+            <span class="s1">leftTarget </span><span class="s3">= </span><span class="s1">leftDrive</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">() + </span><span class="s1">moveCounts</span><span class="s3">;</span>
+            <span class="s1">rightTarget </span><span class="s3">= </span><span class="s1">rightDrive</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">() + </span><span class="s1">moveCounts</span><span class="s3">;</span>
+
+            <span class="s0">// Set Target FIRST, then turn on RUN_TO_POSITION</span>
+            <span class="s1">leftDrive</span><span class="s3">.</span><span class="s1">setTargetPosition</span><span class="s3">(</span><span class="s1">leftTarget</span><span class="s3">);</span>
+            <span class="s1">rightDrive</span><span class="s3">.</span><span class="s1">setTargetPosition</span><span class="s3">(</span><span class="s1">rightTarget</span><span class="s3">);</span>
+
+            <span class="s1">leftDrive</span><span class="s3">.</span><span class="s1">setMode</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">RunMode</span><span class="s3">.</span><span class="s1">RUN_TO_POSITION</span><span class="s3">);</span>
+            <span class="s1">rightDrive</span><span class="s3">.</span><span class="s1">setMode</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">RunMode</span><span class="s3">.</span><span class="s1">RUN_TO_POSITION</span><span class="s3">);</span>
+
+            <span class="s0">// Set the required driving speed  (must be positive for RUN_TO_POSITION)</span>
+            <span class="s0">// Start driving straight, and then enter the control loop</span>
+            <span class="s1">maxDriveSpeed </span><span class="s3">= </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">abs</span><span class="s3">(</span><span class="s1">maxDriveSpeed</span><span class="s3">);</span>
+            <span class="s1">moveRobot</span><span class="s3">(</span><span class="s1">maxDriveSpeed</span><span class="s3">, </span><span class="s5">0</span><span class="s3">);</span>
+
+            <span class="s0">// keep looping while we are still active, and BOTH motors are running.</span>
+            <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">() &amp;&amp;</span>
+                   <span class="s3">(</span><span class="s1">leftDrive</span><span class="s3">.</span><span class="s1">isBusy</span><span class="s3">() &amp;&amp; </span><span class="s1">rightDrive</span><span class="s3">.</span><span class="s1">isBusy</span><span class="s3">())) {</span>
+
+                <span class="s0">// Determine required steering to keep on heading</span>
+                <span class="s1">turnSpeed </span><span class="s3">= </span><span class="s1">getSteeringCorrection</span><span class="s3">(</span><span class="s1">heading</span><span class="s3">, </span><span class="s1">P_DRIVE_GAIN</span><span class="s3">);</span>
+
+                <span class="s0">// if driving in reverse, the motor correction also needs to be reversed</span>
+                <span class="s2">if </span><span class="s3">(</span><span class="s1">distance </span><span class="s3">&lt; </span><span class="s5">0</span><span class="s3">)</span>
+                    <span class="s1">turnSpeed </span><span class="s3">*= -</span><span class="s5">1.0</span><span class="s3">;</span>
+
+                <span class="s0">// Apply the turning correction to the current driving speed.</span>
+                <span class="s1">moveRobot</span><span class="s3">(</span><span class="s1">driveSpeed</span><span class="s3">, </span><span class="s1">turnSpeed</span><span class="s3">);</span>
+
+                <span class="s0">// Display drive status for the driver.</span>
+                <span class="s1">sendTelemetry</span><span class="s3">(</span><span class="s2">true</span><span class="s3">);</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Stop all motion &amp; Turn off RUN_TO_POSITION</span>
+            <span class="s1">moveRobot</span><span class="s3">(</span><span class="s5">0</span><span class="s3">, </span><span class="s5">0</span><span class="s3">);</span>
+            <span class="s1">leftDrive</span><span class="s3">.</span><span class="s1">setMode</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">RunMode</span><span class="s3">.</span><span class="s1">RUN_USING_ENCODER</span><span class="s3">);</span>
+            <span class="s1">rightDrive</span><span class="s3">.</span><span class="s1">setMode</span><span class="s3">(</span><span class="s1">DcMotor</span><span class="s3">.</span><span class="s1">RunMode</span><span class="s3">.</span><span class="s1">RUN_USING_ENCODER</span><span class="s3">);</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">*  Spin on the central axis to point in a new direction.</span>
+     <span class="s6">*  </span><span class="s8">&lt;p&gt;</span>
+     <span class="s6">*  Move will stop if either of these conditions occur:</span>
+     <span class="s6">*  </span><span class="s8">&lt;p&gt;</span>
+     <span class="s6">*  1) Move gets to the heading (angle)</span>
+     <span class="s6">*  </span><span class="s8">&lt;p&gt;</span>
+     <span class="s6">*  2) Driver stops the OpMode running.</span>
+     <span class="s6">*</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">maxTurnSpeed Desired MAX speed of turn. (range 0 to +1.0)</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">heading Absolute Heading Angle (in Degrees) relative to last gyro reset.</span>
+     <span class="s6">*              0 = fwd. +ve is CCW from fwd. -ve is CW from forward.</span>
+     <span class="s6">*              If a relative angle is required, add/subtract from current heading.</span>
+     <span class="s6">*/</span>
+    <span class="s2">public void </span><span class="s1">turnToHeading</span><span class="s3">(</span><span class="s2">double </span><span class="s1">maxTurnSpeed</span><span class="s3">, </span><span class="s2">double </span><span class="s1">heading</span><span class="s3">) {</span>
+
+        <span class="s0">// Run getSteeringCorrection() once to pre-calculate the current error</span>
+        <span class="s1">getSteeringCorrection</span><span class="s3">(</span><span class="s1">heading</span><span class="s3">, </span><span class="s1">P_DRIVE_GAIN</span><span class="s3">);</span>
+
+        <span class="s0">// keep looping while we are still active, and not on heading.</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">() &amp;&amp; (</span><span class="s1">Math</span><span class="s3">.</span><span class="s1">abs</span><span class="s3">(</span><span class="s1">headingError</span><span class="s3">) &gt; </span><span class="s1">HEADING_THRESHOLD</span><span class="s3">)) {</span>
+
+            <span class="s0">// Determine required steering to keep on heading</span>
+            <span class="s1">turnSpeed </span><span class="s3">= </span><span class="s1">getSteeringCorrection</span><span class="s3">(</span><span class="s1">heading</span><span class="s3">, </span><span class="s1">P_TURN_GAIN</span><span class="s3">);</span>
+
+            <span class="s0">// Clip the speed to the maximum permitted value.</span>
+            <span class="s1">turnSpeed </span><span class="s3">= </span><span class="s1">Range</span><span class="s3">.</span><span class="s1">clip</span><span class="s3">(</span><span class="s1">turnSpeed</span><span class="s3">, -</span><span class="s1">maxTurnSpeed</span><span class="s3">, </span><span class="s1">maxTurnSpeed</span><span class="s3">);</span>
+
+            <span class="s0">// Pivot in place by applying the turning correction</span>
+            <span class="s1">moveRobot</span><span class="s3">(</span><span class="s5">0</span><span class="s3">, </span><span class="s1">turnSpeed</span><span class="s3">);</span>
+
+            <span class="s0">// Display drive status for the driver.</span>
+            <span class="s1">sendTelemetry</span><span class="s3">(</span><span class="s2">false</span><span class="s3">);</span>
+        <span class="s3">}</span>
+
+        <span class="s0">// Stop all motion;</span>
+        <span class="s1">moveRobot</span><span class="s3">(</span><span class="s5">0</span><span class="s3">, </span><span class="s5">0</span><span class="s3">);</span>
+    <span class="s3">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">*  Obtain &amp; hold a heading for a finite amount of time</span>
+     <span class="s6">*  </span><span class="s8">&lt;p&gt;</span>
+     <span class="s6">*  Move will stop once the requested time has elapsed</span>
+     <span class="s6">*  </span><span class="s8">&lt;p&gt;</span>
+     <span class="s6">*  This function is useful for giving the robot a moment to stabilize its heading between movements.</span>
+     <span class="s6">*</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">maxTurnSpeed      Maximum differential turn speed (range 0 to +1.0)</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">heading    Absolute Heading Angle (in Degrees) relative to last gyro reset.</span>
+     <span class="s6">*                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.</span>
+     <span class="s6">*                   If a relative angle is required, add/subtract from current heading.</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">holdTime   Length of time (in seconds) to hold the specified heading.</span>
+     <span class="s6">*/</span>
+    <span class="s2">public void </span><span class="s1">holdHeading</span><span class="s3">(</span><span class="s2">double </span><span class="s1">maxTurnSpeed</span><span class="s3">, </span><span class="s2">double </span><span class="s1">heading</span><span class="s3">, </span><span class="s2">double </span><span class="s1">holdTime</span><span class="s3">) {</span>
+
+        <span class="s1">ElapsedTime holdTimer </span><span class="s3">= </span><span class="s2">new </span><span class="s1">ElapsedTime</span><span class="s3">();</span>
+        <span class="s1">holdTimer</span><span class="s3">.</span><span class="s1">reset</span><span class="s3">();</span>
+
+        <span class="s0">// keep looping while we have time remaining.</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">() &amp;&amp; (</span><span class="s1">holdTimer</span><span class="s3">.</span><span class="s1">time</span><span class="s3">() &lt; </span><span class="s1">holdTime</span><span class="s3">)) {</span>
+            <span class="s0">// Determine required steering to keep on heading</span>
+            <span class="s1">turnSpeed </span><span class="s3">= </span><span class="s1">getSteeringCorrection</span><span class="s3">(</span><span class="s1">heading</span><span class="s3">, </span><span class="s1">P_TURN_GAIN</span><span class="s3">);</span>
+
+            <span class="s0">// Clip the speed to the maximum permitted value.</span>
+            <span class="s1">turnSpeed </span><span class="s3">= </span><span class="s1">Range</span><span class="s3">.</span><span class="s1">clip</span><span class="s3">(</span><span class="s1">turnSpeed</span><span class="s3">, -</span><span class="s1">maxTurnSpeed</span><span class="s3">, </span><span class="s1">maxTurnSpeed</span><span class="s3">);</span>
+
+            <span class="s0">// Pivot in place by applying the turning correction</span>
+            <span class="s1">moveRobot</span><span class="s3">(</span><span class="s5">0</span><span class="s3">, </span><span class="s1">turnSpeed</span><span class="s3">);</span>
+
+            <span class="s0">// Display drive status for the driver.</span>
+            <span class="s1">sendTelemetry</span><span class="s3">(</span><span class="s2">false</span><span class="s3">);</span>
+        <span class="s3">}</span>
+
+        <span class="s0">// Stop all motion;</span>
+        <span class="s1">moveRobot</span><span class="s3">(</span><span class="s5">0</span><span class="s3">, </span><span class="s5">0</span><span class="s3">);</span>
+    <span class="s3">}</span>
+
+    <span class="s0">// **********  LOW Level driving functions.  ********************</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Use a Proportional Controller to determine how much steering correction is required.</span>
+     <span class="s6">*</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">desiredHeading        The desired absolute heading (relative to last heading reset)</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">proportionalGain      Gain factor applied to heading error to obtain turning power.</span>
+     <span class="s6">* </span><span class="s7">@return                      </span><span class="s6">Turning power needed to get to required heading.</span>
+     <span class="s6">*/</span>
+    <span class="s2">public double </span><span class="s1">getSteeringCorrection</span><span class="s3">(</span><span class="s2">double </span><span class="s1">desiredHeading</span><span class="s3">, </span><span class="s2">double </span><span class="s1">proportionalGain</span><span class="s3">) {</span>
+        <span class="s1">targetHeading </span><span class="s3">= </span><span class="s1">desiredHeading</span><span class="s3">;  </span><span class="s0">// Save for telemetry</span>
+
+        <span class="s0">// Determine the heading current error</span>
+        <span class="s1">headingError </span><span class="s3">= </span><span class="s1">targetHeading </span><span class="s3">- </span><span class="s1">getHeading</span><span class="s3">();</span>
+
+        <span class="s0">// Normalize the error to be within +/- 180 degrees</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">headingError </span><span class="s3">&gt; </span><span class="s5">180</span><span class="s3">)  </span><span class="s1">headingError </span><span class="s3">-= </span><span class="s5">360</span><span class="s3">;</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">headingError </span><span class="s3">&lt;= -</span><span class="s5">180</span><span class="s3">) </span><span class="s1">headingError </span><span class="s3">+= </span><span class="s5">360</span><span class="s3">;</span>
+
+        <span class="s0">// Multiply the error by the gain to determine the required steering correction/  Limit the result to +/- 1.0</span>
+        <span class="s2">return </span><span class="s1">Range</span><span class="s3">.</span><span class="s1">clip</span><span class="s3">(</span><span class="s1">headingError </span><span class="s3">* </span><span class="s1">proportionalGain</span><span class="s3">, -</span><span class="s5">1</span><span class="s3">, </span><span class="s5">1</span><span class="s3">);</span>
+    <span class="s3">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Take separate drive (fwd/rev) and turn (right/left) requests,</span>
+     <span class="s6">* combines them, and applies the appropriate speed commands to the left and right wheel motors.</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">drive forward motor speed</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">turn  clockwise turning motor speed.</span>
+     <span class="s6">*/</span>
+    <span class="s2">public void </span><span class="s1">moveRobot</span><span class="s3">(</span><span class="s2">double </span><span class="s1">drive</span><span class="s3">, </span><span class="s2">double </span><span class="s1">turn</span><span class="s3">) {</span>
+        <span class="s1">driveSpeed </span><span class="s3">= </span><span class="s1">drive</span><span class="s3">;     </span><span class="s0">// save this value as a class member so it can be used by telemetry.</span>
+        <span class="s1">turnSpeed  </span><span class="s3">= </span><span class="s1">turn</span><span class="s3">;      </span><span class="s0">// save this value as a class member so it can be used by telemetry.</span>
+
+        <span class="s1">leftSpeed  </span><span class="s3">= </span><span class="s1">drive </span><span class="s3">- </span><span class="s1">turn</span><span class="s3">;</span>
+        <span class="s1">rightSpeed </span><span class="s3">= </span><span class="s1">drive </span><span class="s3">+ </span><span class="s1">turn</span><span class="s3">;</span>
+
+        <span class="s0">// Scale speeds down if either one exceeds +/- 1.0;</span>
+        <span class="s2">double </span><span class="s1">max </span><span class="s3">= </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">max</span><span class="s3">(</span><span class="s1">Math</span><span class="s3">.</span><span class="s1">abs</span><span class="s3">(</span><span class="s1">leftSpeed</span><span class="s3">), </span><span class="s1">Math</span><span class="s3">.</span><span class="s1">abs</span><span class="s3">(</span><span class="s1">rightSpeed</span><span class="s3">));</span>
+        <span class="s2">if </span><span class="s3">(</span><span class="s1">max </span><span class="s3">&gt; </span><span class="s5">1.0</span><span class="s3">)</span>
+        <span class="s3">{</span>
+            <span class="s1">leftSpeed </span><span class="s3">/= </span><span class="s1">max</span><span class="s3">;</span>
+            <span class="s1">rightSpeed </span><span class="s3">/= </span><span class="s1">max</span><span class="s3">;</span>
+        <span class="s3">}</span>
+
+        <span class="s1">leftDrive</span><span class="s3">.</span><span class="s1">setPower</span><span class="s3">(</span><span class="s1">leftSpeed</span><span class="s3">);</span>
+        <span class="s1">rightDrive</span><span class="s3">.</span><span class="s1">setPower</span><span class="s3">(</span><span class="s1">rightSpeed</span><span class="s3">);</span>
+    <span class="s3">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">*  Display the various control parameters while driving</span>
+     <span class="s6">*</span>
+     <span class="s6">* </span><span class="s7">@param </span><span class="s6">straight  Set to true if we are driving straight, and the encoder positions should be included in the telemetry.</span>
+     <span class="s6">*/</span>
+    <span class="s2">private void </span><span class="s1">sendTelemetry</span><span class="s3">(</span><span class="s2">boolean </span><span class="s1">straight</span><span class="s3">) {</span>
+
+        <span class="s2">if </span><span class="s3">(</span><span class="s1">straight</span><span class="s3">) {</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Motion&quot;</span><span class="s3">, </span><span class="s4">&quot;Drive Straight&quot;</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Target Pos L:R&quot;</span><span class="s3">,  </span><span class="s4">&quot;%7d:%7d&quot;</span><span class="s3">,      </span><span class="s1">leftTarget</span><span class="s3">,  </span><span class="s1">rightTarget</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Actual Pos L:R&quot;</span><span class="s3">,  </span><span class="s4">&quot;%7d:%7d&quot;</span><span class="s3">,      </span><span class="s1">leftDrive</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">(),</span>
+                    <span class="s1">rightDrive</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">());</span>
+        <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Motion&quot;</span><span class="s3">, </span><span class="s4">&quot;Turning&quot;</span><span class="s3">);</span>
+        <span class="s3">}</span>
+
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Heading- Target : Current&quot;</span><span class="s3">, </span><span class="s4">&quot;%5.2f : %5.0f&quot;</span><span class="s3">, </span><span class="s1">targetHeading</span><span class="s3">, </span><span class="s1">getHeading</span><span class="s3">());</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Error  : Steer Pwr&quot;</span><span class="s3">,  </span><span class="s4">&quot;%5.1f : %5.1f&quot;</span><span class="s3">, </span><span class="s1">headingError</span><span class="s3">, </span><span class="s1">turnSpeed</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Wheel Speeds L : R&quot;</span><span class="s3">, </span><span class="s4">&quot;%5.2f : %5.2f&quot;</span><span class="s3">, </span><span class="s1">leftSpeed</span><span class="s3">, </span><span class="s1">rightSpeed</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+    <span class="s3">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* read the Robot heading directly from the IMU (in degrees)</span>
+     <span class="s6">*/</span>
+    <span class="s2">public double </span><span class="s1">getHeading</span><span class="s3">() {</span>
+        <span class="s1">YawPitchRollAngles orientation </span><span class="s3">= </span><span class="s1">imu</span><span class="s3">.</span><span class="s1">getRobotYawPitchRollAngles</span><span class="s3">();</span>
+        <span class="s2">return </span><span class="s1">orientation</span><span class="s3">.</span><span class="s1">getYaw</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">);</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

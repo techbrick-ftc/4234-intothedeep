@@ -1,0 +1,868 @@
+<html>
+<head>
+<title>FtcRobotControllerActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+.s6 { color: #5f826b; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+FtcRobotControllerActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Copyright (c) 2014, 2015 Qualcomm Technologies Inc 
+ 
+All rights reserved. 
+ 
+Redistribution and use in source and binary forms, with or without modification, 
+are permitted (subject to the limitations in the disclaimer below) provided that 
+the following conditions are met: 
+ 
+Redistributions of source code must retain the above copyright notice, this list 
+of conditions and the following disclaimer. 
+ 
+Redistributions in binary form must reproduce the above copyright notice, this 
+list of conditions and the following disclaimer in the documentation and/or 
+other materials provided with the distribution. 
+ 
+Neither the name of Qualcomm Technologies Inc nor the names of its contributors 
+may be used to endorse or promote products derived from this software without 
+specific prior written permission. 
+ 
+NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+&quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">app</span><span class="s3">.</span><span class="s1">ActionBar</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">app</span><span class="s3">.</span><span class="s1">Activity</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">app</span><span class="s3">.</span><span class="s1">ActivityManager</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">content</span><span class="s3">.</span><span class="s1">ComponentName</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">content</span><span class="s3">.</span><span class="s1">Context</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">content</span><span class="s3">.</span><span class="s1">Intent</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">content</span><span class="s3">.</span><span class="s1">ServiceConnection</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">content</span><span class="s3">.</span><span class="s1">SharedPreferences</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">content</span><span class="s3">.</span><span class="s1">res</span><span class="s3">.</span><span class="s1">Configuration</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">usb</span><span class="s3">.</span><span class="s1">UsbDevice</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">usb</span><span class="s3">.</span><span class="s1">UsbManager</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">net</span><span class="s3">.</span><span class="s1">wifi</span><span class="s3">.</span><span class="s1">WifiManager</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">os</span><span class="s3">.</span><span class="s1">Bundle</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">os</span><span class="s3">.</span><span class="s1">IBinder</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">preference</span><span class="s3">.</span><span class="s1">PreferenceManager</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">androidx</span><span class="s3">.</span><span class="s1">annotation</span><span class="s3">.</span><span class="s1">NonNull</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">androidx</span><span class="s3">.</span><span class="s1">annotation</span><span class="s3">.</span><span class="s1">Nullable</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">androidx</span><span class="s3">.</span><span class="s1">annotation</span><span class="s3">.</span><span class="s1">StringRes</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">view</span><span class="s3">.</span><span class="s1">Menu</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">view</span><span class="s3">.</span><span class="s1">MenuItem</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">view</span><span class="s3">.</span><span class="s1">MotionEvent</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">view</span><span class="s3">.</span><span class="s1">View</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">view</span><span class="s3">.</span><span class="s1">WindowManager</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">webkit</span><span class="s3">.</span><span class="s1">WebView</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">widget</span><span class="s3">.</span><span class="s1">ImageButton</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">widget</span><span class="s3">.</span><span class="s1">LinearLayout</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">widget</span><span class="s3">.</span><span class="s1">LinearLayout</span><span class="s3">.</span><span class="s1">LayoutParams</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">widget</span><span class="s3">.</span><span class="s1">PopupMenu</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">widget</span><span class="s3">.</span><span class="s1">TextView</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">google</span><span class="s3">.</span><span class="s1">blocks</span><span class="s3">.</span><span class="s1">ftcrobotcontroller</span><span class="s3">.</span><span class="s1">ProgrammingWebHandlers</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">google</span><span class="s3">.</span><span class="s1">blocks</span><span class="s3">.</span><span class="s1">ftcrobotcontroller</span><span class="s3">.</span><span class="s1">runtime</span><span class="s3">.</span><span class="s1">BlocksOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">ClassManagerFactory</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">FtcAboutActivity</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">FtcEventLoop</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">FtcEventLoopIdle</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">FtcRobotControllerService</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">FtcRobotControllerService</span><span class="s3">.</span><span class="s1">FtcRobotControllerBinder</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">FtcRobotControllerSettingsActivity</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">LaunchActivityConstantsList</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">LaunchActivityConstantsList</span><span class="s3">.</span><span class="s1">RequestCode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">Restarter</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">UpdateUI</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">configuration</span><span class="s3">.</span><span class="s1">EditParameters</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">configuration</span><span class="s3">.</span><span class="s1">FtcLoadFileActivity</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">configuration</span><span class="s3">.</span><span class="s1">RobotConfigFile</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">configuration</span><span class="s3">.</span><span class="s1">RobotConfigFileManager</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftcrobotcontroller</span><span class="s3">.</span><span class="s1">BuildConfig</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftcrobotcontroller</span><span class="s3">.</span><span class="s1">R</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">HardwareFactory</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">EventLoopManager</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">FtcRobotControllerServiceState</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">OpModeRegister</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">configuration</span><span class="s3">.</span><span class="s1">LynxConstants</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">configuration</span><span class="s3">.</span><span class="s1">Utility</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">robot</span><span class="s3">.</span><span class="s1">Robot</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">robot</span><span class="s3">.</span><span class="s1">RobotState</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">ClockWarningSource</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">Device</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">Dimmer</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">ImmersiveMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">RobotLog</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">WebServer</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">wifi</span><span class="s3">.</span><span class="s1">NetworkConnection</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">wifi</span><span class="s3">.</span><span class="s1">NetworkConnectionFactory</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">wifi</span><span class="s3">.</span><span class="s1">NetworkType</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">SoundPlayingRobotMonitor</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">AnnotatedHooksClassFilter</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">FtcRobotControllerWatchdogService</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">ProgramAndManageActivity</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">onbotjava</span><span class="s3">.</span><span class="s1">ExternalLibraries</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">onbotjava</span><span class="s3">.</span><span class="s1">OnBotJavaHelperImpl</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">onbotjava</span><span class="s3">.</span><span class="s1">OnBotJavaProgrammingMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">MotionDetection</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">android</span><span class="s3">.</span><span class="s1">AndroidBoard</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">network</span><span class="s3">.</span><span class="s1">DeviceNameManagerFactory</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">network</span><span class="s3">.</span><span class="s1">PreferenceRemoterRC</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">network</span><span class="s3">.</span><span class="s1">StartResult</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">network</span><span class="s3">.</span><span class="s1">WifiDirectChannelChanger</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">network</span><span class="s3">.</span><span class="s1">WifiMuteEvent</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">network</span><span class="s3">.</span><span class="s1">WifiMuteStateMachine</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">ClassManager</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">OnBotJavaHelper</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">system</span><span class="s3">.</span><span class="s1">AppAliveNotifier</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">system</span><span class="s3">.</span><span class="s1">AppUtil</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">system</span><span class="s3">.</span><span class="s1">Assert</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">system</span><span class="s3">.</span><span class="s1">PreferencesHelper</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">system</span><span class="s3">.</span><span class="s1">ServiceController</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">ui</span><span class="s3">.</span><span class="s1">ThemedActivity</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">ui</span><span class="s3">.</span><span class="s1">UILocation</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">webserver</span><span class="s3">.</span><span class="s1">RobotControllerWebInfo</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotserver</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">programmingmode</span><span class="s3">.</span><span class="s1">ProgrammingModeManager</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">inspection</span><span class="s3">.</span><span class="s1">RcInspectionActivity</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">threeten</span><span class="s3">.</span><span class="s1">bp</span><span class="s3">.</span><span class="s1">YearMonth</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">xmlpull</span><span class="s3">.</span><span class="s1">v1</span><span class="s3">.</span><span class="s1">XmlPullParserException</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">java</span><span class="s3">.</span><span class="s1">io</span><span class="s3">.</span><span class="s1">FileNotFoundException</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">java</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">List</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">java</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">Queue</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">java</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">concurrent</span><span class="s3">.</span><span class="s1">ConcurrentLinkedQueue</span><span class="s3">;</span>
+
+<span class="s1">@SuppressWarnings</span><span class="s3">(</span><span class="s4">&quot;WeakerAccess&quot;</span><span class="s3">)</span>
+<span class="s2">public class </span><span class="s1">FtcRobotControllerActivity </span><span class="s2">extends </span><span class="s1">Activity</span>
+  <span class="s3">{</span>
+  <span class="s2">public static final </span><span class="s1">String TAG </span><span class="s3">= </span><span class="s4">&quot;RCActivity&quot;</span><span class="s3">;</span>
+  <span class="s2">public </span><span class="s1">String getTag</span><span class="s3">() { </span><span class="s2">return </span><span class="s1">TAG</span><span class="s3">; }</span>
+
+  <span class="s2">private static final int </span><span class="s1">REQUEST_CONFIG_WIFI_CHANNEL </span><span class="s3">= </span><span class="s5">1</span><span class="s3">;</span>
+  <span class="s2">private static final int </span><span class="s1">NUM_GAMEPADS </span><span class="s3">= </span><span class="s5">2</span><span class="s3">;</span>
+
+  <span class="s2">protected </span><span class="s1">WifiManager</span><span class="s3">.</span><span class="s1">WifiLock wifiLock</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">RobotConfigFileManager cfgFileMgr</span><span class="s3">;</span>
+
+  <span class="s2">private </span><span class="s1">OnBotJavaHelper onBotJavaHelper</span><span class="s3">;</span>
+
+  <span class="s2">protected </span><span class="s1">ProgrammingModeManager programmingModeManager</span><span class="s3">;</span>
+
+  <span class="s2">protected </span><span class="s1">UpdateUI</span><span class="s3">.</span><span class="s1">Callback callback</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">Context context</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">Utility utility</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">StartResult prefRemoterStartResult </span><span class="s3">= </span><span class="s2">new </span><span class="s1">StartResult</span><span class="s3">();</span>
+  <span class="s2">protected </span><span class="s1">StartResult deviceNameStartResult </span><span class="s3">= </span><span class="s2">new </span><span class="s1">StartResult</span><span class="s3">();</span>
+  <span class="s2">protected </span><span class="s1">PreferencesHelper preferencesHelper</span><span class="s3">;</span>
+  <span class="s2">protected final </span><span class="s1">SharedPreferencesListener sharedPreferencesListener </span><span class="s3">= </span><span class="s2">new </span><span class="s1">SharedPreferencesListener</span><span class="s3">();</span>
+
+  <span class="s2">protected </span><span class="s1">ImageButton buttonMenu</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">TextView textDeviceName</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">TextView textNetworkConnectionStatus</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">TextView textRobotStatus</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">TextView</span><span class="s3">[] </span><span class="s1">textGamepad </span><span class="s3">= </span><span class="s2">new </span><span class="s1">TextView</span><span class="s3">[</span><span class="s1">NUM_GAMEPADS</span><span class="s3">];</span>
+  <span class="s2">protected </span><span class="s1">TextView textOpMode</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">TextView textErrorMessage</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">ImmersiveMode immersion</span><span class="s3">;</span>
+
+  <span class="s2">protected </span><span class="s1">UpdateUI updateUI</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">Dimmer dimmer</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">LinearLayout entireScreenLayout</span><span class="s3">;</span>
+
+  <span class="s2">protected </span><span class="s1">FtcRobotControllerService controllerService</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">NetworkType networkType</span><span class="s3">;</span>
+
+  <span class="s2">protected </span><span class="s1">FtcEventLoop eventLoop</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">Queue</span><span class="s3">&lt;</span><span class="s1">UsbDevice</span><span class="s3">&gt; </span><span class="s1">receivedUsbAttachmentNotifications</span><span class="s3">;</span>
+
+  <span class="s2">protected </span><span class="s1">WifiMuteStateMachine wifiMuteStateMachine</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">MotionDetection motionDetection</span><span class="s3">;</span>
+
+  <span class="s2">private static boolean </span><span class="s1">permissionsValidated </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+
+  <span class="s2">private </span><span class="s1">WifiDirectChannelChanger wifiDirectChannelChanger</span><span class="s3">;</span>
+
+  <span class="s2">protected class </span><span class="s1">RobotRestarter </span><span class="s2">implements </span><span class="s1">Restarter </span><span class="s3">{</span>
+
+    <span class="s2">public void </span><span class="s1">requestRestart</span><span class="s3">() {</span>
+      <span class="s1">requestRobotRestart</span><span class="s3">();</span>
+    <span class="s3">}</span>
+
+  <span class="s3">}</span>
+
+  <span class="s2">protected boolean </span><span class="s1">serviceShouldUnbind </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+  <span class="s2">protected </span><span class="s1">ServiceConnection connection </span><span class="s3">= </span><span class="s2">new </span><span class="s1">ServiceConnection</span><span class="s3">() {</span>
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">onServiceConnected</span><span class="s3">(</span><span class="s1">ComponentName name</span><span class="s3">, </span><span class="s1">IBinder service</span><span class="s3">) {</span>
+      <span class="s1">FtcRobotControllerBinder binder </span><span class="s3">= (</span><span class="s1">FtcRobotControllerBinder</span><span class="s3">) </span><span class="s1">service</span><span class="s3">;</span>
+      <span class="s1">onServiceBind</span><span class="s3">(</span><span class="s1">binder</span><span class="s3">.</span><span class="s1">getService</span><span class="s3">());</span>
+    <span class="s3">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">onServiceDisconnected</span><span class="s3">(</span><span class="s1">ComponentName name</span><span class="s3">) {</span>
+      <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">FtcRobotControllerService</span><span class="s3">.</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;%s.controllerService=null&quot;</span><span class="s3">, </span><span class="s1">TAG</span><span class="s3">);</span>
+      <span class="s1">controllerService </span><span class="s3">= </span><span class="s2">null</span><span class="s3">;</span>
+    <span class="s3">}</span>
+  <span class="s3">};</span>
+
+  <span class="s1">@Override</span>
+  <span class="s2">protected void </span><span class="s1">onNewIntent</span><span class="s3">(</span><span class="s1">Intent intent</span><span class="s3">) {</span>
+    <span class="s2">super</span><span class="s3">.</span><span class="s1">onNewIntent</span><span class="s3">(</span><span class="s1">intent</span><span class="s3">);</span>
+
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">UsbManager</span><span class="s3">.</span><span class="s1">ACTION_USB_DEVICE_ATTACHED</span><span class="s3">.</span><span class="s1">equals</span><span class="s3">(</span><span class="s1">intent</span><span class="s3">.</span><span class="s1">getAction</span><span class="s3">())) {</span>
+      <span class="s1">UsbDevice usbDevice </span><span class="s3">= </span><span class="s1">intent</span><span class="s3">.</span><span class="s1">getParcelableExtra</span><span class="s3">(</span><span class="s1">UsbManager</span><span class="s3">.</span><span class="s1">EXTRA_DEVICE</span><span class="s3">);</span>
+      <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;ACTION_USB_DEVICE_ATTACHED: %s&quot;</span><span class="s3">, </span><span class="s1">usbDevice</span><span class="s3">.</span><span class="s1">getDeviceName</span><span class="s3">());</span>
+
+      <span class="s2">if </span><span class="s3">(</span><span class="s1">usbDevice </span><span class="s3">!= </span><span class="s2">null</span><span class="s3">) {  </span><span class="s0">// paranoia</span>
+        <span class="s0">// We might get attachment notifications before the event loop is set up, so</span>
+        <span class="s0">// we hold on to them and pass them along only when we're good and ready.</span>
+        <span class="s2">if </span><span class="s3">(</span><span class="s1">receivedUsbAttachmentNotifications </span><span class="s3">!= </span><span class="s2">null</span><span class="s3">) { </span><span class="s0">// *total* paranoia</span>
+          <span class="s1">receivedUsbAttachmentNotifications</span><span class="s3">.</span><span class="s1">add</span><span class="s3">(</span><span class="s1">usbDevice</span><span class="s3">);</span>
+          <span class="s1">passReceivedUsbAttachmentsToEventLoop</span><span class="s3">();</span>
+        <span class="s3">}</span>
+      <span class="s3">}</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+
+  <span class="s2">protected void </span><span class="s1">passReceivedUsbAttachmentsToEventLoop</span><span class="s3">() {</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s2">this</span><span class="s3">.</span><span class="s1">eventLoop </span><span class="s3">!= </span><span class="s2">null</span><span class="s3">) {</span>
+      <span class="s2">for </span><span class="s3">(;;) {</span>
+        <span class="s1">UsbDevice usbDevice </span><span class="s3">= </span><span class="s1">receivedUsbAttachmentNotifications</span><span class="s3">.</span><span class="s1">poll</span><span class="s3">();</span>
+        <span class="s2">if </span><span class="s3">(</span><span class="s1">usbDevice </span><span class="s3">== </span><span class="s2">null</span><span class="s3">)</span>
+          <span class="s2">break</span><span class="s3">;</span>
+        <span class="s2">this</span><span class="s3">.</span><span class="s1">eventLoop</span><span class="s3">.</span><span class="s1">onUsbDeviceAttached</span><span class="s3">(</span><span class="s1">usbDevice</span><span class="s3">);</span>
+      <span class="s3">}</span>
+    <span class="s3">}</span>
+    <span class="s2">else </span><span class="s3">{</span>
+      <span class="s0">// Paranoia: we don't want the pending list to grow without bound when we don't</span>
+      <span class="s0">// (yet) have an event loop</span>
+      <span class="s2">while </span><span class="s3">(</span><span class="s1">receivedUsbAttachmentNotifications</span><span class="s3">.</span><span class="s1">size</span><span class="s3">() &gt; </span><span class="s5">100</span><span class="s3">) {</span>
+        <span class="s1">receivedUsbAttachmentNotifications</span><span class="s3">.</span><span class="s1">poll</span><span class="s3">();</span>
+      <span class="s3">}</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+
+  <span class="s6">/**</span>
+   <span class="s6">* There are cases where a permission may be revoked and the system restart will restart the</span>
+   <span class="s6">* FtcRobotControllerActivity, instead of the launch activity.  Detect when that happens, and throw</span>
+   <span class="s6">* the device back to the permission validator activity.</span>
+   <span class="s6">*/</span>
+  <span class="s2">protected boolean </span><span class="s1">enforcePermissionValidator</span><span class="s3">() {</span>
+    <span class="s2">if </span><span class="s3">(!</span><span class="s1">permissionsValidated</span><span class="s3">) {</span>
+      <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;Redirecting to permission validator&quot;</span><span class="s3">);</span>
+      <span class="s1">Intent permissionValidatorIntent </span><span class="s3">= </span><span class="s2">new </span><span class="s1">Intent</span><span class="s3">(</span><span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getDefContext</span><span class="s3">(), </span><span class="s1">PermissionValidatorWrapper</span><span class="s3">.</span><span class="s2">class</span><span class="s3">);</span>
+      <span class="s1">startActivity</span><span class="s3">(</span><span class="s1">permissionValidatorIntent</span><span class="s3">);</span>
+      <span class="s1">finish</span><span class="s3">();</span>
+      <span class="s2">return true</span><span class="s3">;</span>
+    <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+      <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;Permissions validated already&quot;</span><span class="s3">);</span>
+      <span class="s2">return false</span><span class="s3">;</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+
+  <span class="s2">public static void </span><span class="s1">setPermissionsValidated</span><span class="s3">() {</span>
+    <span class="s1">permissionsValidated </span><span class="s3">= </span><span class="s2">true</span><span class="s3">;</span>
+  <span class="s3">}</span>
+
+  <span class="s1">@Override</span>
+  <span class="s2">protected void </span><span class="s1">onCreate</span><span class="s3">(</span><span class="s1">Bundle savedInstanceState</span><span class="s3">) {</span>
+    <span class="s2">super</span><span class="s3">.</span><span class="s1">onCreate</span><span class="s3">(</span><span class="s1">savedInstanceState</span><span class="s3">);</span>
+
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">enforcePermissionValidator</span><span class="s3">()) {</span>
+      <span class="s2">return</span><span class="s3">;</span>
+    <span class="s3">}</span>
+
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">onApplicationStart</span><span class="s3">();  </span><span class="s0">// robustify against onCreate() following onDestroy() but using the same app instance, which apparently does happen</span>
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;onCreate()&quot;</span><span class="s3">);</span>
+    <span class="s1">ThemedActivity</span><span class="s3">.</span><span class="s1">appAppThemeToActivity</span><span class="s3">(</span><span class="s1">getTag</span><span class="s3">(), </span><span class="s2">this</span><span class="s3">); </span><span class="s0">// do this way instead of inherit to help AppInventor</span>
+
+    <span class="s0">// Oddly, sometimes after a crash &amp; restart the root activity will be something unexpected, like from the before crash? We don't yet understand</span>
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;rootActivity is of class %s&quot;</span><span class="s3">, </span><span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">getRootActivity</span><span class="s3">().</span><span class="s1">getClass</span><span class="s3">().</span><span class="s1">getSimpleName</span><span class="s3">());</span>
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;launchActivity is of class %s&quot;</span><span class="s3">, </span><span class="s1">FtcRobotControllerWatchdogService</span><span class="s3">.</span><span class="s1">launchActivity</span><span class="s3">());</span>
+    <span class="s1">Assert</span><span class="s3">.</span><span class="s1">assertTrue</span><span class="s3">(</span><span class="s1">FtcRobotControllerWatchdogService</span><span class="s3">.</span><span class="s1">isLaunchActivity</span><span class="s3">(</span><span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">getRootActivity</span><span class="s3">()));</span>
+    <span class="s1">Assert</span><span class="s3">.</span><span class="s1">assertTrue</span><span class="s3">(</span><span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">isRobotController</span><span class="s3">());</span>
+
+    <span class="s0">// Quick check: should we pretend we're not here, and so allow the Lynx to operate as</span>
+    <span class="s0">// a stand-alone USB-connected module?</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">LynxConstants</span><span class="s3">.</span><span class="s1">isRevControlHub</span><span class="s3">()) {</span>
+      <span class="s0">// Double-sure check that we can talk to the DB over the serial TTY</span>
+      <span class="s1">AndroidBoard</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">getAndroidBoardIsPresentPin</span><span class="s3">().</span><span class="s1">setState</span><span class="s3">(</span><span class="s2">true</span><span class="s3">);</span>
+    <span class="s3">}</span>
+
+    <span class="s1">context </span><span class="s3">= </span><span class="s2">this</span><span class="s3">;</span>
+    <span class="s1">utility </span><span class="s3">= </span><span class="s2">new </span><span class="s1">Utility</span><span class="s3">(</span><span class="s2">this</span><span class="s3">);</span>
+
+    <span class="s1">DeviceNameManagerFactory</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">start</span><span class="s3">(</span><span class="s1">deviceNameStartResult</span><span class="s3">);</span>
+
+    <span class="s1">PreferenceRemoterRC</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">start</span><span class="s3">(</span><span class="s1">prefRemoterStartResult</span><span class="s3">);</span>
+
+    <span class="s1">receivedUsbAttachmentNotifications </span><span class="s3">= </span><span class="s2">new </span><span class="s1">ConcurrentLinkedQueue</span><span class="s3">&lt;</span><span class="s1">UsbDevice</span><span class="s3">&gt;();</span>
+    <span class="s1">eventLoop </span><span class="s3">= </span><span class="s2">null</span><span class="s3">;</span>
+
+    <span class="s1">setContentView</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">layout</span><span class="s3">.</span><span class="s1">activity_ftc_controller</span><span class="s3">);</span>
+
+    <span class="s1">preferencesHelper </span><span class="s3">= </span><span class="s2">new </span><span class="s1">PreferencesHelper</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s1">context</span><span class="s3">);</span>
+    <span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">writeBooleanPrefIfDifferent</span><span class="s3">(</span><span class="s1">context</span><span class="s3">.</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_rc_connected</span><span class="s3">), </span><span class="s2">true</span><span class="s3">);</span>
+    <span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">getSharedPreferences</span><span class="s3">().</span><span class="s1">registerOnSharedPreferenceChangeListener</span><span class="s3">(</span><span class="s1">sharedPreferencesListener</span><span class="s3">);</span>
+
+    <span class="s0">// Check if this RC app is from a later FTC season than what was installed previously</span>
+    <span class="s2">int </span><span class="s1">ftcSeasonYearOfPreviouslyInstalledRc </span><span class="s3">= </span><span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">readInt</span><span class="s3">(</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_ftc_season_year_of_current_rc</span><span class="s3">), </span><span class="s5">0</span><span class="s3">);</span>
+    <span class="s2">int </span><span class="s1">ftcSeasonYearOfCurrentlyInstalledRc </span><span class="s3">= </span><span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">getFtcSeasonYear</span><span class="s3">(</span><span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">getLocalSdkBuildMonth</span><span class="s3">()).</span><span class="s1">getValue</span><span class="s3">();</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">ftcSeasonYearOfCurrentlyInstalledRc </span><span class="s3">&gt; </span><span class="s1">ftcSeasonYearOfPreviouslyInstalledRc</span><span class="s3">) {</span>
+      <span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">writeIntPrefIfDifferent</span><span class="s3">(</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_ftc_season_year_of_current_rc</span><span class="s3">), </span><span class="s1">ftcSeasonYearOfCurrentlyInstalledRc</span><span class="s3">);</span>
+      <span class="s0">// Since it's a new FTC season, we should reset certain settings back to their default values.</span>
+      <span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">writeBooleanPrefIfDifferent</span><span class="s3">(</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_warn_about_2_4_ghz_band</span><span class="s3">), </span><span class="s2">true</span><span class="s3">);</span>
+      <span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">writeBooleanPrefIfDifferent</span><span class="s3">(</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_warn_about_obsolete_software</span><span class="s3">), </span><span class="s2">true</span><span class="s3">);</span>
+      <span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">writeBooleanPrefIfDifferent</span><span class="s3">(</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_warn_about_mismatched_app_versions</span><span class="s3">), </span><span class="s2">true</span><span class="s3">);</span>
+      <span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">writeBooleanPrefIfDifferent</span><span class="s3">(</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_warn_about_incorrect_clocks</span><span class="s3">), </span><span class="s2">true</span><span class="s3">);</span>
+    <span class="s3">}</span>
+
+    <span class="s1">entireScreenLayout </span><span class="s3">= (</span><span class="s1">LinearLayout</span><span class="s3">) </span><span class="s1">findViewById</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">entire_screen</span><span class="s3">);</span>
+    <span class="s1">buttonMenu </span><span class="s3">= (</span><span class="s1">ImageButton</span><span class="s3">) </span><span class="s1">findViewById</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">menu_buttons</span><span class="s3">);</span>
+    <span class="s1">buttonMenu</span><span class="s3">.</span><span class="s1">setOnClickListener</span><span class="s3">(</span><span class="s2">new </span><span class="s1">View</span><span class="s3">.</span><span class="s1">OnClickListener</span><span class="s3">() {</span>
+      <span class="s1">@Override</span>
+      <span class="s2">public void </span><span class="s1">onClick</span><span class="s3">(</span><span class="s1">View v</span><span class="s3">) {</span>
+        <span class="s1">PopupMenu popupMenu </span><span class="s3">= </span><span class="s2">new </span><span class="s1">PopupMenu</span><span class="s3">(</span><span class="s1">FtcRobotControllerActivity</span><span class="s3">.</span><span class="s2">this</span><span class="s3">, </span><span class="s1">v</span><span class="s3">);</span>
+        <span class="s1">popupMenu</span><span class="s3">.</span><span class="s1">setOnMenuItemClickListener</span><span class="s3">(</span><span class="s2">new </span><span class="s1">PopupMenu</span><span class="s3">.</span><span class="s1">OnMenuItemClickListener</span><span class="s3">() {</span>
+          <span class="s1">@Override</span>
+          <span class="s2">public boolean </span><span class="s1">onMenuItemClick</span><span class="s3">(</span><span class="s1">MenuItem item</span><span class="s3">) {</span>
+            <span class="s2">return </span><span class="s1">onOptionsItemSelected</span><span class="s3">(</span><span class="s1">item</span><span class="s3">); </span><span class="s0">// Delegate to the handler for the hardware menu button</span>
+          <span class="s3">}</span>
+        <span class="s3">});</span>
+        <span class="s1">popupMenu</span><span class="s3">.</span><span class="s1">inflate</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">menu</span><span class="s3">.</span><span class="s1">ftc_robot_controller</span><span class="s3">);</span>
+        <span class="s1">AnnotatedHooksClassFilter</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">callOnCreateMenuMethods</span><span class="s3">(</span>
+            <span class="s1">FtcRobotControllerActivity</span><span class="s3">.</span><span class="s2">this</span><span class="s3">, </span><span class="s1">popupMenu</span><span class="s3">.</span><span class="s1">getMenu</span><span class="s3">());</span>
+        <span class="s1">popupMenu</span><span class="s3">.</span><span class="s1">show</span><span class="s3">();</span>
+      <span class="s3">}</span>
+    <span class="s3">});</span>
+
+    <span class="s1">updateMonitorLayout</span><span class="s3">(</span><span class="s1">getResources</span><span class="s3">().</span><span class="s1">getConfiguration</span><span class="s3">());</span>
+
+    <span class="s1">BlocksOpMode</span><span class="s3">.</span><span class="s1">setActivityAndWebView</span><span class="s3">(</span><span class="s2">this</span><span class="s3">, (</span><span class="s1">WebView</span><span class="s3">) </span><span class="s1">findViewById</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">webViewBlocksRuntime</span><span class="s3">));</span>
+
+    <span class="s1">ExternalLibraries</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">onCreate</span><span class="s3">();</span>
+    <span class="s1">onBotJavaHelper </span><span class="s3">= </span><span class="s2">new </span><span class="s1">OnBotJavaHelperImpl</span><span class="s3">();</span>
+
+    <span class="s0">/* 
+     * Paranoia as the ClassManagerFactory requires EXTERNAL_STORAGE permissions 
+     * and we've seen on the DS where the finish() call above does not short-circuit 
+     * the onCreate() call for the activity and then we crash here because we don't 
+     * have permissions. So... 
+     */</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">permissionsValidated</span><span class="s3">) {</span>
+      <span class="s1">ClassManager</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">setOnBotJavaClassHelper</span><span class="s3">(</span><span class="s1">onBotJavaHelper</span><span class="s3">);</span>
+      <span class="s1">ClassManagerFactory</span><span class="s3">.</span><span class="s1">registerFilters</span><span class="s3">();</span>
+      <span class="s1">ClassManagerFactory</span><span class="s3">.</span><span class="s1">processAllClasses</span><span class="s3">();</span>
+    <span class="s3">}</span>
+
+    <span class="s1">cfgFileMgr </span><span class="s3">= </span><span class="s2">new </span><span class="s1">RobotConfigFileManager</span><span class="s3">(</span><span class="s2">this</span><span class="s3">);</span>
+
+    <span class="s0">// Clean up 'dirty' status after a possible crash</span>
+    <span class="s1">RobotConfigFile configFile </span><span class="s3">= </span><span class="s1">cfgFileMgr</span><span class="s3">.</span><span class="s1">getActiveConfig</span><span class="s3">();</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">configFile</span><span class="s3">.</span><span class="s1">isDirty</span><span class="s3">()) {</span>
+      <span class="s1">configFile</span><span class="s3">.</span><span class="s1">markClean</span><span class="s3">();</span>
+      <span class="s1">cfgFileMgr</span><span class="s3">.</span><span class="s1">setActiveConfig</span><span class="s3">(</span><span class="s2">false</span><span class="s3">, </span><span class="s1">configFile</span><span class="s3">);</span>
+    <span class="s3">}</span>
+
+    <span class="s1">textDeviceName </span><span class="s3">= (</span><span class="s1">TextView</span><span class="s3">) </span><span class="s1">findViewById</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">textDeviceName</span><span class="s3">);</span>
+    <span class="s1">textNetworkConnectionStatus </span><span class="s3">= (</span><span class="s1">TextView</span><span class="s3">) </span><span class="s1">findViewById</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">textNetworkConnectionStatus</span><span class="s3">);</span>
+    <span class="s1">textRobotStatus </span><span class="s3">= (</span><span class="s1">TextView</span><span class="s3">) </span><span class="s1">findViewById</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">textRobotStatus</span><span class="s3">);</span>
+    <span class="s1">textOpMode </span><span class="s3">= (</span><span class="s1">TextView</span><span class="s3">) </span><span class="s1">findViewById</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">textOpMode</span><span class="s3">);</span>
+    <span class="s1">textErrorMessage </span><span class="s3">= (</span><span class="s1">TextView</span><span class="s3">) </span><span class="s1">findViewById</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">textErrorMessage</span><span class="s3">);</span>
+    <span class="s1">textGamepad</span><span class="s3">[</span><span class="s5">0</span><span class="s3">] = (</span><span class="s1">TextView</span><span class="s3">) </span><span class="s1">findViewById</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">textGamepad1</span><span class="s3">);</span>
+    <span class="s1">textGamepad</span><span class="s3">[</span><span class="s5">1</span><span class="s3">] = (</span><span class="s1">TextView</span><span class="s3">) </span><span class="s1">findViewById</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">textGamepad2</span><span class="s3">);</span>
+    <span class="s1">immersion </span><span class="s3">= </span><span class="s2">new </span><span class="s1">ImmersiveMode</span><span class="s3">(</span><span class="s1">getWindow</span><span class="s3">().</span><span class="s1">getDecorView</span><span class="s3">());</span>
+    <span class="s1">dimmer </span><span class="s3">= </span><span class="s2">new </span><span class="s1">Dimmer</span><span class="s3">(</span><span class="s2">this</span><span class="s3">);</span>
+    <span class="s1">dimmer</span><span class="s3">.</span><span class="s1">longBright</span><span class="s3">();</span>
+
+    <span class="s1">programmingModeManager </span><span class="s3">= </span><span class="s2">new </span><span class="s1">ProgrammingModeManager</span><span class="s3">();</span>
+    <span class="s1">programmingModeManager</span><span class="s3">.</span><span class="s1">register</span><span class="s3">(</span><span class="s2">new </span><span class="s1">ProgrammingWebHandlers</span><span class="s3">());</span>
+    <span class="s1">programmingModeManager</span><span class="s3">.</span><span class="s1">register</span><span class="s3">(</span><span class="s2">new </span><span class="s1">OnBotJavaProgrammingMode</span><span class="s3">());</span>
+
+    <span class="s1">updateUI </span><span class="s3">= </span><span class="s1">createUpdateUI</span><span class="s3">();</span>
+    <span class="s1">callback </span><span class="s3">= </span><span class="s1">createUICallback</span><span class="s3">(</span><span class="s1">updateUI</span><span class="s3">);</span>
+
+    <span class="s1">PreferenceManager</span><span class="s3">.</span><span class="s1">setDefaultValues</span><span class="s3">(</span><span class="s2">this</span><span class="s3">, </span><span class="s1">R</span><span class="s3">.</span><span class="s1">xml</span><span class="s3">.</span><span class="s1">app_settings</span><span class="s3">, </span><span class="s2">false</span><span class="s3">);</span>
+
+    <span class="s1">WifiManager wifiManager </span><span class="s3">= (</span><span class="s1">WifiManager</span><span class="s3">) </span><span class="s1">getApplicationContext</span><span class="s3">().</span><span class="s1">getSystemService</span><span class="s3">(</span><span class="s1">Context</span><span class="s3">.</span><span class="s1">WIFI_SERVICE</span><span class="s3">);</span>
+    <span class="s1">wifiLock </span><span class="s3">= </span><span class="s1">wifiManager</span><span class="s3">.</span><span class="s1">createWifiLock</span><span class="s3">(</span><span class="s1">WifiManager</span><span class="s3">.</span><span class="s1">WIFI_MODE_FULL_HIGH_PERF</span><span class="s3">, </span><span class="s4">&quot;&quot;</span><span class="s3">);</span>
+
+    <span class="s1">hittingMenuButtonBrightensScreen</span><span class="s3">();</span>
+
+    <span class="s1">wifiLock</span><span class="s3">.</span><span class="s1">acquire</span><span class="s3">();</span>
+    <span class="s1">callback</span><span class="s3">.</span><span class="s1">networkConnectionUpdate</span><span class="s3">(</span><span class="s1">NetworkConnection</span><span class="s3">.</span><span class="s1">NetworkEvent</span><span class="s3">.</span><span class="s1">DISCONNECTED</span><span class="s3">);</span>
+    <span class="s1">readNetworkType</span><span class="s3">();</span>
+    <span class="s1">ServiceController</span><span class="s3">.</span><span class="s1">startService</span><span class="s3">(</span><span class="s1">FtcRobotControllerWatchdogService</span><span class="s3">.</span><span class="s2">class</span><span class="s3">);</span>
+    <span class="s1">bindToService</span><span class="s3">();</span>
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">logAppInfo</span><span class="s3">();</span>
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">logDeviceInfo</span><span class="s3">();</span>
+    <span class="s1">AndroidBoard</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">logAndroidBoardInfo</span><span class="s3">();</span>
+
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">readBoolean</span><span class="s3">(</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_wifi_automute</span><span class="s3">), </span><span class="s2">false</span><span class="s3">)) {</span>
+      <span class="s1">initWifiMute</span><span class="s3">(</span><span class="s2">true</span><span class="s3">);</span>
+    <span class="s3">}</span>
+
+    <span class="s1">FtcAboutActivity</span><span class="s3">.</span><span class="s1">setBuildTimeFromBuildConfig</span><span class="s3">(</span><span class="s1">BuildConfig</span><span class="s3">.</span><span class="s1">APP_BUILD_TIME</span><span class="s3">);</span>
+
+    <span class="s0">// check to see if there is a preferred Wi-Fi to use.</span>
+    <span class="s1">checkPreferredChannel</span><span class="s3">();</span>
+
+    <span class="s1">AnnotatedHooksClassFilter</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">callOnCreateMethods</span><span class="s3">(</span><span class="s2">this</span><span class="s3">);</span>
+  <span class="s3">}</span>
+
+  <span class="s2">protected </span><span class="s1">UpdateUI createUpdateUI</span><span class="s3">() {</span>
+    <span class="s1">Restarter restarter </span><span class="s3">= </span><span class="s2">new </span><span class="s1">RobotRestarter</span><span class="s3">();</span>
+    <span class="s1">UpdateUI result </span><span class="s3">= </span><span class="s2">new </span><span class="s1">UpdateUI</span><span class="s3">(</span><span class="s2">this</span><span class="s3">, </span><span class="s1">dimmer</span><span class="s3">);</span>
+    <span class="s1">result</span><span class="s3">.</span><span class="s1">setRestarter</span><span class="s3">(</span><span class="s1">restarter</span><span class="s3">);</span>
+    <span class="s1">result</span><span class="s3">.</span><span class="s1">setTextViews</span><span class="s3">(</span><span class="s1">textNetworkConnectionStatus</span><span class="s3">, </span><span class="s1">textRobotStatus</span><span class="s3">, </span><span class="s1">textGamepad</span><span class="s3">, </span><span class="s1">textOpMode</span><span class="s3">, </span><span class="s1">textErrorMessage</span><span class="s3">, </span><span class="s1">textDeviceName</span><span class="s3">);</span>
+    <span class="s2">return </span><span class="s1">result</span><span class="s3">;</span>
+  <span class="s3">}</span>
+
+  <span class="s2">protected </span><span class="s1">UpdateUI</span><span class="s3">.</span><span class="s1">Callback createUICallback</span><span class="s3">(</span><span class="s1">UpdateUI updateUI</span><span class="s3">) {</span>
+    <span class="s1">UpdateUI</span><span class="s3">.</span><span class="s1">Callback result </span><span class="s3">= </span><span class="s1">updateUI</span><span class="s3">.</span><span class="s2">new </span><span class="s1">Callback</span><span class="s3">();</span>
+    <span class="s1">result</span><span class="s3">.</span><span class="s1">setStateMonitor</span><span class="s3">(</span><span class="s2">new </span><span class="s1">SoundPlayingRobotMonitor</span><span class="s3">());</span>
+    <span class="s2">return </span><span class="s1">result</span><span class="s3">;</span>
+  <span class="s3">}</span>
+
+  <span class="s1">@Override</span>
+  <span class="s2">protected void </span><span class="s1">onStart</span><span class="s3">() {</span>
+    <span class="s2">super</span><span class="s3">.</span><span class="s1">onStart</span><span class="s3">();</span>
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;onStart()&quot;</span><span class="s3">);</span>
+
+    <span class="s1">entireScreenLayout</span><span class="s3">.</span><span class="s1">setOnTouchListener</span><span class="s3">(</span><span class="s2">new </span><span class="s1">View</span><span class="s3">.</span><span class="s1">OnTouchListener</span><span class="s3">() {</span>
+      <span class="s1">@Override</span>
+      <span class="s2">public boolean </span><span class="s1">onTouch</span><span class="s3">(</span><span class="s1">View v</span><span class="s3">, </span><span class="s1">MotionEvent event</span><span class="s3">) {</span>
+        <span class="s1">dimmer</span><span class="s3">.</span><span class="s1">handleDimTimer</span><span class="s3">();</span>
+        <span class="s2">return false</span><span class="s3">;</span>
+      <span class="s3">}</span>
+    <span class="s3">});</span>
+  <span class="s3">}</span>
+
+  <span class="s1">@Override</span>
+  <span class="s2">protected void </span><span class="s1">onResume</span><span class="s3">() {</span>
+    <span class="s2">super</span><span class="s3">.</span><span class="s1">onResume</span><span class="s3">();</span>
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;onResume()&quot;</span><span class="s3">);</span>
+
+    <span class="s0">// In case the user just got back from fixing their clock, refresh ClockWarningSource</span>
+    <span class="s1">ClockWarningSource</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">onPossibleRcClockUpdate</span><span class="s3">();</span>
+  <span class="s3">}</span>
+
+  <span class="s1">@Override</span>
+  <span class="s2">protected void </span><span class="s1">onPause</span><span class="s3">() {</span>
+    <span class="s2">super</span><span class="s3">.</span><span class="s1">onPause</span><span class="s3">();</span>
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;onPause()&quot;</span><span class="s3">);</span>
+  <span class="s3">}</span>
+
+  <span class="s1">@Override</span>
+  <span class="s2">protected void </span><span class="s1">onStop</span><span class="s3">() {</span>
+    <span class="s0">// Note: this gets called even when the configuration editor is launched. That is, it gets</span>
+    <span class="s0">// called surprisingly often. So, we don't actually do much here.</span>
+    <span class="s2">super</span><span class="s3">.</span><span class="s1">onStop</span><span class="s3">();</span>
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;onStop()&quot;</span><span class="s3">);</span>
+  <span class="s3">}</span>
+
+  <span class="s1">@Override</span>
+  <span class="s2">protected void </span><span class="s1">onDestroy</span><span class="s3">() {</span>
+    <span class="s2">super</span><span class="s3">.</span><span class="s1">onDestroy</span><span class="s3">();</span>
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;onDestroy()&quot;</span><span class="s3">);</span>
+
+    <span class="s1">shutdownRobot</span><span class="s3">();  </span><span class="s0">// Ensure the robot is put away to bed</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">callback </span><span class="s3">!= </span><span class="s2">null</span><span class="s3">) </span><span class="s1">callback</span><span class="s3">.</span><span class="s1">close</span><span class="s3">();</span>
+
+    <span class="s1">PreferenceRemoterRC</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">stop</span><span class="s3">(</span><span class="s1">prefRemoterStartResult</span><span class="s3">);</span>
+    <span class="s1">DeviceNameManagerFactory</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">stop</span><span class="s3">(</span><span class="s1">deviceNameStartResult</span><span class="s3">);</span>
+
+    <span class="s1">unbindFromService</span><span class="s3">();</span>
+    <span class="s0">// If the app manually (?) is stopped, then we don't need the auto-starting function (?)</span>
+    <span class="s1">ServiceController</span><span class="s3">.</span><span class="s1">stopService</span><span class="s3">(</span><span class="s1">FtcRobotControllerWatchdogService</span><span class="s3">.</span><span class="s2">class</span><span class="s3">);</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">wifiLock </span><span class="s3">!= </span><span class="s2">null</span><span class="s3">) </span><span class="s1">wifiLock</span><span class="s3">.</span><span class="s1">release</span><span class="s3">();</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">preferencesHelper </span><span class="s3">!= </span><span class="s2">null</span><span class="s3">) </span><span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">getSharedPreferences</span><span class="s3">().</span><span class="s1">unregisterOnSharedPreferenceChangeListener</span><span class="s3">(</span><span class="s1">sharedPreferencesListener</span><span class="s3">);</span>
+
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">cancelWriteLogcatToDisk</span><span class="s3">();</span>
+
+    <span class="s1">AnnotatedHooksClassFilter</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">callOnDestroyMethods</span><span class="s3">(</span><span class="s2">this</span><span class="s3">);</span>
+  <span class="s3">}</span>
+
+  <span class="s2">protected void </span><span class="s1">bindToService</span><span class="s3">() {</span>
+    <span class="s1">readNetworkType</span><span class="s3">();</span>
+    <span class="s1">Intent intent </span><span class="s3">= </span><span class="s2">new </span><span class="s1">Intent</span><span class="s3">(</span><span class="s2">this</span><span class="s3">, </span><span class="s1">FtcRobotControllerService</span><span class="s3">.</span><span class="s2">class</span><span class="s3">);</span>
+    <span class="s1">intent</span><span class="s3">.</span><span class="s1">putExtra</span><span class="s3">(</span><span class="s1">NetworkConnectionFactory</span><span class="s3">.</span><span class="s1">NETWORK_CONNECTION_TYPE</span><span class="s3">, </span><span class="s1">networkType</span><span class="s3">);</span>
+    <span class="s1">serviceShouldUnbind </span><span class="s3">= </span><span class="s1">bindService</span><span class="s3">(</span><span class="s1">intent</span><span class="s3">, </span><span class="s1">connection</span><span class="s3">, </span><span class="s1">Context</span><span class="s3">.</span><span class="s1">BIND_AUTO_CREATE</span><span class="s3">);</span>
+  <span class="s3">}</span>
+
+  <span class="s2">protected void </span><span class="s1">unbindFromService</span><span class="s3">() {</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">serviceShouldUnbind</span><span class="s3">) {</span>
+      <span class="s1">unbindService</span><span class="s3">(</span><span class="s1">connection</span><span class="s3">);</span>
+      <span class="s1">serviceShouldUnbind </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+
+  <span class="s2">protected void </span><span class="s1">readNetworkType</span><span class="s3">() {</span>
+    <span class="s0">// Control hubs are always running the access point model.  Everything else, for the time</span>
+    <span class="s0">// being always runs the Wi-Fi Direct model.</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">Device</span><span class="s3">.</span><span class="s1">isRevControlHub</span><span class="s3">() == </span><span class="s2">true</span><span class="s3">) {</span>
+      <span class="s1">networkType </span><span class="s3">= </span><span class="s1">NetworkType</span><span class="s3">.</span><span class="s1">RCWIRELESSAP</span><span class="s3">;</span>
+    <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+      <span class="s1">networkType </span><span class="s3">= </span><span class="s1">NetworkType</span><span class="s3">.</span><span class="s1">fromString</span><span class="s3">(</span><span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">readString</span><span class="s3">(</span><span class="s1">context</span><span class="s3">.</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_pairing_kind</span><span class="s3">), </span><span class="s1">NetworkType</span><span class="s3">.</span><span class="s1">globalDefaultAsString</span><span class="s3">()));</span>
+    <span class="s3">}</span>
+
+    <span class="s0">// update the app_settings</span>
+    <span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">writeStringPrefIfDifferent</span><span class="s3">(</span><span class="s1">context</span><span class="s3">.</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_pairing_kind</span><span class="s3">), </span><span class="s1">networkType</span><span class="s3">.</span><span class="s1">toString</span><span class="s3">());</span>
+  <span class="s3">}</span>
+
+  <span class="s1">@Override</span>
+  <span class="s2">public void </span><span class="s1">onWindowFocusChanged</span><span class="s3">(</span><span class="s2">boolean </span><span class="s1">hasFocus</span><span class="s3">) {</span>
+    <span class="s2">super</span><span class="s3">.</span><span class="s1">onWindowFocusChanged</span><span class="s3">(</span><span class="s1">hasFocus</span><span class="s3">);</span>
+
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">hasFocus</span><span class="s3">) {</span>
+      <span class="s1">immersion</span><span class="s3">.</span><span class="s1">hideSystemUI</span><span class="s3">();</span>
+      <span class="s1">getWindow</span><span class="s3">().</span><span class="s1">setFlags</span><span class="s3">(</span><span class="s1">WindowManager</span><span class="s3">.</span><span class="s1">LayoutParams</span><span class="s3">.</span><span class="s1">FLAG_TRANSLUCENT_NAVIGATION</span><span class="s3">, </span><span class="s1">WindowManager</span><span class="s3">.</span><span class="s1">LayoutParams</span><span class="s3">.</span><span class="s1">FLAG_TRANSLUCENT_NAVIGATION</span><span class="s3">);</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+
+  <span class="s1">@Override</span>
+  <span class="s2">public boolean </span><span class="s1">onCreateOptionsMenu</span><span class="s3">(</span><span class="s1">Menu menu</span><span class="s3">) {</span>
+    <span class="s1">getMenuInflater</span><span class="s3">().</span><span class="s1">inflate</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">menu</span><span class="s3">.</span><span class="s1">ftc_robot_controller</span><span class="s3">, </span><span class="s1">menu</span><span class="s3">);</span>
+    <span class="s1">AnnotatedHooksClassFilter</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">callOnCreateMenuMethods</span><span class="s3">(</span><span class="s2">this</span><span class="s3">, </span><span class="s1">menu</span><span class="s3">);</span>
+    <span class="s2">return true</span><span class="s3">;</span>
+  <span class="s3">}</span>
+
+  <span class="s2">private boolean </span><span class="s1">isRobotRunning</span><span class="s3">() {</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">controllerService </span><span class="s3">== </span><span class="s2">null</span><span class="s3">) {</span>
+      <span class="s2">return false</span><span class="s3">;</span>
+    <span class="s3">}</span>
+
+    <span class="s1">Robot robot </span><span class="s3">= </span><span class="s1">controllerService</span><span class="s3">.</span><span class="s1">getRobot</span><span class="s3">();</span>
+
+    <span class="s2">if </span><span class="s3">((</span><span class="s1">robot </span><span class="s3">== </span><span class="s2">null</span><span class="s3">) || (</span><span class="s1">robot</span><span class="s3">.</span><span class="s1">eventLoopManager </span><span class="s3">== </span><span class="s2">null</span><span class="s3">)) {</span>
+      <span class="s2">return false</span><span class="s3">;</span>
+    <span class="s3">}</span>
+
+    <span class="s1">RobotState robotState </span><span class="s3">= </span><span class="s1">robot</span><span class="s3">.</span><span class="s1">eventLoopManager</span><span class="s3">.</span><span class="s1">state</span><span class="s3">;</span>
+
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">robotState </span><span class="s3">!= </span><span class="s1">RobotState</span><span class="s3">.</span><span class="s1">RUNNING</span><span class="s3">) {</span>
+      <span class="s2">return false</span><span class="s3">;</span>
+    <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+      <span class="s2">return true</span><span class="s3">;</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+
+  <span class="s1">@Override</span>
+  <span class="s2">public boolean </span><span class="s1">onOptionsItemSelected</span><span class="s3">(</span><span class="s1">MenuItem item</span><span class="s3">) {</span>
+    <span class="s2">int </span><span class="s1">id </span><span class="s3">= </span><span class="s1">item</span><span class="s3">.</span><span class="s1">getItemId</span><span class="s3">();</span>
+
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">id </span><span class="s3">== </span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">action_program_and_manage</span><span class="s3">) {</span>
+      <span class="s2">if </span><span class="s3">(</span><span class="s1">isRobotRunning</span><span class="s3">()) {</span>
+        <span class="s1">Intent programmingModeIntent </span><span class="s3">= </span><span class="s2">new </span><span class="s1">Intent</span><span class="s3">(</span><span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getDefContext</span><span class="s3">(), </span><span class="s1">ProgramAndManageActivity</span><span class="s3">.</span><span class="s2">class</span><span class="s3">);</span>
+        <span class="s1">RobotControllerWebInfo webInfo </span><span class="s3">= </span><span class="s1">programmingModeManager</span><span class="s3">.</span><span class="s1">getWebServer</span><span class="s3">().</span><span class="s1">getConnectionInformation</span><span class="s3">();</span>
+        <span class="s1">programmingModeIntent</span><span class="s3">.</span><span class="s1">putExtra</span><span class="s3">(</span><span class="s1">LaunchActivityConstantsList</span><span class="s3">.</span><span class="s1">RC_WEB_INFO</span><span class="s3">, </span><span class="s1">webInfo</span><span class="s3">.</span><span class="s1">toJson</span><span class="s3">());</span>
+        <span class="s1">startActivity</span><span class="s3">(</span><span class="s1">programmingModeIntent</span><span class="s3">);</span>
+      <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+        <span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">showToast</span><span class="s3">(</span><span class="s1">UILocation</span><span class="s3">.</span><span class="s1">ONLY_LOCAL</span><span class="s3">, </span><span class="s1">context</span><span class="s3">.</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">toastWifiUpBeforeProgrammingMode</span><span class="s3">));</span>
+      <span class="s3">}</span>
+    <span class="s3">} </span><span class="s2">else if </span><span class="s3">(</span><span class="s1">id </span><span class="s3">== </span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">action_inspection_mode</span><span class="s3">) {</span>
+      <span class="s1">Intent inspectionModeIntent </span><span class="s3">= </span><span class="s2">new </span><span class="s1">Intent</span><span class="s3">(</span><span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getDefContext</span><span class="s3">(), </span><span class="s1">RcInspectionActivity</span><span class="s3">.</span><span class="s2">class</span><span class="s3">);</span>
+      <span class="s1">startActivity</span><span class="s3">(</span><span class="s1">inspectionModeIntent</span><span class="s3">);</span>
+      <span class="s2">return true</span><span class="s3">;</span>
+    <span class="s3">} </span><span class="s2">else if </span><span class="s3">(</span><span class="s1">id </span><span class="s3">== </span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">action_restart_robot</span><span class="s3">) {</span>
+      <span class="s1">dimmer</span><span class="s3">.</span><span class="s1">handleDimTimer</span><span class="s3">();</span>
+      <span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">showToast</span><span class="s3">(</span><span class="s1">UILocation</span><span class="s3">.</span><span class="s1">BOTH</span><span class="s3">, </span><span class="s1">context</span><span class="s3">.</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">toastRestartingRobot</span><span class="s3">));</span>
+      <span class="s1">requestRobotRestart</span><span class="s3">();</span>
+      <span class="s2">return true</span><span class="s3">;</span>
+    <span class="s3">}</span>
+    <span class="s2">else if </span><span class="s3">(</span><span class="s1">id </span><span class="s3">== </span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">action_configure_robot</span><span class="s3">) {</span>
+      <span class="s1">EditParameters parameters </span><span class="s3">= </span><span class="s2">new </span><span class="s1">EditParameters</span><span class="s3">();</span>
+      <span class="s1">Intent intentConfigure </span><span class="s3">= </span><span class="s2">new </span><span class="s1">Intent</span><span class="s3">(</span><span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getDefContext</span><span class="s3">(), </span><span class="s1">FtcLoadFileActivity</span><span class="s3">.</span><span class="s2">class</span><span class="s3">);</span>
+      <span class="s1">parameters</span><span class="s3">.</span><span class="s1">putIntent</span><span class="s3">(</span><span class="s1">intentConfigure</span><span class="s3">);</span>
+      <span class="s1">startActivityForResult</span><span class="s3">(</span><span class="s1">intentConfigure</span><span class="s3">, </span><span class="s1">RequestCode</span><span class="s3">.</span><span class="s1">CONFIGURE_ROBOT_CONTROLLER</span><span class="s3">.</span><span class="s1">ordinal</span><span class="s3">());</span>
+    <span class="s3">}</span>
+    <span class="s2">else if </span><span class="s3">(</span><span class="s1">id </span><span class="s3">== </span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">action_settings</span><span class="s3">) {</span>
+	  <span class="s0">// historical: this once erroneously used FTC_CONFIGURE_REQUEST_CODE_ROBOT_CONTROLLER</span>
+      <span class="s1">Intent settingsIntent </span><span class="s3">= </span><span class="s2">new </span><span class="s1">Intent</span><span class="s3">(</span><span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getDefContext</span><span class="s3">(), </span><span class="s1">FtcRobotControllerSettingsActivity</span><span class="s3">.</span><span class="s2">class</span><span class="s3">);</span>
+      <span class="s1">startActivityForResult</span><span class="s3">(</span><span class="s1">settingsIntent</span><span class="s3">, </span><span class="s1">RequestCode</span><span class="s3">.</span><span class="s1">SETTINGS_ROBOT_CONTROLLER</span><span class="s3">.</span><span class="s1">ordinal</span><span class="s3">());</span>
+      <span class="s2">return true</span><span class="s3">;</span>
+    <span class="s3">}</span>
+    <span class="s2">else if </span><span class="s3">(</span><span class="s1">id </span><span class="s3">== </span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">action_about</span><span class="s3">) {</span>
+      <span class="s1">Intent intent </span><span class="s3">= </span><span class="s2">new </span><span class="s1">Intent</span><span class="s3">(</span><span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getDefContext</span><span class="s3">(), </span><span class="s1">FtcAboutActivity</span><span class="s3">.</span><span class="s2">class</span><span class="s3">);</span>
+      <span class="s1">startActivity</span><span class="s3">(</span><span class="s1">intent</span><span class="s3">);</span>
+      <span class="s2">return true</span><span class="s3">;</span>
+    <span class="s3">}</span>
+    <span class="s2">else if </span><span class="s3">(</span><span class="s1">id </span><span class="s3">== </span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">action_exit_app</span><span class="s3">) {</span>
+
+      <span class="s0">//Clear backstack and everything to prevent edge case where VM might be</span>
+      <span class="s0">//restarted (after it was exited) if more than one activity was on the</span>
+      <span class="s0">//backstack for some reason.</span>
+      <span class="s1">finishAffinity</span><span class="s3">();</span>
+
+      <span class="s0">//For lollipop and up, we can clear ourselves from the recents list too</span>
+      <span class="s2">if </span><span class="s3">(</span><span class="s1">android</span><span class="s3">.</span><span class="s1">os</span><span class="s3">.</span><span class="s1">Build</span><span class="s3">.</span><span class="s1">VERSION</span><span class="s3">.</span><span class="s1">SDK_INT </span><span class="s3">&gt;= </span><span class="s1">android</span><span class="s3">.</span><span class="s1">os</span><span class="s3">.</span><span class="s1">Build</span><span class="s3">.</span><span class="s1">VERSION_CODES</span><span class="s3">.</span><span class="s1">LOLLIPOP</span><span class="s3">) {</span>
+        <span class="s1">ActivityManager manager </span><span class="s3">= (</span><span class="s1">ActivityManager</span><span class="s3">) </span><span class="s1">getSystemService</span><span class="s3">(</span><span class="s1">ACTIVITY_SERVICE</span><span class="s3">);</span>
+        <span class="s1">List</span><span class="s3">&lt;</span><span class="s1">ActivityManager</span><span class="s3">.</span><span class="s1">AppTask</span><span class="s3">&gt; </span><span class="s1">tasks </span><span class="s3">= </span><span class="s1">manager</span><span class="s3">.</span><span class="s1">getAppTasks</span><span class="s3">();</span>
+
+        <span class="s2">for </span><span class="s3">(</span><span class="s1">ActivityManager</span><span class="s3">.</span><span class="s1">AppTask task </span><span class="s3">: </span><span class="s1">tasks</span><span class="s3">) {</span>
+          <span class="s1">task</span><span class="s3">.</span><span class="s1">finishAndRemoveTask</span><span class="s3">();</span>
+        <span class="s3">}</span>
+      <span class="s3">}</span>
+
+      <span class="s0">// Allow the user to use the Control Hub operating system's UI, instead of relaunching the app</span>
+      <span class="s1">AppAliveNotifier</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">disableAppWatchdogUntilNextAppStart</span><span class="s3">();</span>
+
+      <span class="s0">//Finally, nuke the VM from orbit</span>
+      <span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">exitApplication</span><span class="s3">();</span>
+
+      <span class="s2">return true</span><span class="s3">;</span>
+    <span class="s3">}</span>
+
+   <span class="s2">return super</span><span class="s3">.</span><span class="s1">onOptionsItemSelected</span><span class="s3">(</span><span class="s1">item</span><span class="s3">);</span>
+  <span class="s3">}</span>
+
+  <span class="s1">@Override</span>
+  <span class="s2">public void </span><span class="s1">onConfigurationChanged</span><span class="s3">(</span><span class="s1">Configuration newConfig</span><span class="s3">) {</span>
+    <span class="s2">super</span><span class="s3">.</span><span class="s1">onConfigurationChanged</span><span class="s3">(</span><span class="s1">newConfig</span><span class="s3">);</span>
+    <span class="s0">// don't destroy assets on screen rotation</span>
+    <span class="s1">updateMonitorLayout</span><span class="s3">(</span><span class="s1">newConfig</span><span class="s3">);</span>
+  <span class="s3">}</span>
+
+  <span class="s6">/**</span>
+   <span class="s6">* Updates the orientation of monitorContainer (which contains cameraMonitorView)</span>
+   <span class="s6">* based on the given configuration. Makes the children split the space.</span>
+   <span class="s6">*/</span>
+  <span class="s2">private void </span><span class="s1">updateMonitorLayout</span><span class="s3">(</span><span class="s1">Configuration configuration</span><span class="s3">) {</span>
+    <span class="s1">LinearLayout monitorContainer </span><span class="s3">= (</span><span class="s1">LinearLayout</span><span class="s3">) </span><span class="s1">findViewById</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">id</span><span class="s3">.</span><span class="s1">monitorContainer</span><span class="s3">);</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">configuration</span><span class="s3">.</span><span class="s1">orientation </span><span class="s3">== </span><span class="s1">Configuration</span><span class="s3">.</span><span class="s1">ORIENTATION_LANDSCAPE</span><span class="s3">) {</span>
+      <span class="s0">// When the phone is landscape, lay out the monitor views horizontally.</span>
+      <span class="s1">monitorContainer</span><span class="s3">.</span><span class="s1">setOrientation</span><span class="s3">(</span><span class="s1">LinearLayout</span><span class="s3">.</span><span class="s1">HORIZONTAL</span><span class="s3">);</span>
+      <span class="s2">for </span><span class="s3">(</span><span class="s2">int </span><span class="s1">i </span><span class="s3">= </span><span class="s5">0</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">monitorContainer</span><span class="s3">.</span><span class="s1">getChildCount</span><span class="s3">(); </span><span class="s1">i</span><span class="s3">++) {</span>
+        <span class="s1">View view </span><span class="s3">= </span><span class="s1">monitorContainer</span><span class="s3">.</span><span class="s1">getChildAt</span><span class="s3">(</span><span class="s1">i</span><span class="s3">);</span>
+        <span class="s1">view</span><span class="s3">.</span><span class="s1">setLayoutParams</span><span class="s3">(</span><span class="s2">new </span><span class="s1">LayoutParams</span><span class="s3">(</span><span class="s5">0</span><span class="s3">, </span><span class="s1">LayoutParams</span><span class="s3">.</span><span class="s1">MATCH_PARENT</span><span class="s3">, </span><span class="s5">1 </span><span class="s0">/* weight */</span><span class="s3">));</span>
+      <span class="s3">}</span>
+    <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+      <span class="s0">// When the phone is portrait, lay out the monitor views vertically.</span>
+      <span class="s1">monitorContainer</span><span class="s3">.</span><span class="s1">setOrientation</span><span class="s3">(</span><span class="s1">LinearLayout</span><span class="s3">.</span><span class="s1">VERTICAL</span><span class="s3">);</span>
+      <span class="s2">for </span><span class="s3">(</span><span class="s2">int </span><span class="s1">i </span><span class="s3">= </span><span class="s5">0</span><span class="s3">; </span><span class="s1">i </span><span class="s3">&lt; </span><span class="s1">monitorContainer</span><span class="s3">.</span><span class="s1">getChildCount</span><span class="s3">(); </span><span class="s1">i</span><span class="s3">++) {</span>
+        <span class="s1">View view </span><span class="s3">= </span><span class="s1">monitorContainer</span><span class="s3">.</span><span class="s1">getChildAt</span><span class="s3">(</span><span class="s1">i</span><span class="s3">);</span>
+        <span class="s1">view</span><span class="s3">.</span><span class="s1">setLayoutParams</span><span class="s3">(</span><span class="s2">new </span><span class="s1">LayoutParams</span><span class="s3">(</span><span class="s1">LayoutParams</span><span class="s3">.</span><span class="s1">MATCH_PARENT</span><span class="s3">, </span><span class="s5">0</span><span class="s3">, </span><span class="s5">1 </span><span class="s0">/* weight */</span><span class="s3">));</span>
+      <span class="s3">}</span>
+    <span class="s3">}</span>
+    <span class="s1">monitorContainer</span><span class="s3">.</span><span class="s1">requestLayout</span><span class="s3">();</span>
+  <span class="s3">}</span>
+
+  <span class="s1">@Override</span>
+  <span class="s2">protected void </span><span class="s1">onActivityResult</span><span class="s3">(</span><span class="s2">int </span><span class="s1">request</span><span class="s3">, </span><span class="s2">int </span><span class="s1">result</span><span class="s3">, </span><span class="s1">Intent intent</span><span class="s3">) {</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">request </span><span class="s3">== </span><span class="s1">REQUEST_CONFIG_WIFI_CHANNEL</span><span class="s3">) {</span>
+      <span class="s2">if </span><span class="s3">(</span><span class="s1">result </span><span class="s3">== </span><span class="s1">RESULT_OK</span><span class="s3">) {</span>
+        <span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">showToast</span><span class="s3">(</span><span class="s1">UILocation</span><span class="s3">.</span><span class="s1">BOTH</span><span class="s3">, </span><span class="s1">context</span><span class="s3">.</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">toastWifiConfigurationComplete</span><span class="s3">));</span>
+      <span class="s3">}</span>
+    <span class="s3">}</span>
+    <span class="s0">// was some historical confusion about launch codes here, so we err safely</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">request </span><span class="s3">== </span><span class="s1">RequestCode</span><span class="s3">.</span><span class="s1">CONFIGURE_ROBOT_CONTROLLER</span><span class="s3">.</span><span class="s1">ordinal</span><span class="s3">() || </span><span class="s1">request </span><span class="s3">== </span><span class="s1">RequestCode</span><span class="s3">.</span><span class="s1">SETTINGS_ROBOT_CONTROLLER</span><span class="s3">.</span><span class="s1">ordinal</span><span class="s3">()) {</span>
+      <span class="s0">// We always do a refresh, whether it was a cancel or an OK, for robustness</span>
+      <span class="s1">shutdownRobot</span><span class="s3">();</span>
+      <span class="s1">cfgFileMgr</span><span class="s3">.</span><span class="s1">getActiveConfigAndUpdateUI</span><span class="s3">();</span>
+      <span class="s1">updateUIAndRequestRobotSetup</span><span class="s3">();</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+
+  <span class="s2">public void </span><span class="s1">onServiceBind</span><span class="s3">(</span><span class="s2">final </span><span class="s1">FtcRobotControllerService service</span><span class="s3">) {</span>
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">FtcRobotControllerService</span><span class="s3">.</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;%s.controllerService=bound&quot;</span><span class="s3">, </span><span class="s1">TAG</span><span class="s3">);</span>
+    <span class="s1">controllerService </span><span class="s3">= </span><span class="s1">service</span><span class="s3">;</span>
+    <span class="s1">updateUI</span><span class="s3">.</span><span class="s1">setControllerService</span><span class="s3">(</span><span class="s1">controllerService</span><span class="s3">);</span>
+
+    <span class="s1">controllerService</span><span class="s3">.</span><span class="s1">setOnBotJavaHelper</span><span class="s3">(</span><span class="s1">onBotJavaHelper</span><span class="s3">);</span>
+
+    <span class="s1">updateUIAndRequestRobotSetup</span><span class="s3">();</span>
+    <span class="s1">programmingModeManager</span><span class="s3">.</span><span class="s1">setState</span><span class="s3">(</span><span class="s2">new </span><span class="s1">FtcRobotControllerServiceState</span><span class="s3">() {</span>
+      <span class="s1">@NonNull</span>
+      <span class="s1">@Override</span>
+      <span class="s2">public </span><span class="s1">WebServer getWebServer</span><span class="s3">() {</span>
+        <span class="s2">return </span><span class="s1">service</span><span class="s3">.</span><span class="s1">getWebServer</span><span class="s3">();</span>
+      <span class="s3">}</span>
+
+      <span class="s1">@Nullable</span>
+      <span class="s1">@Override</span>
+      <span class="s2">public </span><span class="s1">OnBotJavaHelper getOnBotJavaHelper</span><span class="s3">() {</span>
+        <span class="s2">return </span><span class="s1">service</span><span class="s3">.</span><span class="s1">getOnBotJavaHelper</span><span class="s3">();</span>
+      <span class="s3">}</span>
+
+      <span class="s1">@Override</span>
+      <span class="s2">public </span><span class="s1">EventLoopManager getEventLoopManager</span><span class="s3">() {</span>
+        <span class="s2">return </span><span class="s1">service</span><span class="s3">.</span><span class="s1">getRobot</span><span class="s3">().</span><span class="s1">eventLoopManager</span><span class="s3">;</span>
+      <span class="s3">}</span>
+    <span class="s3">});</span>
+
+    <span class="s1">AnnotatedHooksClassFilter</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">callWebHandlerRegistrarMethods</span><span class="s3">(</span><span class="s2">this</span><span class="s3">,</span>
+        <span class="s1">service</span><span class="s3">.</span><span class="s1">getWebServer</span><span class="s3">().</span><span class="s1">getWebHandlerManager</span><span class="s3">());</span>
+  <span class="s3">}</span>
+
+  <span class="s2">private void </span><span class="s1">updateUIAndRequestRobotSetup</span><span class="s3">() {</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">controllerService </span><span class="s3">!= </span><span class="s2">null</span><span class="s3">) {</span>
+      <span class="s1">callback</span><span class="s3">.</span><span class="s1">networkConnectionUpdate</span><span class="s3">(</span><span class="s1">controllerService</span><span class="s3">.</span><span class="s1">getNetworkConnectionStatus</span><span class="s3">());</span>
+      <span class="s1">callback</span><span class="s3">.</span><span class="s1">updateRobotStatus</span><span class="s3">(</span><span class="s1">controllerService</span><span class="s3">.</span><span class="s1">getRobotStatus</span><span class="s3">());</span>
+      <span class="s0">// Only show this first-time toast on headless systems: what we have now on non-headless suffices</span>
+      <span class="s1">requestRobotSetup</span><span class="s3">(</span><span class="s1">LynxConstants</span><span class="s3">.</span><span class="s1">isRevControlHub</span><span class="s3">()</span>
+        <span class="s3">? </span><span class="s2">new </span><span class="s1">Runnable</span><span class="s3">() {</span>
+            <span class="s1">@Override </span><span class="s2">public void </span><span class="s1">run</span><span class="s3">() {</span>
+              <span class="s1">showRestartRobotCompleteToast</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">toastRobotSetupComplete</span><span class="s3">);</span>
+            <span class="s3">}</span>
+          <span class="s3">}</span>
+        <span class="s3">: </span><span class="s2">null</span><span class="s3">);</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+
+  <span class="s2">private void </span><span class="s1">requestRobotSetup</span><span class="s3">(</span><span class="s1">@Nullable Runnable runOnComplete</span><span class="s3">) {</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">controllerService </span><span class="s3">== </span><span class="s2">null</span><span class="s3">) </span><span class="s2">return</span><span class="s3">;</span>
+
+    <span class="s1">RobotConfigFile file </span><span class="s3">= </span><span class="s1">cfgFileMgr</span><span class="s3">.</span><span class="s1">getActiveConfigAndUpdateUI</span><span class="s3">();</span>
+    <span class="s1">HardwareFactory hardwareFactory </span><span class="s3">= </span><span class="s2">new </span><span class="s1">HardwareFactory</span><span class="s3">(</span><span class="s1">context</span><span class="s3">);</span>
+    <span class="s2">try </span><span class="s3">{</span>
+      <span class="s1">hardwareFactory</span><span class="s3">.</span><span class="s1">setXmlPullParser</span><span class="s3">(</span><span class="s1">file</span><span class="s3">.</span><span class="s1">getXml</span><span class="s3">());</span>
+    <span class="s3">} </span><span class="s2">catch </span><span class="s3">(</span><span class="s1">FileNotFoundException </span><span class="s3">| </span><span class="s1">XmlPullParserException e</span><span class="s3">) {</span>
+      <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">ww</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s1">e</span><span class="s3">, </span><span class="s4">&quot;Unable to set configuration file %s. Falling back on noConfig.&quot;</span><span class="s3">, </span><span class="s1">file</span><span class="s3">.</span><span class="s1">getName</span><span class="s3">());</span>
+      <span class="s1">file </span><span class="s3">= </span><span class="s1">RobotConfigFile</span><span class="s3">.</span><span class="s1">noConfig</span><span class="s3">(</span><span class="s1">cfgFileMgr</span><span class="s3">);</span>
+      <span class="s2">try </span><span class="s3">{</span>
+        <span class="s1">hardwareFactory</span><span class="s3">.</span><span class="s1">setXmlPullParser</span><span class="s3">(</span><span class="s1">file</span><span class="s3">.</span><span class="s1">getXml</span><span class="s3">());</span>
+        <span class="s1">cfgFileMgr</span><span class="s3">.</span><span class="s1">setActiveConfigAndUpdateUI</span><span class="s3">(</span><span class="s2">false</span><span class="s3">, </span><span class="s1">file</span><span class="s3">);</span>
+      <span class="s3">} </span><span class="s2">catch </span><span class="s3">(</span><span class="s1">FileNotFoundException </span><span class="s3">| </span><span class="s1">XmlPullParserException e1</span><span class="s3">) {</span>
+        <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">ee</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s1">e1</span><span class="s3">, </span><span class="s4">&quot;Failed to fall back on noConfig&quot;</span><span class="s3">);</span>
+      <span class="s3">}</span>
+    <span class="s3">}</span>
+
+    <span class="s1">OpModeRegister userOpModeRegister </span><span class="s3">= </span><span class="s1">createOpModeRegister</span><span class="s3">();</span>
+    <span class="s1">eventLoop </span><span class="s3">= </span><span class="s2">new </span><span class="s1">FtcEventLoop</span><span class="s3">(</span><span class="s1">hardwareFactory</span><span class="s3">, </span><span class="s1">userOpModeRegister</span><span class="s3">, </span><span class="s1">callback</span><span class="s3">, </span><span class="s2">this</span><span class="s3">);</span>
+    <span class="s1">FtcEventLoopIdle idleLoop </span><span class="s3">= </span><span class="s2">new </span><span class="s1">FtcEventLoopIdle</span><span class="s3">(</span><span class="s1">hardwareFactory</span><span class="s3">, </span><span class="s1">userOpModeRegister</span><span class="s3">, </span><span class="s1">callback</span><span class="s3">, </span><span class="s2">this</span><span class="s3">);</span>
+
+    <span class="s1">controllerService</span><span class="s3">.</span><span class="s1">setCallback</span><span class="s3">(</span><span class="s1">callback</span><span class="s3">);</span>
+    <span class="s1">controllerService</span><span class="s3">.</span><span class="s1">setupRobot</span><span class="s3">(</span><span class="s1">eventLoop</span><span class="s3">, </span><span class="s1">idleLoop</span><span class="s3">, </span><span class="s1">runOnComplete</span><span class="s3">);</span>
+
+    <span class="s1">passReceivedUsbAttachmentsToEventLoop</span><span class="s3">();</span>
+    <span class="s1">AndroidBoard</span><span class="s3">.</span><span class="s1">showErrorIfUnknownControlHub</span><span class="s3">();</span>
+
+    <span class="s1">AnnotatedHooksClassFilter</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">callOnCreateEventLoopMethods</span><span class="s3">(</span><span class="s2">this</span><span class="s3">, </span><span class="s1">eventLoop</span><span class="s3">);</span>
+  <span class="s3">}</span>
+
+  <span class="s2">protected </span><span class="s1">OpModeRegister createOpModeRegister</span><span class="s3">() {</span>
+    <span class="s2">return new </span><span class="s1">FtcOpModeRegister</span><span class="s3">();</span>
+  <span class="s3">}</span>
+
+  <span class="s2">private void </span><span class="s1">shutdownRobot</span><span class="s3">() {</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">controllerService </span><span class="s3">!= </span><span class="s2">null</span><span class="s3">) </span><span class="s1">controllerService</span><span class="s3">.</span><span class="s1">shutdownRobot</span><span class="s3">();</span>
+  <span class="s3">}</span>
+
+  <span class="s2">private void </span><span class="s1">requestRobotRestart</span><span class="s3">() {</span>
+    <span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">showToast</span><span class="s3">(</span><span class="s1">UILocation</span><span class="s3">.</span><span class="s1">BOTH</span><span class="s3">, </span><span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getDefContext</span><span class="s3">().</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">toastRestartingRobot</span><span class="s3">));</span>
+    <span class="s0">//</span>
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">clearGlobalErrorMsg</span><span class="s3">();</span>
+    <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">clearGlobalWarningMsg</span><span class="s3">();</span>
+    <span class="s1">shutdownRobot</span><span class="s3">();</span>
+    <span class="s1">requestRobotSetup</span><span class="s3">(</span><span class="s2">new </span><span class="s1">Runnable</span><span class="s3">() {</span>
+      <span class="s1">@Override </span><span class="s2">public void </span><span class="s1">run</span><span class="s3">() {</span>
+        <span class="s1">showRestartRobotCompleteToast</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">toastRestartRobotComplete</span><span class="s3">);</span>
+        <span class="s3">}</span>
+      <span class="s3">});</span>
+  <span class="s3">}</span>
+
+  <span class="s2">private void </span><span class="s1">showRestartRobotCompleteToast</span><span class="s3">(</span><span class="s1">@StringRes </span><span class="s2">int </span><span class="s1">resid</span><span class="s3">) {</span>
+    <span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">showToast</span><span class="s3">(</span><span class="s1">UILocation</span><span class="s3">.</span><span class="s1">BOTH</span><span class="s3">, </span><span class="s1">AppUtil</span><span class="s3">.</span><span class="s1">getDefContext</span><span class="s3">().</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">resid</span><span class="s3">));</span>
+  <span class="s3">}</span>
+
+  <span class="s2">private void </span><span class="s1">checkPreferredChannel</span><span class="s3">() {</span>
+    <span class="s0">// For P2P network, check to see what preferred channel is.</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">networkType </span><span class="s3">==  </span><span class="s1">NetworkType</span><span class="s3">.</span><span class="s1">WIFIDIRECT</span><span class="s3">) {</span>
+      <span class="s2">int </span><span class="s1">prefChannel </span><span class="s3">= </span><span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">readInt</span><span class="s3">(</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_wifip2p_channel</span><span class="s3">), -</span><span class="s5">1</span><span class="s3">);</span>
+      <span class="s2">if </span><span class="s3">(</span><span class="s1">prefChannel </span><span class="s3">== -</span><span class="s5">1</span><span class="s3">) {</span>
+        <span class="s1">prefChannel </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+        <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;pref_wifip2p_channel: No preferred channel defined. Will use a default value of %d&quot;</span><span class="s3">, </span><span class="s1">prefChannel</span><span class="s3">);</span>
+      <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+        <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;pref_wifip2p_channel: Found existing preferred channel (%d).&quot;</span><span class="s3">, </span><span class="s1">prefChannel</span><span class="s3">);</span>
+      <span class="s3">}</span>
+
+      <span class="s0">// attempt to set the preferred channel.</span>
+      <span class="s1">RobotLog</span><span class="s3">.</span><span class="s1">vv</span><span class="s3">(</span><span class="s1">TAG</span><span class="s3">, </span><span class="s4">&quot;pref_wifip2p_channel: attempting to set preferred channel...&quot;</span><span class="s3">);</span>
+      <span class="s1">wifiDirectChannelChanger </span><span class="s3">= </span><span class="s2">new </span><span class="s1">WifiDirectChannelChanger</span><span class="s3">();</span>
+      <span class="s1">wifiDirectChannelChanger</span><span class="s3">.</span><span class="s1">changeToChannel</span><span class="s3">(</span><span class="s1">prefChannel</span><span class="s3">);</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+
+  <span class="s2">protected void </span><span class="s1">hittingMenuButtonBrightensScreen</span><span class="s3">() {</span>
+    <span class="s1">ActionBar actionBar </span><span class="s3">= </span><span class="s1">getActionBar</span><span class="s3">();</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">actionBar </span><span class="s3">!= </span><span class="s2">null</span><span class="s3">) {</span>
+      <span class="s1">actionBar</span><span class="s3">.</span><span class="s1">addOnMenuVisibilityListener</span><span class="s3">(</span><span class="s2">new </span><span class="s1">ActionBar</span><span class="s3">.</span><span class="s1">OnMenuVisibilityListener</span><span class="s3">() {</span>
+        <span class="s1">@Override</span>
+        <span class="s2">public void </span><span class="s1">onMenuVisibilityChanged</span><span class="s3">(</span><span class="s2">boolean </span><span class="s1">isVisible</span><span class="s3">) {</span>
+          <span class="s2">if </span><span class="s3">(</span><span class="s1">isVisible</span><span class="s3">) {</span>
+            <span class="s1">dimmer</span><span class="s3">.</span><span class="s1">handleDimTimer</span><span class="s3">();</span>
+          <span class="s3">}</span>
+        <span class="s3">}</span>
+      <span class="s3">});</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+
+  <span class="s2">protected class </span><span class="s1">SharedPreferencesListener </span><span class="s2">implements </span><span class="s1">SharedPreferences</span><span class="s3">.</span><span class="s1">OnSharedPreferenceChangeListener </span><span class="s3">{</span>
+    <span class="s1">@Override </span><span class="s2">public void </span><span class="s1">onSharedPreferenceChanged</span><span class="s3">(</span><span class="s1">SharedPreferences sharedPreferences</span><span class="s3">, </span><span class="s1">String key</span><span class="s3">) {</span>
+      <span class="s2">if </span><span class="s3">(</span><span class="s1">key</span><span class="s3">.</span><span class="s1">equals</span><span class="s3">(</span><span class="s1">context</span><span class="s3">.</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_app_theme</span><span class="s3">))) {</span>
+        <span class="s1">ThemedActivity</span><span class="s3">.</span><span class="s1">restartForAppThemeChange</span><span class="s3">(</span><span class="s1">getTag</span><span class="s3">(), </span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">appThemeChangeRestartNotifyRC</span><span class="s3">));</span>
+      <span class="s3">} </span><span class="s2">else if </span><span class="s3">(</span><span class="s1">key</span><span class="s3">.</span><span class="s1">equals</span><span class="s3">(</span><span class="s1">context</span><span class="s3">.</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_wifi_automute</span><span class="s3">))) {</span>
+        <span class="s2">if </span><span class="s3">(</span><span class="s1">preferencesHelper</span><span class="s3">.</span><span class="s1">readBoolean</span><span class="s3">(</span><span class="s1">context</span><span class="s3">.</span><span class="s1">getString</span><span class="s3">(</span><span class="s1">R</span><span class="s3">.</span><span class="s1">string</span><span class="s3">.</span><span class="s1">pref_wifi_automute</span><span class="s3">), </span><span class="s2">false</span><span class="s3">)) {</span>
+          <span class="s1">initWifiMute</span><span class="s3">(</span><span class="s2">true</span><span class="s3">);</span>
+        <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+          <span class="s1">initWifiMute</span><span class="s3">(</span><span class="s2">false</span><span class="s3">);</span>
+        <span class="s3">}</span>
+      <span class="s3">}</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+
+  <span class="s2">protected void </span><span class="s1">initWifiMute</span><span class="s3">(</span><span class="s2">boolean </span><span class="s1">enable</span><span class="s3">) {</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">enable</span><span class="s3">) {</span>
+      <span class="s1">wifiMuteStateMachine </span><span class="s3">= </span><span class="s2">new </span><span class="s1">WifiMuteStateMachine</span><span class="s3">();</span>
+      <span class="s1">wifiMuteStateMachine</span><span class="s3">.</span><span class="s1">initialize</span><span class="s3">();</span>
+      <span class="s1">wifiMuteStateMachine</span><span class="s3">.</span><span class="s1">start</span><span class="s3">();</span>
+
+      <span class="s1">motionDetection </span><span class="s3">= </span><span class="s2">new </span><span class="s1">MotionDetection</span><span class="s3">(</span><span class="s5">2.0</span><span class="s3">, </span><span class="s5">10</span><span class="s3">);</span>
+      <span class="s1">motionDetection</span><span class="s3">.</span><span class="s1">startListening</span><span class="s3">();</span>
+      <span class="s1">motionDetection</span><span class="s3">.</span><span class="s1">registerListener</span><span class="s3">(</span><span class="s2">new </span><span class="s1">MotionDetection</span><span class="s3">.</span><span class="s1">MotionDetectionListener</span><span class="s3">() {</span>
+        <span class="s1">@Override</span>
+        <span class="s2">public void </span><span class="s1">onMotionDetected</span><span class="s3">(</span><span class="s2">double </span><span class="s1">vector</span><span class="s3">)</span>
+        <span class="s3">{</span>
+          <span class="s1">wifiMuteStateMachine</span><span class="s3">.</span><span class="s1">consumeEvent</span><span class="s3">(</span><span class="s1">WifiMuteEvent</span><span class="s3">.</span><span class="s1">USER_ACTIVITY</span><span class="s3">);</span>
+        <span class="s3">}</span>
+      <span class="s3">});</span>
+    <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+      <span class="s1">wifiMuteStateMachine</span><span class="s3">.</span><span class="s1">stop</span><span class="s3">();</span>
+      <span class="s1">wifiMuteStateMachine </span><span class="s3">= </span><span class="s2">null</span><span class="s3">;</span>
+      <span class="s1">motionDetection</span><span class="s3">.</span><span class="s1">stopListening</span><span class="s3">();</span>
+      <span class="s1">motionDetection</span><span class="s3">.</span><span class="s1">purgeListeners</span><span class="s3">();</span>
+      <span class="s1">motionDetection </span><span class="s3">= </span><span class="s2">null</span><span class="s3">;</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+
+  <span class="s1">@Override</span>
+  <span class="s2">public void </span><span class="s1">onUserInteraction</span><span class="s3">() {</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">wifiMuteStateMachine </span><span class="s3">!= </span><span class="s2">null</span><span class="s3">) {</span>
+      <span class="s1">wifiMuteStateMachine</span><span class="s3">.</span><span class="s1">consumeEvent</span><span class="s3">(</span><span class="s1">WifiMuteEvent</span><span class="s3">.</span><span class="s1">USER_ACTIVITY</span><span class="s3">);</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

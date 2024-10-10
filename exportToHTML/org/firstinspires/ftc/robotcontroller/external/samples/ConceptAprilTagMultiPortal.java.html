@@ -1,0 +1,127 @@
+<html>
+<head>
+<title>ConceptAprilTagMultiPortal.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #5f826b; font-style: italic;}
+.s5 { color: #6aab73;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ConceptAprilTagMultiPortal.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Copyright (c) 2024 FIRST. All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted (subject to the limitations in the disclaimer below) provided that 
+ * the following conditions are met: 
+ * 
+ * Redistributions of source code must retain the above copyright notice, this list 
+ * of conditions and the following disclaimer. 
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this 
+ * list of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or 
+ * promote products derived from this software without specific prior written permission. 
+ * 
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ * &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">camera</span><span class="s3">.</span><span class="s1">BuiltinCameraDirection</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">camera</span><span class="s3">.</span><span class="s1">WebcamName</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">VisionPortal</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">apriltag</span><span class="s3">.</span><span class="s1">AprilTagProcessor</span><span class="s3">;</span>
+
+<span class="s4">/**</span>
+ <span class="s4">* This OpMode demonstrates the basics of using multiple vision portals simultaneously</span>
+ <span class="s4">*/</span>
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name </span><span class="s3">= </span><span class="s5">&quot;Concept: AprilTagMultiPortal&quot;</span><span class="s3">, </span><span class="s1">group </span><span class="s3">= </span><span class="s5">&quot;Concept&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">ConceptAprilTagMultiPortal </span><span class="s2">extends </span><span class="s1">LinearOpMode</span>
+<span class="s3">{</span>
+    <span class="s1">VisionPortal portal1</span><span class="s3">;</span>
+    <span class="s1">VisionPortal portal2</span><span class="s3">;</span>
+
+    <span class="s1">AprilTagProcessor aprilTagProcessor1</span><span class="s3">;</span>
+    <span class="s1">AprilTagProcessor aprilTagProcessor2</span><span class="s3">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() </span><span class="s2">throws </span><span class="s1">InterruptedException</span>
+    <span class="s3">{</span>
+        <span class="s0">// Because we want to show two camera feeds simultaneously, we need to inform</span>
+        <span class="s0">// the SDK that we want it to split the camera monitor area into two smaller</span>
+        <span class="s0">// areas for us. It will then give us View IDs which we can pass to the individual</span>
+        <span class="s0">// vision portals to allow them to properly hook into the UI in tandem.</span>
+        <span class="s2">int</span><span class="s3">[] </span><span class="s1">viewIds </span><span class="s3">= </span><span class="s1">VisionPortal</span><span class="s3">.</span><span class="s1">makeMultiPortalView</span><span class="s3">(</span><span class="s6">2</span><span class="s3">, </span><span class="s1">VisionPortal</span><span class="s3">.</span><span class="s1">MultiPortalLayout</span><span class="s3">.</span><span class="s1">VERTICAL</span><span class="s3">);</span>
+
+        <span class="s0">// We extract the two view IDs from the array to make our lives a little easier later.</span>
+        <span class="s0">// NB: the array is 2 long because we asked for 2 portals up above.</span>
+        <span class="s2">int </span><span class="s1">portal1ViewId </span><span class="s3">= </span><span class="s1">viewIds</span><span class="s3">[</span><span class="s6">0</span><span class="s3">];</span>
+        <span class="s2">int </span><span class="s1">portal2ViewId </span><span class="s3">= </span><span class="s1">viewIds</span><span class="s3">[</span><span class="s6">1</span><span class="s3">];</span>
+
+        <span class="s0">// If we want to run AprilTag detection on two portals simultaneously,</span>
+        <span class="s0">// we need to create two distinct instances of the AprilTag processor,</span>
+        <span class="s0">// one for each portal. If you want to see more detail about different</span>
+        <span class="s0">// options that you have when creating these processors, go check out</span>
+        <span class="s0">// the ConceptAprilTag OpMode.</span>
+        <span class="s1">aprilTagProcessor1 </span><span class="s3">= </span><span class="s1">AprilTagProcessor</span><span class="s3">.</span><span class="s1">easyCreateWithDefaults</span><span class="s3">();</span>
+        <span class="s1">aprilTagProcessor2 </span><span class="s3">= </span><span class="s1">AprilTagProcessor</span><span class="s3">.</span><span class="s1">easyCreateWithDefaults</span><span class="s3">();</span>
+
+        <span class="s0">// Now we build both portals. The CRITICAL thing to notice here is the call to</span>
+        <span class="s0">// setLiveViewContainerId(), where we pass in the IDs we received earlier from</span>
+        <span class="s0">// makeMultiPortalView().</span>
+        <span class="s1">portal1 </span><span class="s3">= </span><span class="s2">new </span><span class="s1">VisionPortal</span><span class="s3">.</span><span class="s1">Builder</span><span class="s3">()</span>
+                <span class="s3">.</span><span class="s1">setCamera</span><span class="s3">(</span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">WebcamName</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s5">&quot;Webcam 1&quot;</span><span class="s3">))</span>
+                <span class="s3">.</span><span class="s1">setLiveViewContainerId</span><span class="s3">(</span><span class="s1">portal1ViewId</span><span class="s3">)</span>
+                <span class="s3">.</span><span class="s1">addProcessor</span><span class="s3">(</span><span class="s1">aprilTagProcessor1</span><span class="s3">)</span>
+                <span class="s3">.</span><span class="s1">build</span><span class="s3">();</span>
+        <span class="s1">portal2 </span><span class="s3">= </span><span class="s2">new </span><span class="s1">VisionPortal</span><span class="s3">.</span><span class="s1">Builder</span><span class="s3">()</span>
+                <span class="s3">.</span><span class="s1">setCamera</span><span class="s3">(</span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">WebcamName</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s5">&quot;Webcam 2&quot;</span><span class="s3">))</span>
+                <span class="s3">.</span><span class="s1">setLiveViewContainerId</span><span class="s3">(</span><span class="s1">portal2ViewId</span><span class="s3">)</span>
+                <span class="s3">.</span><span class="s1">addProcessor</span><span class="s3">(</span><span class="s1">aprilTagProcessor2</span><span class="s3">)</span>
+                <span class="s3">.</span><span class="s1">build</span><span class="s3">();</span>
+
+        <span class="s1">waitForStart</span><span class="s3">();</span>
+
+        <span class="s0">// Main Loop</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">())</span>
+        <span class="s3">{</span>
+            <span class="s0">// Just show some basic telemetry to demonstrate both processors are working in parallel</span>
+            <span class="s0">// on their respective cameras. If you want to see more detail about the information you</span>
+            <span class="s0">// can get back from the processor, you should look at ConceptAprilTag.</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s5">&quot;Number of tags in Camera 1&quot;</span><span class="s3">, </span><span class="s1">aprilTagProcessor1</span><span class="s3">.</span><span class="s1">getDetections</span><span class="s3">().</span><span class="s1">size</span><span class="s3">());</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s5">&quot;Number of tags in Camera 2&quot;</span><span class="s3">, </span><span class="s1">aprilTagProcessor2</span><span class="s3">.</span><span class="s1">getDetections</span><span class="s3">().</span><span class="s1">size</span><span class="s3">());</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+            <span class="s1">sleep</span><span class="s3">(</span><span class="s6">20</span><span class="s3">);</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

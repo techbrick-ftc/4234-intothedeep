@@ -1,0 +1,244 @@
+<html>
+<head>
+<title>SensorColor.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #5f826b; font-style: italic;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SensorColor.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Copyright (c) 2017-2020 FIRST. All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted (subject to the limitations in the disclaimer below) provided that 
+ * the following conditions are met: 
+ * 
+ * Redistributions of source code must retain the above copyright notice, this list 
+ * of conditions and the following disclaimer. 
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this 
+ * list of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or 
+ * promote products derived from this software without specific prior written permission. 
+ * 
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ * &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">app</span><span class="s3">.</span><span class="s1">Activity</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">graphics</span><span class="s3">.</span><span class="s1">Color</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">view</span><span class="s3">.</span><span class="s1">View</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">DistanceSensor</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">NormalizedColorSensor</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">NormalizedRGBA</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">SwitchableLight</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">DistanceUnit</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode shows how to use a color sensor in a generic 
+ * way, regardless of which particular make or model of color sensor is used. The OpMode 
+ * assumes that the color sensor is configured with a name of &quot;sensor_color&quot;. 
+ * 
+ * There will be some variation in the values measured depending on the specific sensor you are using. 
+ * 
+ * You can increase the gain (a multiplier to make the sensor report higher values) by holding down 
+ * the A button on the gamepad, and decrease the gain by holding down the B button on the gamepad. 
+ * 
+ * If the color sensor has a light which is controllable from software, you can use the X button on 
+ * the gamepad to toggle the light on and off. The REV sensors don't support this, but instead have 
+ * a physical switch on them to turn the light on and off, beginning with REV Color Sensor V2. 
+ * 
+ * If the color sensor also supports short-range distance measurements (usually via an infrared 
+ * proximity sensor), the reported distance will be written to telemetry. As of September 2020, 
+ * the only color sensors that support this are the ones from REV Robotics. These infrared proximity 
+ * sensor measurements are only useful at very small distances, and are sensitive to ambient light 
+ * and surface reflectivity. You should use a different sensor if you need precise distance measurements. 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list 
+ */</span>
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name </span><span class="s3">= </span><span class="s4">&quot;Sensor: Color&quot;</span><span class="s3">, </span><span class="s1">group </span><span class="s3">= </span><span class="s4">&quot;Sensor&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">SensorColor </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+
+  <span class="s5">/** The colorSensor field will contain a reference to our color sensor hardware object */</span>
+  <span class="s1">NormalizedColorSensor colorSensor</span><span class="s3">;</span>
+
+  <span class="s5">/** The relativeLayout field is used to aid in providing interesting visual feedback</span>
+   <span class="s5">* in this sample application; you probably *don't* need this when you use a color sensor on your</span>
+   <span class="s5">* robot. Note that you won't see anything change on the Driver Station, only on the Robot Controller. */</span>
+  <span class="s1">View relativeLayout</span><span class="s3">;</span>
+
+  <span class="s0">/* 
+   * The runOpMode() method is the root of this OpMode, as it is in all LinearOpModes. 
+   * Our implementation here, though is a bit unusual: we've decided to put all the actual work 
+   * in the runSample() method rather than directly in runOpMode() itself. The reason we do that is 
+   * that in this sample we're changing the background color of the robot controller screen as the 
+   * OpMode runs, and we want to be able to *guarantee* that we restore it to something reasonable 
+   * and palatable when the OpMode ends. The simplest way to do that is to use a try...finally 
+   * block around the main, core logic, and an easy way to make that all clear was to separate 
+   * the former from the latter in separate methods. 
+   */</span>
+  <span class="s1">@Override </span><span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() {</span>
+
+    <span class="s0">// Get a reference to the RelativeLayout so we can later change the background</span>
+    <span class="s0">// color of the Robot Controller app to match the hue detected by the RGB sensor.</span>
+    <span class="s2">int </span><span class="s1">relativeLayoutId </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">appContext</span><span class="s3">.</span><span class="s1">getResources</span><span class="s3">().</span><span class="s1">getIdentifier</span><span class="s3">(</span><span class="s4">&quot;RelativeLayout&quot;</span><span class="s3">, </span><span class="s4">&quot;id&quot;</span><span class="s3">, </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">appContext</span><span class="s3">.</span><span class="s1">getPackageName</span><span class="s3">());</span>
+    <span class="s1">relativeLayout </span><span class="s3">= ((</span><span class="s1">Activity</span><span class="s3">) </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">appContext</span><span class="s3">).</span><span class="s1">findViewById</span><span class="s3">(</span><span class="s1">relativeLayoutId</span><span class="s3">);</span>
+
+    <span class="s2">try </span><span class="s3">{</span>
+      <span class="s1">runSample</span><span class="s3">(); </span><span class="s0">// actually execute the sample</span>
+    <span class="s3">} </span><span class="s2">finally </span><span class="s3">{</span>
+      <span class="s0">// On the way out, *guarantee* that the background is reasonable. It doesn't actually start off</span>
+      <span class="s0">// as pure white, but it's too much work to dig out what actually was used, and this is good</span>
+      <span class="s0">// enough to at least make the screen reasonable again.</span>
+      <span class="s0">// Set the panel back to the default color</span>
+      <span class="s1">relativeLayout</span><span class="s3">.</span><span class="s1">post</span><span class="s3">(</span><span class="s2">new </span><span class="s1">Runnable</span><span class="s3">() {</span>
+        <span class="s2">public void </span><span class="s1">run</span><span class="s3">() {</span>
+          <span class="s1">relativeLayout</span><span class="s3">.</span><span class="s1">setBackgroundColor</span><span class="s3">(</span><span class="s1">Color</span><span class="s3">.</span><span class="s1">WHITE</span><span class="s3">);</span>
+        <span class="s3">}</span>
+      <span class="s3">});</span>
+      <span class="s3">}</span>
+  <span class="s3">}</span>
+
+  <span class="s2">protected void </span><span class="s1">runSample</span><span class="s3">() {</span>
+    <span class="s0">// You can give the sensor a gain value, will be multiplied by the sensor's raw value before the</span>
+    <span class="s0">// normalized color values are calculated. Color sensors (especially the REV Color Sensor V3)</span>
+    <span class="s0">// can give very low values (depending on the lighting conditions), which only use a small part</span>
+    <span class="s0">// of the 0-1 range that is available for the red, green, and blue values. In brighter conditions,</span>
+    <span class="s0">// you should use a smaller gain than in dark conditions. If your gain is too high, all of the</span>
+    <span class="s0">// colors will report at or near 1, and you won't be able to determine what color you are</span>
+    <span class="s0">// actually looking at. For this reason, it's better to err on the side of a lower gain</span>
+    <span class="s0">// (but always greater than  or equal to 1).</span>
+    <span class="s2">float </span><span class="s1">gain </span><span class="s3">= </span><span class="s6">2</span><span class="s3">;</span>
+
+    <span class="s0">// Once per loop, we will update this hsvValues array. The first element (0) will contain the</span>
+    <span class="s0">// hue, the second element (1) will contain the saturation, and the third element (2) will</span>
+    <span class="s0">// contain the value. See http://web.archive.org/web/20190311170843/https://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html</span>
+    <span class="s0">// for an explanation of HSV color.</span>
+    <span class="s2">final float</span><span class="s3">[] </span><span class="s1">hsvValues </span><span class="s3">= </span><span class="s2">new float</span><span class="s3">[</span><span class="s6">3</span><span class="s3">];</span>
+
+    <span class="s0">// xButtonPreviouslyPressed and xButtonCurrentlyPressed keep track of the previous and current</span>
+    <span class="s0">// state of the X button on the gamepad</span>
+    <span class="s2">boolean </span><span class="s1">xButtonPreviouslyPressed </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+    <span class="s2">boolean </span><span class="s1">xButtonCurrentlyPressed </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+
+    <span class="s0">// Get a reference to our sensor object. It's recommended to use NormalizedColorSensor over</span>
+    <span class="s0">// ColorSensor, because NormalizedColorSensor consistently gives values between 0 and 1, while</span>
+    <span class="s0">// the values you get from ColorSensor are dependent on the specific sensor you're using.</span>
+    <span class="s1">colorSensor </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">NormalizedColorSensor</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;sensor_color&quot;</span><span class="s3">);</span>
+
+    <span class="s0">// If possible, turn the light on in the beginning (it might already be on anyway,</span>
+    <span class="s0">// we just make sure it is if we can).</span>
+    <span class="s2">if </span><span class="s3">(</span><span class="s1">colorSensor </span><span class="s2">instanceof </span><span class="s1">SwitchableLight</span><span class="s3">) {</span>
+      <span class="s3">((</span><span class="s1">SwitchableLight</span><span class="s3">)</span><span class="s1">colorSensor</span><span class="s3">).</span><span class="s1">enableLight</span><span class="s3">(</span><span class="s2">true</span><span class="s3">);</span>
+    <span class="s3">}</span>
+
+    <span class="s0">// Wait for the start button to be pressed.</span>
+    <span class="s1">waitForStart</span><span class="s3">();</span>
+
+    <span class="s0">// Loop until we are asked to stop</span>
+    <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">()) {</span>
+      <span class="s0">// Explain basic gain information via telemetry</span>
+      <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot;Hold the A button on gamepad 1 to increase gain, or B to decrease it.</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+      <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot;Higher gain values mean that the sensor will report larger numbers for Red, Green, and Blue, and Value</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+
+      <span class="s0">// Update the gain value if either of the A or B gamepad buttons is being held</span>
+      <span class="s2">if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">a</span><span class="s3">) {</span>
+        <span class="s0">// Only increase the gain by a small amount, since this loop will occur multiple times per second.</span>
+        <span class="s1">gain </span><span class="s3">+= </span><span class="s6">0.005</span><span class="s3">;</span>
+      <span class="s3">} </span><span class="s2">else if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">b </span><span class="s3">&amp;&amp; </span><span class="s1">gain </span><span class="s3">&gt; </span><span class="s6">1</span><span class="s3">) { </span><span class="s0">// A gain of less than 1 will make the values smaller, which is not helpful.</span>
+        <span class="s1">gain </span><span class="s3">-= </span><span class="s6">0.005</span><span class="s3">;</span>
+      <span class="s3">}</span>
+
+      <span class="s0">// Show the gain value via telemetry</span>
+      <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Gain&quot;</span><span class="s3">, </span><span class="s1">gain</span><span class="s3">);</span>
+
+      <span class="s0">// Tell the sensor our desired gain value (normally you would do this during initialization,</span>
+      <span class="s0">// not during the loop)</span>
+      <span class="s1">colorSensor</span><span class="s3">.</span><span class="s1">setGain</span><span class="s3">(</span><span class="s1">gain</span><span class="s3">);</span>
+
+      <span class="s0">// Check the status of the X button on the gamepad</span>
+      <span class="s1">xButtonCurrentlyPressed </span><span class="s3">= </span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">x</span><span class="s3">;</span>
+
+      <span class="s0">// If the button state is different than what it was, then act</span>
+      <span class="s2">if </span><span class="s3">(</span><span class="s1">xButtonCurrentlyPressed </span><span class="s3">!= </span><span class="s1">xButtonPreviouslyPressed</span><span class="s3">) {</span>
+        <span class="s0">// If the button is (now) down, then toggle the light</span>
+        <span class="s2">if </span><span class="s3">(</span><span class="s1">xButtonCurrentlyPressed</span><span class="s3">) {</span>
+          <span class="s2">if </span><span class="s3">(</span><span class="s1">colorSensor </span><span class="s2">instanceof </span><span class="s1">SwitchableLight</span><span class="s3">) {</span>
+            <span class="s1">SwitchableLight light </span><span class="s3">= (</span><span class="s1">SwitchableLight</span><span class="s3">)</span><span class="s1">colorSensor</span><span class="s3">;</span>
+            <span class="s1">light</span><span class="s3">.</span><span class="s1">enableLight</span><span class="s3">(!</span><span class="s1">light</span><span class="s3">.</span><span class="s1">isLightOn</span><span class="s3">());</span>
+          <span class="s3">}</span>
+        <span class="s3">}</span>
+      <span class="s3">}</span>
+      <span class="s1">xButtonPreviouslyPressed </span><span class="s3">= </span><span class="s1">xButtonCurrentlyPressed</span><span class="s3">;</span>
+
+      <span class="s0">// Get the normalized colors from the sensor</span>
+      <span class="s1">NormalizedRGBA colors </span><span class="s3">= </span><span class="s1">colorSensor</span><span class="s3">.</span><span class="s1">getNormalizedColors</span><span class="s3">();</span>
+
+      <span class="s0">/* Use telemetry to display feedback on the driver station. We show the red, green, and blue 
+       * normalized values from the sensor (in the range of 0 to 1), as well as the equivalent 
+       * HSV (hue, saturation and value) values. See http://web.archive.org/web/20190311170843/https://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html 
+       * for an explanation of HSV color. */</span>
+
+      <span class="s0">// Update the hsvValues array by passing it to Color.colorToHSV()</span>
+      <span class="s1">Color</span><span class="s3">.</span><span class="s1">colorToHSV</span><span class="s3">(</span><span class="s1">colors</span><span class="s3">.</span><span class="s1">toColor</span><span class="s3">(), </span><span class="s1">hsvValues</span><span class="s3">);</span>
+
+      <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">()</span>
+              <span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Red&quot;</span><span class="s3">, </span><span class="s4">&quot;%.3f&quot;</span><span class="s3">, </span><span class="s1">colors</span><span class="s3">.</span><span class="s1">red</span><span class="s3">)</span>
+              <span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Green&quot;</span><span class="s3">, </span><span class="s4">&quot;%.3f&quot;</span><span class="s3">, </span><span class="s1">colors</span><span class="s3">.</span><span class="s1">green</span><span class="s3">)</span>
+              <span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Blue&quot;</span><span class="s3">, </span><span class="s4">&quot;%.3f&quot;</span><span class="s3">, </span><span class="s1">colors</span><span class="s3">.</span><span class="s1">blue</span><span class="s3">);</span>
+      <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">()</span>
+              <span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Hue&quot;</span><span class="s3">, </span><span class="s4">&quot;%.3f&quot;</span><span class="s3">, </span><span class="s1">hsvValues</span><span class="s3">[</span><span class="s6">0</span><span class="s3">])</span>
+              <span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Saturation&quot;</span><span class="s3">, </span><span class="s4">&quot;%.3f&quot;</span><span class="s3">, </span><span class="s1">hsvValues</span><span class="s3">[</span><span class="s6">1</span><span class="s3">])</span>
+              <span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Value&quot;</span><span class="s3">, </span><span class="s4">&quot;%.3f&quot;</span><span class="s3">, </span><span class="s1">hsvValues</span><span class="s3">[</span><span class="s6">2</span><span class="s3">]);</span>
+      <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Alpha&quot;</span><span class="s3">, </span><span class="s4">&quot;%.3f&quot;</span><span class="s3">, </span><span class="s1">colors</span><span class="s3">.</span><span class="s1">alpha</span><span class="s3">);</span>
+
+      <span class="s0">/* If this color sensor also has a distance sensor, display the measured distance. 
+       * Note that the reported distance is only useful at very close range, and is impacted by 
+       * ambient light and surface reflectivity. */</span>
+      <span class="s2">if </span><span class="s3">(</span><span class="s1">colorSensor </span><span class="s2">instanceof </span><span class="s1">DistanceSensor</span><span class="s3">) {</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Distance (cm)&quot;</span><span class="s3">, </span><span class="s4">&quot;%.3f&quot;</span><span class="s3">, ((</span><span class="s1">DistanceSensor</span><span class="s3">) </span><span class="s1">colorSensor</span><span class="s3">).</span><span class="s1">getDistance</span><span class="s3">(</span><span class="s1">DistanceUnit</span><span class="s3">.</span><span class="s1">CM</span><span class="s3">));</span>
+      <span class="s3">}</span>
+
+      <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+      <span class="s0">// Change the Robot Controller's background color to match the color detected by the color sensor.</span>
+      <span class="s1">relativeLayout</span><span class="s3">.</span><span class="s1">post</span><span class="s3">(</span><span class="s2">new </span><span class="s1">Runnable</span><span class="s3">() {</span>
+        <span class="s2">public void </span><span class="s1">run</span><span class="s3">() {</span>
+          <span class="s1">relativeLayout</span><span class="s3">.</span><span class="s1">setBackgroundColor</span><span class="s3">(</span><span class="s1">Color</span><span class="s3">.</span><span class="s1">HSVToColor</span><span class="s3">(</span><span class="s1">hsvValues</span><span class="s3">));</span>
+        <span class="s3">}</span>
+      <span class="s3">});</span>
+    <span class="s3">}</span>
+  <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

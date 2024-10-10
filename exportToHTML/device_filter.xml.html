@@ -1,0 +1,70 @@
+<html>
+<head>
+<title>device_filter.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #d5b778;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+device_filter.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;!--</span>
+<span class="s0">Copyright (c) 2014, 2015 Qualcomm Technologies Inc 
+ 
+All rights reserved. 
+ 
+Redistribution and use in source and binary forms, with or without modification, 
+are permitted (subject to the limitations in the disclaimer below) provided that 
+the following conditions are met: 
+ 
+Redistributions of source code must retain the above copyright notice, this list 
+of conditions and the following disclaimer. 
+ 
+Redistributions in binary form must reproduce the above copyright notice, this 
+list of conditions and the following disclaimer in the documentation and/or 
+other materials provided with the distribution. 
+ 
+Neither the name of Qualcomm Technologies Inc nor the names of its contributors 
+may be used to endorse or promote products derived from this software without 
+specific prior written permission. 
+ 
+NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+&quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+--&gt;</span>
+
+<span class="s0">&lt;!--</span>
+<span class="s0">https://developer.android.com/guide/topics/connectivity/usb/host 
+--&gt;</span>
+
+<span class="s0">&lt;!-- see also RobotUsbDevice.getUsbIdentifiers() --&gt;</span>
+<span class="s2">&lt;resources&gt;</span>
+   <span class="s2">&lt;usb-device </span><span class="s3">vendor-id</span><span class="s4">=&quot;1027&quot; </span><span class="s3">product-id</span><span class="s4">=&quot;24597&quot; </span><span class="s2">/&gt; </span><span class="s0">&lt;!-- FT232 Lynx: 0x0403/0x6015 --&gt;</span>
+
+   <span class="s0">&lt;!-- cameras --&gt;</span>
+   <span class="s0">&lt;!-- We don't currently auto-connect to UVC cameras, instead relying 
+        on the app itself to poll. But we could change that if we wished --&gt;</span>
+   <span class="s0">&lt;!-- Update: turns out we need that if we are to get onNewIntent() notifications 
+        in our activity when cameras attach. See FtcRobotControllerActivity. --&gt;</span>
+   <span class="s2">&lt;usb-device </span><span class="s3">class</span><span class="s4">=&quot;14&quot; </span><span class="s3">subclass</span><span class="s4">=&quot;2&quot;</span><span class="s2">/&gt;</span>
+
+<span class="s2">&lt;/resources&gt;</span>
+</pre>
+</body>
+</html>

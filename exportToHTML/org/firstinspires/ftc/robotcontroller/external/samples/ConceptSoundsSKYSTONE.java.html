@@ -1,0 +1,144 @@
+<html>
+<head>
+<title>ConceptSoundsSKYSTONE.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ConceptSoundsSKYSTONE.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Copyright (c) 2018 FIRST. All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted (subject to the limitations in the disclaimer below) provided that 
+ * the following conditions are met: 
+ * 
+ * Redistributions of source code must retain the above copyright notice, this list 
+ * of conditions and the following disclaimer. 
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this 
+ * list of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or 
+ * promote products derived from this software without specific prior written permission. 
+ * 
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ * &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">content</span><span class="s3">.</span><span class="s1">Context</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">ftccommon</span><span class="s3">.</span><span class="s1">SoundPlayer</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode demonstrates how to play one of the several SKYSTONE/Star Wars sounds loaded into the SDK. 
+ * It does this by creating a simple &quot;chooser&quot; controlled by the gamepad Up Down buttons. 
+ * This code also prevents sounds from stacking up by setting a &quot;playing&quot; flag, which is cleared when the sound finishes playing. 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list 
+ * 
+ * Operation: 
+ *      Use the DPAD to change the selected sound, and the Right Bumper to play it. 
+ */</span>
+
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name</span><span class="s3">=</span><span class="s4">&quot;SKYSTONE Sounds&quot;</span><span class="s3">, </span><span class="s1">group</span><span class="s3">=</span><span class="s4">&quot;Concept&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">ConceptSoundsSKYSTONE </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+
+    <span class="s0">// List of available sound resources</span>
+    <span class="s1">String  sounds</span><span class="s3">[] =  {</span><span class="s4">&quot;ss_alarm&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_bb8_down&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_bb8_up&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_darth_vader&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_fly_by&quot;</span><span class="s3">,</span>
+            <span class="s4">&quot;ss_mf_fail&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_laser&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_laser_burst&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_light_saber&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_light_saber_long&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_light_saber_short&quot;</span><span class="s3">,</span>
+            <span class="s4">&quot;ss_light_speed&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_mine&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_power_up&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_r2d2_up&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_roger_roger&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_siren&quot;</span><span class="s3">, </span><span class="s4">&quot;ss_wookie&quot; </span><span class="s3">};</span>
+    <span class="s2">boolean </span><span class="s1">soundPlaying </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() {</span>
+
+        <span class="s0">// Variables for choosing from the available sounds</span>
+        <span class="s2">int     </span><span class="s1">soundIndex      </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+        <span class="s2">int     </span><span class="s1">soundID         </span><span class="s3">= -</span><span class="s5">1</span><span class="s3">;</span>
+        <span class="s2">boolean </span><span class="s1">was_dpad_up     </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+        <span class="s2">boolean </span><span class="s1">was_dpad_down   </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+
+        <span class="s1">Context myApp </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">appContext</span><span class="s3">;</span>
+
+        <span class="s0">// create a sound parameter that holds the desired player parameters.</span>
+        <span class="s1">SoundPlayer</span><span class="s3">.</span><span class="s1">PlaySoundParams params </span><span class="s3">= </span><span class="s2">new </span><span class="s1">SoundPlayer</span><span class="s3">.</span><span class="s1">PlaySoundParams</span><span class="s3">();</span>
+        <span class="s1">params</span><span class="s3">.</span><span class="s1">loopControl </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+        <span class="s1">params</span><span class="s3">.</span><span class="s1">waitForNonLoopingSoundsToFinish </span><span class="s3">= </span><span class="s2">true</span><span class="s3">;</span>
+
+        <span class="s0">// In this sample, we will skip waiting for the user to press play, and start displaying sound choices right away</span>
+        <span class="s2">while </span><span class="s3">(!</span><span class="s1">isStopRequested</span><span class="s3">()) {</span>
+
+            <span class="s0">// Look for DPAD presses to change the selection</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">dpad_down </span><span class="s3">&amp;&amp; !</span><span class="s1">was_dpad_down</span><span class="s3">) {</span>
+                <span class="s0">// Go to next sound (with list wrap) and display it</span>
+                <span class="s1">soundIndex </span><span class="s3">= (</span><span class="s1">soundIndex </span><span class="s3">+ </span><span class="s5">1</span><span class="s3">) % </span><span class="s1">sounds</span><span class="s3">.</span><span class="s1">length</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">dpad_up </span><span class="s3">&amp;&amp; !</span><span class="s1">was_dpad_up</span><span class="s3">) {</span>
+                <span class="s0">// Go to previous sound (with list wrap) and display it</span>
+                <span class="s1">soundIndex </span><span class="s3">= (</span><span class="s1">soundIndex </span><span class="s3">+ </span><span class="s1">sounds</span><span class="s3">.</span><span class="s1">length </span><span class="s3">- </span><span class="s5">1</span><span class="s3">) % </span><span class="s1">sounds</span><span class="s3">.</span><span class="s1">length</span><span class="s3">;</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Look for trigger to see if we should play sound</span>
+            <span class="s0">// Only start a new sound if we are currently not playing one.</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">right_bumper </span><span class="s3">&amp;&amp; !</span><span class="s1">soundPlaying</span><span class="s3">) {</span>
+
+                <span class="s0">// Determine Resource IDs for the sounds you want to play, and make sure it's valid.</span>
+                <span class="s2">if </span><span class="s3">((</span><span class="s1">soundID </span><span class="s3">= </span><span class="s1">myApp</span><span class="s3">.</span><span class="s1">getResources</span><span class="s3">().</span><span class="s1">getIdentifier</span><span class="s3">(</span><span class="s1">sounds</span><span class="s3">[</span><span class="s1">soundIndex</span><span class="s3">], </span><span class="s4">&quot;raw&quot;</span><span class="s3">, </span><span class="s1">myApp</span><span class="s3">.</span><span class="s1">getPackageName</span><span class="s3">())) != </span><span class="s5">0</span><span class="s3">){</span>
+
+                    <span class="s0">// Signal that the sound is now playing.</span>
+                    <span class="s1">soundPlaying </span><span class="s3">= </span><span class="s2">true</span><span class="s3">;</span>
+
+                    <span class="s0">// Start playing, and also Create a callback that will clear the playing flag when the sound is complete.</span>
+                    <span class="s1">SoundPlayer</span><span class="s3">.</span><span class="s1">getInstance</span><span class="s3">().</span><span class="s1">startPlaying</span><span class="s3">(</span><span class="s1">myApp</span><span class="s3">, </span><span class="s1">soundID</span><span class="s3">, </span><span class="s1">params</span><span class="s3">, </span><span class="s2">null</span><span class="s3">,</span>
+                            <span class="s2">new </span><span class="s1">Runnable</span><span class="s3">() {</span>
+                                <span class="s2">public void </span><span class="s1">run</span><span class="s3">() {</span>
+                                    <span class="s1">soundPlaying </span><span class="s3">= </span><span class="s2">false</span><span class="s3">;</span>
+                                <span class="s3">}} );</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Remember the last state of the dpad to detect changes.</span>
+            <span class="s1">was_dpad_up     </span><span class="s3">= </span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">dpad_up</span><span class="s3">;</span>
+            <span class="s1">was_dpad_down   </span><span class="s3">= </span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">dpad_down</span><span class="s3">;</span>
+
+            <span class="s0">// Display the current sound choice, and the playing status.</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&quot;</span><span class="s3">, </span><span class="s4">&quot;Use DPAD up/down to choose sound.&quot;</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&quot;</span><span class="s3">, </span><span class="s4">&quot;Press Right Bumper to play sound.&quot;</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&quot;</span><span class="s3">, </span><span class="s4">&quot;&quot;</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Sound &gt;&quot;</span><span class="s3">, </span><span class="s1">sounds</span><span class="s3">[</span><span class="s1">soundIndex</span><span class="s3">]);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Status &gt;&quot;</span><span class="s3">, </span><span class="s1">soundPlaying </span><span class="s3">? </span><span class="s4">&quot;Playing&quot; </span><span class="s3">: </span><span class="s4">&quot;Stopped&quot;</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<html>
+<head>
+<title>sample_conventions.md</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #56a8f5;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+sample_conventions.md</font>
+</center></td></tr></table>
+<pre><span class="s0">## </span><span class="s2">Sample Class/Opmode conventions</span>
+<span class="s0">#### </span><span class="s2">V 1.1.0  8/9/2017</span>
+
+<span class="s2">This document defines the FTC Sample OpMode and Class conventions.</span>
+
+<span class="s0">### </span><span class="s2">OpMode Name</span>
+
+<span class="s2">To gain a better understanding of how the samples are organized, and how to interpret the</span>
+<span class="s2">naming system, it will help to understand the conventions that were used during their creation.</span>
+
+<span class="s2">To summarize</span><span class="s1">: </span><span class="s2">A range of different samples classes will reside in the java/external/samples.</span>
+<span class="s2">The class names will follow a naming convention which indicates the purpose of each class.</span>
+<span class="s2">The prefix of the name will be one of the following</span><span class="s1">:</span>
+
+<span class="s2">Basic</span><span class="s1">:  	</span><span class="s2">This is a minimally functional OpMode used to illustrate the skeleton/structure</span>
+            <span class="s2">of a particular style of OpMode.  These are bare bones examples.</span>
+
+<span class="s2">Sensor</span><span class="s1">:    	</span><span class="s2">This is a Sample OpMode that shows how to use a specific sensor.</span>
+            <span class="s2">It is not intended to drive a functioning robot, it is simply showing the minimal code</span>
+            <span class="s2">required to read and display the sensor values.</span>
+
+<span class="s2">Robot</span><span class="s1">:	    </span><span class="s2">This is a Sample OpMode that assumes a simple two-motor </span><span class="s1">(</span><span class="s2">differential</span><span class="s1">) </span><span class="s2">drive base.</span>
+            <span class="s2">It may be used to provide a common baseline driving OpMode, or</span>
+            <span class="s2">to demonstrate how a particular sensor or concept can be used to navigate.</span>
+
+<span class="s2">Concept</span><span class="s1">:	</span><span class="s2">This is a sample OpMode that illustrates performing a specific function or concept.</span>
+            <span class="s2">These may be complex, but their operation should be explained clearly in the comments,</span>
+            <span class="s2">or the comments should reference an external doc, guide or tutorial.</span>
+            <span class="s2">Each OpMode should try to only demonstrate a single concept so they are easy to</span>
+            <span class="s2">locate based on their name.  These OpModes may not produce a drivable robot.</span>
+
+<span class="s2">Utility</span><span class="s1">:    </span><span class="s2">This sample type is provided as a useful tool, or aide, to perform some specific development task.</span>
+            <span class="s2">It is not expected to be something you would include in your own robot code.</span>
+            <span class="s2">To use the tool, comment out the @Disabled annotation and build the App.</span>
+            <span class="s2">Read the comments found in the sample for an explanation of its intended use.</span>
+
+<span class="s2">After the prefix, other conventions will apply</span><span class="s1">:</span>
+
+<span class="s0">* </span><span class="s2">Sensor class names should constructed as</span><span class="s1">:       </span><span class="s2">Sensor - Company - Type</span>
+<span class="s0">* </span><span class="s2">Robot class names should be constructed as</span><span class="s1">:     </span><span class="s2">Robot - Mode - Action - OpModetype</span>
+<span class="s0">* </span><span class="s2">Concept class names should be constructed as</span><span class="s1">:   </span><span class="s2">Concept - Topic - OpModetype</span>
+
+<span class="s0">### </span><span class="s2">Sample OpMode Content/Style</span>
+
+<span class="s2">Code is formatted as per the Google Style Guide</span><span class="s1">:</span>
+
+<span class="s3">https://google.github.io/styleguide/javaguide.html</span>
+
+<span class="s2">With “Sensor” and “Hardware” samples, the code should demonstrate the essential function,</span>
+<span class="s2">and not be embellished with too much additional “clever” code.  If a sensor has special</span>
+<span class="s2">addressing needs, or has a variety of modes or outputs, these should be demonstrated as</span>
+<span class="s2">simply as possible.</span>
+
+<span class="s2">Special programming methods, or robot control techniques should be reserved for “Concept” Samples,</span>
+<span class="s2">and where possible, Samples should strive to only demonstrate a single concept,</span>
+<span class="s2">eg</span><span class="s1">: </span><span class="s2">State machine coding, or a User Menu system, and not combine them into a single “all inclusive”</span>
+<span class="s2">sample.  This will prevent an “all inclusive” Sample being deleted just because one part of it</span>
+<span class="s2">becomes obsolete.</span>
+
+<span class="s0">### </span><span class="s2">Device Configuration Names</span>
+
+<span class="s2">The following device names are used in the external samples</span>
+ 
+<span class="s1">** </span><span class="s2">Motors</span><span class="s1">:</span>
+<span class="s2">left_drive</span>
+<span class="s2">right_drive</span>
+<span class="s2">left_arm</span>
+
+<span class="s1">** </span><span class="s2">Servos</span><span class="s1">:</span>
+<span class="s2">left_hand</span>
+<span class="s2">right_hand</span>
+<span class="s2">arm</span>
+<span class="s2">claw</span>
+
+<span class="s1">** </span><span class="s2">Sensors</span><span class="s1">:</span>
+<span class="s2">sensor_color</span>
+<span class="s2">sensor_ir</span>
+<span class="s2">sensor_light</span>
+<span class="s2">sensor_ods</span>
+<span class="s2">sensor_range</span>
+<span class="s2">sensor_touch</span>
+<span class="s2">sensor_color_distance</span>
+<span class="s2">sensor_digital</span>
+<span class="s2">digin</span>
+<span class="s2">digout</span>
+
+<span class="s1">** </span><span class="s2">Localization</span><span class="s1">:</span>
+<span class="s2">compass</span>
+<span class="s2">gyro</span>
+<span class="s2">imu </span>
+<span class="s2">navx</span>
+
+<span class="s0">### </span><span class="s2">Device Object Names</span>
+
+<span class="s2">Device Object names should use the same words as the device’s configuration name, but they</span>
+<span class="s2">should be re-structured to be a suitable Java variable name.  This should keep the same word order,</span>
+<span class="s2">but adopt the style of beginning with a lower case letter, and then each subsequent word</span>
+<span class="s2">starting with an upper case letter.</span>
+
+<span class="s2">Eg</span><span class="s1">: </span><span class="s2">from the examples above</span><span class="s1">:  </span><span class="s2">tool, leftMotor, rightClawServo, rearLightSensor.</span>
+
+<span class="s2">Note</span><span class="s1">:  </span><span class="s2">Sometimes it’s helpful to put the device type first, followed by the variant.</span>
+<span class="s2">eg</span><span class="s1">:  </span><span class="s2">motorLeft and motorRight, but this should only be done if the same word order</span>
+<span class="s2">is used on the device configuration name.</span>
+
+<span class="s0">### </span><span class="s2">OpMode code Comments</span>
+
+<span class="s2">Sample comments should read like normal code comments, that is, as an explanation of what the</span>
+<span class="s2">sample code is doing.  They should NOT be directives to the user,</span>
+<span class="s2">like</span><span class="s1">: </span><span class="s2">“insert your joystick code here” as these comments typically aren’t</span>
+<span class="s2">detailed enough to be useful.  They also often get left in the code and become garbage.</span>
+
+<span class="s2">Instead, an example of the joystick code should be shown with a comment describing what it is doing.</span>
+</pre>
+</body>
+</html>

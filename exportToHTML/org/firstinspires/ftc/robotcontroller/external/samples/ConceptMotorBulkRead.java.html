@@ -1,0 +1,249 @@
+<html>
+<head>
+<title>ConceptMotorBulkRead.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ConceptMotorBulkRead.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Copyright (c) 2019 Phil Malone. All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted (subject to the limitations in the disclaimer below) provided that 
+ * the following conditions are met: 
+ * 
+ * Redistributions of source code must retain the above copyright notice, this list 
+ * of conditions and the following disclaimer. 
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this 
+ * list of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or 
+ * promote products derived from this software without specific prior written permission. 
+ * 
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ * &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">lynx</span><span class="s3">.</span><span class="s1">LynxModule</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">DcMotorEx</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">ElapsedTime</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">java</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">List</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode illustrates how to use the Expansion Hub's Bulk-Read feature to speed up control cycle times. 
+ * In this example there are 4 motors that need their encoder positions, and velocities read. 
+ * The sample is written to work with one or two expansion hubs, with no assumption as to where the motors are located. 
+ * 
+ * Three scenarios are tested: 
+ * Cache Mode = OFF    This is the normal default, where no cache is used, and every read produces a discrete transaction with 
+ *                     an expansion hub, which is the slowest approach, but guarentees that the value is as fresh (recent) as possible.. 
+ * 
+ * Cache Mode = AUTO   This mode will attempt to minimize the number of discrete read commands, by performing bulk-reads 
+ *                     and then returning values that have been cached.  The cache is updated automatically whenever any specific encoder is re-read. 
+ *                     This mode will always return new data, but it may perform more bulk-reads than absolutely required. 
+ *                     Extra reads will be performed if multiple encoder/velocity reads are performed on the same encoder in one control cycle. 
+ *                     This mode is a good compromise between the OFF and MANUAL modes. 
+ *                     Note: If there are significant user-program delays between encoder reads, the cached value may not be fresh (recent). 
+ *                     You can issue a clearBulkCache() call at any time force a fresh bulk-read on the next encoder read. 
+ * 
+ * Cache Mode = MANUAL This mode requires the user's code to determine the best time to clear the cached bulk-read data. 
+ *                     Well organized code will reset the cache once at the beginning of the control cycle, and then immediately read and store all the encoder values. 
+ *                     This approach will produce the shortest cycle times, but it does require the user to manually clear the cache. 
+ *                     Since NO automatic Bulk-Reads are performed, neglecting to clear the bulk cache will result in the same values being returned 
+ *                     each time an encoder read is performed. 
+ * 
+ * ------------------------------------- 
+ * 
+ * General tip to speed up your control cycles: 
+ * 
+ * No matter what method you use to read encoders and other inputs, you should try to 
+ * avoid reading the same encoder input multiple times around a control loop. 
+ * Under normal conditions, this will slow down the control loop. 
+ * The preferred method is to read all the required inputs ONCE at the beginning of the loop, 
+ * and save the values in variable that can be used by other parts of the control code. 
+ * 
+ * eg: if you are sending encoder positions to your telemetry display, putting a getCurrentPosition() 
+ * call in the telemetry statement will force the code to go and get another copy which will take time. 
+ * It's much better read the position into a variable once, and use that variable for control AND display. 
+ * Reading saved variables takes no time at all. 
+ * 
+ * Once you put all your sensor reads at the beginning of the control cycle, it's very easy to use 
+ * the bulk-read AUTO mode to streamline your cycle timing. 
+ */</span>
+<span class="s1">@TeleOp </span><span class="s3">(</span><span class="s1">name </span><span class="s3">= </span><span class="s4">&quot;Motor Bulk Reads&quot;</span><span class="s3">, </span><span class="s1">group </span><span class="s3">= </span><span class="s4">&quot;Tests&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">ConceptMotorBulkRead </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+
+    <span class="s2">final int       </span><span class="s1">TEST_CYCLES    </span><span class="s3">= </span><span class="s5">500</span><span class="s3">;   </span><span class="s0">// Number of control cycles to run to determine cycle times.</span>
+
+    <span class="s2">private </span><span class="s1">DcMotorEx m1</span><span class="s3">, </span><span class="s1">m2</span><span class="s3">, </span><span class="s1">m3</span><span class="s3">, </span><span class="s1">m4</span><span class="s3">; </span><span class="s0">// Motor Objects</span>
+    <span class="s2">private long      </span><span class="s1">e1</span><span class="s3">, </span><span class="s1">e2</span><span class="s3">, </span><span class="s1">e3</span><span class="s3">, </span><span class="s1">e4</span><span class="s3">; </span><span class="s0">// Encoder Values</span>
+    <span class="s2">private double    </span><span class="s1">v1</span><span class="s3">, </span><span class="s1">v2</span><span class="s3">, </span><span class="s1">v3</span><span class="s3">, </span><span class="s1">v4</span><span class="s3">; </span><span class="s0">// Velocities</span>
+
+    <span class="s0">// Cycle Times</span>
+    <span class="s2">double </span><span class="s1">t1 </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+    <span class="s2">double </span><span class="s1">t2 </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+    <span class="s2">double </span><span class="s1">t3 </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() {</span>
+
+        <span class="s2">int </span><span class="s1">cycles</span><span class="s3">;</span>
+
+        <span class="s0">// Important Step 1:  Make sure you use DcMotorEx when you instantiate your motors.</span>
+        <span class="s1">m1 </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">DcMotorEx</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;m1&quot;</span><span class="s3">);  </span><span class="s0">// Configure the robot to use these 4 motor names,</span>
+        <span class="s1">m2 </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">DcMotorEx</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;m2&quot;</span><span class="s3">);  </span><span class="s0">// or change these strings to match your existing Robot Configuration.</span>
+        <span class="s1">m3 </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">DcMotorEx</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;m3&quot;</span><span class="s3">);</span>
+        <span class="s1">m4 </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">DcMotorEx</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;m4&quot;</span><span class="s3">);</span>
+
+        <span class="s0">// Important Step 2: Get access to a list of Expansion Hub Modules to enable changing caching methods.</span>
+        <span class="s1">List</span><span class="s3">&lt;</span><span class="s1">LynxModule</span><span class="s3">&gt; </span><span class="s1">allHubs </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">getAll</span><span class="s3">(</span><span class="s1">LynxModule</span><span class="s3">.</span><span class="s2">class</span><span class="s3">);</span>
+
+        <span class="s1">ElapsedTime timer </span><span class="s3">= </span><span class="s2">new </span><span class="s1">ElapsedTime</span><span class="s3">();</span>
+
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Press START to start tests&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Test results will update for each access method.&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s1">waitForStart</span><span class="s3">();</span>
+
+        <span class="s0">// --------------------------------------------------------------------------------------</span>
+        <span class="s0">// Run control loop using legacy encoder reads</span>
+        <span class="s0">// In this mode, a single read is done for each encoder position, and a bulk read is done for each velocity read.</span>
+        <span class="s0">// This is the worst case scenario.</span>
+        <span class="s0">// This is the same as using LynxModule.BulkCachingMode.OFF</span>
+        <span class="s0">// --------------------------------------------------------------------------------------</span>
+
+        <span class="s1">displayCycleTimes</span><span class="s3">(</span><span class="s4">&quot;Test 1 of 3 (Wait for completion)&quot;</span><span class="s3">);</span>
+
+        <span class="s1">timer</span><span class="s3">.</span><span class="s1">reset</span><span class="s3">();</span>
+        <span class="s1">cycles </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">() &amp;&amp; (</span><span class="s1">cycles</span><span class="s3">++ &lt; </span><span class="s1">TEST_CYCLES</span><span class="s3">)) {</span>
+            <span class="s1">e1 </span><span class="s3">= </span><span class="s1">m1</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">();</span>
+            <span class="s1">e2 </span><span class="s3">= </span><span class="s1">m2</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">();</span>
+            <span class="s1">e3 </span><span class="s3">= </span><span class="s1">m3</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">();</span>
+            <span class="s1">e4 </span><span class="s3">= </span><span class="s1">m4</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">();</span>
+
+            <span class="s1">v1 </span><span class="s3">= </span><span class="s1">m1</span><span class="s3">.</span><span class="s1">getVelocity</span><span class="s3">();</span>
+            <span class="s1">v2 </span><span class="s3">= </span><span class="s1">m2</span><span class="s3">.</span><span class="s1">getVelocity</span><span class="s3">();</span>
+            <span class="s1">v3 </span><span class="s3">= </span><span class="s1">m3</span><span class="s3">.</span><span class="s1">getVelocity</span><span class="s3">();</span>
+            <span class="s1">v4 </span><span class="s3">= </span><span class="s1">m4</span><span class="s3">.</span><span class="s1">getVelocity</span><span class="s3">();</span>
+
+            <span class="s0">// Put Control loop action code here.</span>
+
+        <span class="s3">}</span>
+        <span class="s0">// calculate the average cycle time.</span>
+        <span class="s1">t1 </span><span class="s3">= </span><span class="s1">timer</span><span class="s3">.</span><span class="s1">milliseconds</span><span class="s3">() / </span><span class="s1">cycles</span><span class="s3">;</span>
+        <span class="s1">displayCycleTimes</span><span class="s3">(</span><span class="s4">&quot;Test 2 of 3 (Wait for completion)&quot;</span><span class="s3">);</span>
+
+        <span class="s0">// --------------------------------------------------------------------------------------</span>
+        <span class="s0">// Run test cycles using AUTO cache mode</span>
+        <span class="s0">// In this mode, only one bulk read is done per cycle, UNLESS you read a specific encoder/velocity item AGAIN in that cycle.</span>
+        <span class="s0">// --------------------------------------------------------------------------------------</span>
+
+        <span class="s0">// Important Step 3: Option A. Set all Expansion hubs to use the AUTO Bulk Caching mode</span>
+        <span class="s2">for </span><span class="s3">(</span><span class="s1">LynxModule module </span><span class="s3">: </span><span class="s1">allHubs</span><span class="s3">) {</span>
+            <span class="s1">module</span><span class="s3">.</span><span class="s1">setBulkCachingMode</span><span class="s3">(</span><span class="s1">LynxModule</span><span class="s3">.</span><span class="s1">BulkCachingMode</span><span class="s3">.</span><span class="s1">AUTO</span><span class="s3">);</span>
+        <span class="s3">}</span>
+
+        <span class="s1">timer</span><span class="s3">.</span><span class="s1">reset</span><span class="s3">();</span>
+        <span class="s1">cycles </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">() &amp;&amp; (</span><span class="s1">cycles</span><span class="s3">++ &lt; </span><span class="s1">TEST_CYCLES</span><span class="s3">)) {</span>
+            <span class="s1">e1 </span><span class="s3">= </span><span class="s1">m1</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">();  </span><span class="s0">// Uses 1 bulk-read for all 4 encoder/velocity reads,</span>
+            <span class="s1">e2 </span><span class="s3">= </span><span class="s1">m2</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">();  </span><span class="s0">// but don't do any `get` operations more than once per cycle.</span>
+            <span class="s1">e3 </span><span class="s3">= </span><span class="s1">m3</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">();</span>
+            <span class="s1">e4 </span><span class="s3">= </span><span class="s1">m4</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">();</span>
+
+            <span class="s1">v1 </span><span class="s3">= </span><span class="s1">m1</span><span class="s3">.</span><span class="s1">getVelocity</span><span class="s3">();</span>
+            <span class="s1">v2 </span><span class="s3">= </span><span class="s1">m2</span><span class="s3">.</span><span class="s1">getVelocity</span><span class="s3">();</span>
+            <span class="s1">v3 </span><span class="s3">= </span><span class="s1">m3</span><span class="s3">.</span><span class="s1">getVelocity</span><span class="s3">();</span>
+            <span class="s1">v4 </span><span class="s3">= </span><span class="s1">m4</span><span class="s3">.</span><span class="s1">getVelocity</span><span class="s3">();</span>
+
+            <span class="s0">// Put Control loop action code here.</span>
+
+        <span class="s3">}</span>
+        <span class="s0">// calculate the average cycle time.</span>
+        <span class="s1">t2 </span><span class="s3">= </span><span class="s1">timer</span><span class="s3">.</span><span class="s1">milliseconds</span><span class="s3">() / </span><span class="s1">cycles</span><span class="s3">;</span>
+        <span class="s1">displayCycleTimes</span><span class="s3">(</span><span class="s4">&quot;Test 3 of 3 (Wait for completion)&quot;</span><span class="s3">);</span>
+
+        <span class="s0">// --------------------------------------------------------------------------------------</span>
+        <span class="s0">// Run test cycles using MANUAL cache mode</span>
+        <span class="s0">// In this mode, only one block read is done each control cycle.</span>
+        <span class="s0">// This is the MOST efficient method, but it does require that the cache is cleared manually each control cycle.</span>
+        <span class="s0">// --------------------------------------------------------------------------------------</span>
+
+        <span class="s0">// Important Step 3: Option B. Set all Expansion hubs to use the MANUAL Bulk Caching mode</span>
+        <span class="s2">for </span><span class="s3">(</span><span class="s1">LynxModule module </span><span class="s3">: </span><span class="s1">allHubs</span><span class="s3">) {</span>
+            <span class="s1">module</span><span class="s3">.</span><span class="s1">setBulkCachingMode</span><span class="s3">(</span><span class="s1">LynxModule</span><span class="s3">.</span><span class="s1">BulkCachingMode</span><span class="s3">.</span><span class="s1">MANUAL</span><span class="s3">);</span>
+        <span class="s3">}</span>
+
+        <span class="s1">timer</span><span class="s3">.</span><span class="s1">reset</span><span class="s3">();</span>
+        <span class="s1">cycles </span><span class="s3">= </span><span class="s5">0</span><span class="s3">;</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">() &amp;&amp; (</span><span class="s1">cycles</span><span class="s3">++ &lt; </span><span class="s1">TEST_CYCLES</span><span class="s3">)) {</span>
+
+            <span class="s0">// Important Step 4: If you are using MANUAL mode, you must clear the BulkCache once per control cycle</span>
+            <span class="s2">for </span><span class="s3">(</span><span class="s1">LynxModule module </span><span class="s3">: </span><span class="s1">allHubs</span><span class="s3">) {</span>
+                <span class="s1">module</span><span class="s3">.</span><span class="s1">clearBulkCache</span><span class="s3">();</span>
+            <span class="s3">}</span>
+
+            <span class="s1">e1 </span><span class="s3">= </span><span class="s1">m1</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">();   </span><span class="s0">// Uses 1 bulk-read to obtain ALL the motor data</span>
+            <span class="s1">e2 </span><span class="s3">= </span><span class="s1">m2</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">();   </span><span class="s0">// There is no penalty for doing more `get` operations in this cycle,</span>
+            <span class="s1">e3 </span><span class="s3">= </span><span class="s1">m3</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">();   </span><span class="s0">// but they will return the same data.</span>
+            <span class="s1">e4 </span><span class="s3">= </span><span class="s1">m4</span><span class="s3">.</span><span class="s1">getCurrentPosition</span><span class="s3">();</span>
+
+            <span class="s1">v1 </span><span class="s3">= </span><span class="s1">m1</span><span class="s3">.</span><span class="s1">getVelocity</span><span class="s3">();</span>
+            <span class="s1">v2 </span><span class="s3">= </span><span class="s1">m2</span><span class="s3">.</span><span class="s1">getVelocity</span><span class="s3">();</span>
+            <span class="s1">v3 </span><span class="s3">= </span><span class="s1">m3</span><span class="s3">.</span><span class="s1">getVelocity</span><span class="s3">();</span>
+            <span class="s1">v4 </span><span class="s3">= </span><span class="s1">m4</span><span class="s3">.</span><span class="s1">getVelocity</span><span class="s3">();</span>
+
+            <span class="s0">// Put Control loop action code here.</span>
+
+        <span class="s3">}</span>
+        <span class="s0">// calculate the average cycle time.</span>
+        <span class="s1">t3 </span><span class="s3">= </span><span class="s1">timer</span><span class="s3">.</span><span class="s1">milliseconds</span><span class="s3">() / </span><span class="s1">cycles</span><span class="s3">;</span>
+        <span class="s1">displayCycleTimes</span><span class="s3">(</span><span class="s4">&quot;Complete&quot;</span><span class="s3">);</span>
+
+        <span class="s0">// wait until op-mode is stopped by user, before clearing display.</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">()) ;</span>
+    <span class="s3">}</span>
+
+    <span class="s0">// Display three comparison times.</span>
+    <span class="s2">void </span><span class="s1">displayCycleTimes</span><span class="s3">(</span><span class="s1">String status</span><span class="s3">) {</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Testing&quot;</span><span class="s3">, </span><span class="s1">status</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Cache = OFF&quot;</span><span class="s3">,    </span><span class="s4">&quot;%5.1f mS/cycle&quot;</span><span class="s3">, </span><span class="s1">t1</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Cache = AUTO&quot;</span><span class="s3">,   </span><span class="s4">&quot;%5.1f mS/cycle&quot;</span><span class="s3">, </span><span class="s1">t2</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Cache = MANUAL&quot;</span><span class="s3">, </span><span class="s4">&quot;%5.1f mS/cycle&quot;</span><span class="s3">, </span><span class="s1">t3</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+
+</pre>
+</body>
+</html>

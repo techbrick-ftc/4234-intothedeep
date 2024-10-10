@@ -1,0 +1,164 @@
+<html>
+<head>
+<title>SensorOctoQuad.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+.s6 { color: #5f826b; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SensorOctoQuad.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2024 DigitalChickenLabs 
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions: 
+ * 
+ * The above copyright notice and this permission notice shall be included in all 
+ * copies or substantial portions of the Software. 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+ * SOFTWARE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">digitalchickenlabs</span><span class="s3">.</span><span class="s1">OctoQuad</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">Telemetry</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode illustrates how to use the DigitalChickenLabs OctoQuad Quadrature Encoder &amp; Pulse Width Interface Module 
+ * 
+ * The OctoQuad has 8 input channels that can used to read either Relative Quadrature Encoders or Pulse-Width Absolute Encoder inputs. 
+ * Relative Quadrature encoders are found on most FTC motors, and some stand-alone position sensors like the REV Thru-Bore encoder. 
+ * Pulse-Width encoders are less common. The REV Thru-Bore encoder can provide its absolute position via a variable pulse width, 
+ * as can several sonar rangefinders such as the MaxBotix MB1000 series. 
+ * 
+ * This basic sample shows how an OctoQuad can be used to read the position three Odometry pods fitted 
+ * with REV Thru-Bore encoders.  For a more advanced example showing additional OctoQuad capabilities, see the SensorOctoQuadAdv sample. 
+ * 
+ * This OpMode assumes that the OctoQuad is attached to an I2C interface named &quot;octoquad&quot; in the robot configuration. 
+ * 
+ * The code assumes the first three OctoQuad inputs are connected as follows 
+ * - Chan 0: for measuring forward motion on the left side of the robot. 
+ * - Chan 1: for measuring forward motion on the right side of the robot. 
+ * - Chan 2: for measuring Lateral (strafing) motion. 
+ * 
+ * The encoder values may be reset to zero by pressing the X (left most) button on Gamepad 1. 
+ * 
+ * This sample does not show how to interpret these readings, just how to obtain and display them. 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list 
+ * 
+ * See the sensor's product page: https://www.tindie.com/products/35114/ 
+ */</span>
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name </span><span class="s3">= </span><span class="s4">&quot;OctoQuad Basic&quot;</span><span class="s3">, </span><span class="s1">group</span><span class="s3">=</span><span class="s4">&quot;OctoQuad&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">SensorOctoQuad </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+
+    <span class="s0">// Identify which encoder OctoQuad inputs are connected to each odometry pod.</span>
+    <span class="s2">private final int </span><span class="s1">ODO_LEFT  </span><span class="s3">= </span><span class="s5">0</span><span class="s3">; </span><span class="s0">// Facing forward direction on left side of robot (Axial motion)</span>
+    <span class="s2">private final int </span><span class="s1">ODO_RIGHT </span><span class="s3">= </span><span class="s5">1</span><span class="s3">; </span><span class="s0">// Facing forward direction on right side or robot (Axial motion)</span>
+    <span class="s2">private final int </span><span class="s1">ODO_PERP  </span><span class="s3">= </span><span class="s5">2</span><span class="s3">; </span><span class="s0">// Facing perpendicular direction at the center of the robot (Lateral motion)</span>
+
+    <span class="s0">// Declare the OctoQuad object and members to store encoder positions and velocities</span>
+    <span class="s2">private </span><span class="s1">OctoQuad    octoquad</span><span class="s3">;</span>
+
+    <span class="s2">private int         </span><span class="s1">posLeft</span><span class="s3">;</span>
+    <span class="s2">private int         </span><span class="s1">posRight</span><span class="s3">;</span>
+    <span class="s2">private int         </span><span class="s1">posPerp</span><span class="s3">;</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* This function is executed when this OpMode is selected from the Driver Station.</span>
+     <span class="s6">*/</span>
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() {</span>
+
+        <span class="s0">// Connect to OctoQuad by referring to its name in the Robot Configuration.</span>
+        <span class="s1">octoquad </span><span class="s3">= </span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;octoquad&quot;</span><span class="s3">);</span>
+
+        <span class="s0">// Read the Firmware Revision number from the OctoQuad and display it as telemetry.</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;OctoQuad Firmware Version &quot;</span><span class="s3">, </span><span class="s1">octoquad</span><span class="s3">.</span><span class="s1">getFirmwareVersion</span><span class="s3">());</span>
+
+        <span class="s0">// Reverse the count-direction of any encoder that is not what you require.</span>
+        <span class="s0">// e.g. if you push the robot forward and the left encoder counts down, then reverse it so it counts up.</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">setSingleEncoderDirection</span><span class="s3">(</span><span class="s1">ODO_LEFT</span><span class="s3">,  </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">EncoderDirection</span><span class="s3">.</span><span class="s1">REVERSE</span><span class="s3">);</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">setSingleEncoderDirection</span><span class="s3">(</span><span class="s1">ODO_RIGHT</span><span class="s3">, </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">EncoderDirection</span><span class="s3">.</span><span class="s1">FORWARD</span><span class="s3">);</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">setSingleEncoderDirection</span><span class="s3">(</span><span class="s1">ODO_PERP</span><span class="s3">,  </span><span class="s1">OctoQuad</span><span class="s3">.</span><span class="s1">EncoderDirection</span><span class="s3">.</span><span class="s1">FORWARD</span><span class="s3">);</span>
+
+        <span class="s0">// Any changes that are made should be saved in FLASH just in case there is a sensor power glitch.</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">saveParametersToFlash</span><span class="s3">();</span>
+
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s2">\n</span><span class="s4">Press START to read encoder values&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+        <span class="s1">waitForStart</span><span class="s3">();</span>
+
+        <span class="s0">// Configure the telemetry for optimal display of data.</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">setDisplayFormat</span><span class="s3">(</span><span class="s1">Telemetry</span><span class="s3">.</span><span class="s1">DisplayFormat</span><span class="s3">.</span><span class="s1">MONOSPACE</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">setMsTransmissionInterval</span><span class="s3">(</span><span class="s5">50</span><span class="s3">);</span>
+
+        <span class="s0">// Set all the encoder inputs to zero.</span>
+        <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">resetAllPositions</span><span class="s3">();</span>
+
+        <span class="s0">// Loop while displaying the odometry pod positions.</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">()) {</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Press X to Reset Encoders</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+
+            <span class="s0">// Check for X button to reset encoders.</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">x</span><span class="s3">) {</span>
+                <span class="s0">// Reset the position of all encoders to zero.</span>
+                <span class="s1">octoquad</span><span class="s3">.</span><span class="s1">resetAllPositions</span><span class="s3">();</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Read all the encoder data.  Load into local members.</span>
+            <span class="s1">readOdometryPods</span><span class="s3">();</span>
+
+            <span class="s0">// Display the values.</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Left &quot;</span><span class="s3">, </span><span class="s4">&quot;%8d counts&quot;</span><span class="s3">, </span><span class="s1">posLeft</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Right&quot;</span><span class="s3">, </span><span class="s4">&quot;%8d counts&quot;</span><span class="s3">, </span><span class="s1">posRight</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Perp &quot;</span><span class="s3">, </span><span class="s4">&quot;%8d counts&quot;</span><span class="s3">, </span><span class="s1">posPerp</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+
+    <span class="s2">private void </span><span class="s1">readOdometryPods</span><span class="s3">() {</span>
+        <span class="s0">// For best performance, we should only perform ONE transaction with the OctoQuad each cycle.</span>
+        <span class="s0">// Since this example only needs to read positions from a few channels, we could use either</span>
+        <span class="s0">//   readPositionRange(idxFirst, idxLast) to get a select number of sequential channels</span>
+        <span class="s0">// or</span>
+        <span class="s0">//   readAllPositions() to get all 8 encoder readings</span>
+        <span class="s0">//</span>
+        <span class="s0">// Since both calls take almost the same amount of time, and the actual channels may not end up</span>
+        <span class="s0">// being sequential, we will read all of the encoder positions, and then pick out the ones we need.</span>
+        <span class="s2">int</span><span class="s3">[] </span><span class="s1">positions </span><span class="s3">= </span><span class="s1">octoquad</span><span class="s3">.</span><span class="s1">readAllPositions</span><span class="s3">();</span>
+        <span class="s1">posLeft  </span><span class="s3">= </span><span class="s1">positions</span><span class="s3">[</span><span class="s1">ODO_LEFT</span><span class="s3">];</span>
+        <span class="s1">posRight </span><span class="s3">= </span><span class="s1">positions</span><span class="s3">[</span><span class="s1">ODO_RIGHT</span><span class="s3">];</span>
+        <span class="s1">posPerp  </span><span class="s3">= </span><span class="s1">positions</span><span class="s3">[</span><span class="s1">ODO_PERP</span><span class="s3">];</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

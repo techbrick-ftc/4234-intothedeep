@@ -1,0 +1,48 @@
+<html>
+<head>
+<title>build.gradle</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #7a7e85;}
+.s3 { color: #6aab73;}
+.s4 { color: #bcbec4;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+build.gradle</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">java.text.SimpleDateFormat</span>
+
+<span class="s2">//</span>
+<span class="s2">// build.gradle in FtcRobotController</span>
+<span class="s2">//</span>
+<span class="s1">apply plugin: </span><span class="s3">'com.android.library'</span>
+
+<span class="s1">android </span><span class="s4">{</span>
+
+    <span class="s1">defaultConfig </span><span class="s4">{</span>
+        <span class="s1">minSdkVersion </span><span class="s5">24</span>
+        <span class="s2">//noinspection ExpiredTargetSdkVersion</span>
+        <span class="s1">targetSdkVersion </span><span class="s5">28</span>
+        <span class="s1">buildConfigField </span><span class="s3">&quot;String&quot;</span><span class="s1">, </span><span class="s3">&quot;APP_BUILD_TIME&quot;</span><span class="s1">, </span><span class="s3">'&quot;' </span><span class="s4">+ (</span><span class="s0">new </span><span class="s1">SimpleDateFormat</span><span class="s4">(</span><span class="s3">&quot;yyyy-MM-dd'T'HH:mm:ss.SSSZ&quot;</span><span class="s1">, Locale.ROOT</span><span class="s4">)</span><span class="s1">.format</span><span class="s4">(</span><span class="s0">new </span><span class="s1">Date</span><span class="s4">())) + </span><span class="s3">'&quot;'</span>
+    <span class="s4">}</span>
+
+    <span class="s1">compileSdkVersion </span><span class="s5">29</span>
+
+    <span class="s1">compileOptions </span><span class="s4">{</span>
+        <span class="s1">sourceCompatibility JavaVersion.VERSION_1_8</span>
+        <span class="s1">targetCompatibility JavaVersion.VERSION_1_8</span>
+    <span class="s4">}</span>
+    <span class="s1">namespace </span><span class="s4">= </span><span class="s3">'com.qualcomm.ftcrobotcontroller'</span>
+<span class="s4">}</span>
+
+<span class="s1">apply from: </span><span class="s3">'../build.dependencies.gradle'</span>
+</pre>
+</body>
+</html>

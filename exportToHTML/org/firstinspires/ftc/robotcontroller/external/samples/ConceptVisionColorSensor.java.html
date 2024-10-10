@@ -1,0 +1,158 @@
+<html>
+<head>
+<title>ConceptVisionColorSensor.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ConceptVisionColorSensor.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* 
+ * Copyright (c) 2024 Phil Malone 
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy 
+ * of this software and associated documentation files (the &quot;Software&quot;), to deal 
+ * in the Software without restriction, including without limitation the rights 
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+ * copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions: 
+ * 
+ * The above copyright notice and this permission notice shall be included in all 
+ * copies or substantial portions of the Software. 
+ * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+ * SOFTWARE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">graphics</span><span class="s3">.</span><span class="s1">Color</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">android</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">Size</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">camera</span><span class="s3">.</span><span class="s1">WebcamName</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">VisionPortal</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">opencv</span><span class="s3">.</span><span class="s1">ImageRegion</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">opencv</span><span class="s3">.</span><span class="s1">PredominantColorProcessor</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode illustrates how to use a video source (camera) as a color sensor 
+ * 
+ * A &quot;color sensor&quot; will typically determine the color of the object that it is pointed at. 
+ * 
+ * This sample performs the same function, except it uses a video camera to inspect an object or scene. 
+ * The user may choose to inspect all, or just a Region of Interest (ROI), of the active camera view. 
+ * The user must also provide a list of &quot;acceptable colors&quot; (Swatches) from which the closest matching color will be selected. 
+ * 
+ * To perform this function, a VisionPortal runs a PredominantColorProcessor process. 
+ *   The PredominantColorProcessor process is created first, and then the VisionPortal is built to use this process. 
+ *   The PredominantColorProcessor analyses the ROI and splits the colored pixels into several color-clusters. 
+ *   The largest of these clusters is then considered to be the &quot;Predominant Color&quot; 
+ *   The process then matches the Predominant Color with the closest Swatch and returns that match. 
+ * 
+ * To aid the user, a colored rectangle is drawn on the camera preview to show the RegionOfInterest, 
+ * The Predominant Color is used to paint the rectangle border, so the user can verify that the color is reasonable. 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list 
+ */</span>
+
+<span class="s1">@Disabled</span>
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name </span><span class="s3">= </span><span class="s4">&quot;Concept: Vision Color-Sensor&quot;</span><span class="s3">, </span><span class="s1">group </span><span class="s3">= </span><span class="s4">&quot;Concept&quot;</span><span class="s3">)</span>
+<span class="s2">public class </span><span class="s1">ConceptVisionColorSensor </span><span class="s2">extends </span><span class="s1">LinearOpMode</span>
+<span class="s3">{</span>
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">()</span>
+    <span class="s3">{</span>
+        <span class="s0">/* Build a &quot;Color Sensor&quot; vision processor based on the PredominantColorProcessor class. 
+         * 
+         * - Focus the color sensor by defining a RegionOfInterest (ROI) which you want to inspect. 
+         *     This can be the entire frame, or a sub-region defined using: 
+         *     1) standard image coordinates or 2) a normalized +/- 1.0 coordinate system. 
+         *     Use one form of the ImageRegion class to define the ROI. 
+         *         ImageRegion.entireFrame() 
+         *         ImageRegion.asImageCoordinates(50, 50,  150, 150)  100x100 pixel square near the upper left corner 
+         *         ImageRegion.asUnityCenterCoordinates(-0.1, 0.1, 0.1, -0.1)  10% width/height square centered on screen 
+         * 
+         * - Set the list of &quot;acceptable&quot; color swatches (matches). 
+         *     Only colors that you assign here will be returned. 
+         *     If you know the sensor will be pointing to one of a few specific colors, enter them here. 
+         *     Or, if the sensor may be pointed randomly, provide some additional colors that may match the surrounding. 
+         *     Possible choices are: 
+         *         RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, PURPLE, MAGENTA, BLACK, WHITE; 
+         * 
+         *     Note that in the example shown below, only some of the available colors are included. 
+         *     This will force any other colored region into one of these colors. 
+         *     eg: Green may be reported as YELLOW, as this may be the &quot;closest&quot; match. 
+         */</span>
+        <span class="s1">PredominantColorProcessor colorSensor </span><span class="s3">= </span><span class="s2">new </span><span class="s1">PredominantColorProcessor</span><span class="s3">.</span><span class="s1">Builder</span><span class="s3">()</span>
+                <span class="s3">.</span><span class="s1">setRoi</span><span class="s3">(</span><span class="s1">ImageRegion</span><span class="s3">.</span><span class="s1">asUnityCenterCoordinates</span><span class="s3">(-</span><span class="s5">0.1</span><span class="s3">, </span><span class="s5">0.1</span><span class="s3">, </span><span class="s5">0.1</span><span class="s3">, -</span><span class="s5">0.1</span><span class="s3">))</span>
+                <span class="s3">.</span><span class="s1">setSwatches</span><span class="s3">(</span>
+                        <span class="s1">PredominantColorProcessor</span><span class="s3">.</span><span class="s1">Swatch</span><span class="s3">.</span><span class="s1">RED</span><span class="s3">,</span>
+                        <span class="s1">PredominantColorProcessor</span><span class="s3">.</span><span class="s1">Swatch</span><span class="s3">.</span><span class="s1">BLUE</span><span class="s3">,</span>
+                        <span class="s1">PredominantColorProcessor</span><span class="s3">.</span><span class="s1">Swatch</span><span class="s3">.</span><span class="s1">YELLOW</span><span class="s3">,</span>
+                        <span class="s1">PredominantColorProcessor</span><span class="s3">.</span><span class="s1">Swatch</span><span class="s3">.</span><span class="s1">BLACK</span><span class="s3">,</span>
+                        <span class="s1">PredominantColorProcessor</span><span class="s3">.</span><span class="s1">Swatch</span><span class="s3">.</span><span class="s1">WHITE</span><span class="s3">)</span>
+                <span class="s3">.</span><span class="s1">build</span><span class="s3">();</span>
+
+        <span class="s0">/* 
+         * Build a vision portal to run the Color Sensor process. 
+         * 
+         *  - Add the colorSensor process created above. 
+         *  - Set the desired video resolution. 
+         *      Since a high resolution will not improve this process, choose a lower resolution that is 
+         *      supported by your camera.  This will improve overall performance and reduce latency. 
+         *  - Choose your video source.  This may be 
+         *      .setCamera(hardwareMap.get(WebcamName.class, &quot;Webcam 1&quot;))  .....   for a webcam 
+         *  or 
+         *      .setCamera(BuiltinCameraDirection.BACK)    ... for a Phone Camera 
+         */</span>
+        <span class="s1">VisionPortal portal </span><span class="s3">= </span><span class="s2">new </span><span class="s1">VisionPortal</span><span class="s3">.</span><span class="s1">Builder</span><span class="s3">()</span>
+                <span class="s3">.</span><span class="s1">addProcessor</span><span class="s3">(</span><span class="s1">colorSensor</span><span class="s3">)</span>
+                <span class="s3">.</span><span class="s1">setCameraResolution</span><span class="s3">(</span><span class="s2">new </span><span class="s1">Size</span><span class="s3">(</span><span class="s5">320</span><span class="s3">, </span><span class="s5">240</span><span class="s3">))</span>
+                <span class="s3">.</span><span class="s1">setCamera</span><span class="s3">(</span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">WebcamName</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;Webcam 1&quot;</span><span class="s3">))</span>
+                <span class="s3">.</span><span class="s1">build</span><span class="s3">();</span>
+
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">setMsTransmissionInterval</span><span class="s3">(</span><span class="s5">50</span><span class="s3">);  </span><span class="s0">// Speed up telemetry updates, Just use for debugging.</span>
+
+        <span class="s0">// WARNING:  To be able to view the stream preview on the Driver Station, this code runs in INIT mode.</span>
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">() || </span><span class="s1">opModeInInit</span><span class="s3">())</span>
+        <span class="s3">{</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;DS preview on/off&quot;</span><span class="s3">, </span><span class="s4">&quot;3 dots, Camera Stream</span><span class="s2">\n</span><span class="s4">&quot;</span><span class="s3">);</span>
+
+            <span class="s0">// Request the most recent color analysis.</span>
+            <span class="s0">// This will return the closest matching colorSwatch and the predominant RGB color.</span>
+            <span class="s0">// Note: to take actions based on the detected color, simply use the colorSwatch in a comparison or switch.</span>
+            <span class="s0">//  eg:</span>
+            <span class="s0">//      if (result.closestSwatch == PredominantColorProcessor.Swatch.RED) {... some code  ...}</span>
+            <span class="s1">PredominantColorProcessor</span><span class="s3">.</span><span class="s1">Result result </span><span class="s3">= </span><span class="s1">colorSensor</span><span class="s3">.</span><span class="s1">getAnalysis</span><span class="s3">();</span>
+
+            <span class="s0">// Display the Color Sensor result.</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;Best Match:&quot;</span><span class="s3">, </span><span class="s1">result</span><span class="s3">.</span><span class="s1">closestSwatch</span><span class="s3">);</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;R %3d, G %3d, B %3d&quot;</span><span class="s3">, </span><span class="s1">Color</span><span class="s3">.</span><span class="s1">red</span><span class="s3">(</span><span class="s1">result</span><span class="s3">.</span><span class="s1">rgb</span><span class="s3">), </span><span class="s1">Color</span><span class="s3">.</span><span class="s1">green</span><span class="s3">(</span><span class="s1">result</span><span class="s3">.</span><span class="s1">rgb</span><span class="s3">), </span><span class="s1">Color</span><span class="s3">.</span><span class="s1">blue</span><span class="s3">(</span><span class="s1">result</span><span class="s3">.</span><span class="s1">rgb</span><span class="s3">)));</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+            <span class="s1">sleep</span><span class="s3">(</span><span class="s5">20</span><span class="s3">);</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

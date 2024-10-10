@@ -1,0 +1,270 @@
+<html>
+<head>
+<title>ConceptAprilTagLocalization.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #5f826b; font-style: italic;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ConceptAprilTagLocalization.java</font>
+</center></td></tr></table>
+<pre><span class="s0">/* Copyright (c) 2024 Dryw Wade. All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted (subject to the limitations in the disclaimer below) provided that 
+ * the following conditions are met: 
+ * 
+ * Redistributions of source code must retain the above copyright notice, this list 
+ * of conditions and the following disclaimer. 
+ * 
+ * Redistributions in binary form must reproduce the above copyright notice, this 
+ * list of conditions and the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or 
+ * promote products derived from this software without specific prior written permission. 
+ * 
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS 
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ * &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ */</span>
+
+<span class="s2">package </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcontroller</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">samples</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">Disabled</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">LinearOpMode</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">com</span><span class="s3">.</span><span class="s1">qualcomm</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">eventloop</span><span class="s3">.</span><span class="s1">opmode</span><span class="s3">.</span><span class="s1">TeleOp</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">camera</span><span class="s3">.</span><span class="s1">BuiltinCameraDirection</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">hardware</span><span class="s3">.</span><span class="s1">camera</span><span class="s3">.</span><span class="s1">WebcamName</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">AngleUnit</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">DistanceUnit</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">Position</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">robotcore</span><span class="s3">.</span><span class="s1">external</span><span class="s3">.</span><span class="s1">navigation</span><span class="s3">.</span><span class="s1">YawPitchRollAngles</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">VisionPortal</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">apriltag</span><span class="s3">.</span><span class="s1">AprilTagDetection</span><span class="s3">;</span>
+<span class="s2">import </span><span class="s1">org</span><span class="s3">.</span><span class="s1">firstinspires</span><span class="s3">.</span><span class="s1">ftc</span><span class="s3">.</span><span class="s1">vision</span><span class="s3">.</span><span class="s1">apriltag</span><span class="s3">.</span><span class="s1">AprilTagProcessor</span><span class="s3">;</span>
+
+<span class="s2">import </span><span class="s1">java</span><span class="s3">.</span><span class="s1">util</span><span class="s3">.</span><span class="s1">List</span><span class="s3">;</span>
+
+<span class="s0">/* 
+ * This OpMode illustrates the basics of AprilTag based localization. 
+ * 
+ * For an introduction to AprilTags, see the FTC-DOCS link below: 
+ * https://ftc-docs.firstinspires.org/en/latest/apriltag/vision_portal/apriltag_intro/apriltag-intro.html 
+ * 
+ * In this sample, any visible tag ID will be detected and displayed, but only tags that are included in the default 
+ * &quot;TagLibrary&quot; will be used to compute the robot's location and orientation.  This default TagLibrary contains 
+ * the current Season's AprilTags and a small set of &quot;test Tags&quot; in the high number range. 
+ * 
+ * When an AprilTag in the TagLibrary is detected, the SDK provides location and orientation of the robot, relative to the field origin. 
+ * This information is provided in the &quot;robotPose&quot; member of the returned &quot;detection&quot;. 
+ * 
+ * To learn about the Field Coordinate System that is defined for FTC (and used by this OpMode), see the FTC-DOCS link below: 
+ * https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html 
+ * 
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name. 
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list. 
+ */</span>
+<span class="s1">@TeleOp</span><span class="s3">(</span><span class="s1">name </span><span class="s3">= </span><span class="s4">&quot;Concept: AprilTag Localization&quot;</span><span class="s3">, </span><span class="s1">group </span><span class="s3">= </span><span class="s4">&quot;Concept&quot;</span><span class="s3">)</span>
+<span class="s1">@Disabled</span>
+<span class="s2">public class </span><span class="s1">ConceptAprilTagLocalization </span><span class="s2">extends </span><span class="s1">LinearOpMode </span><span class="s3">{</span>
+
+    <span class="s2">private static final boolean </span><span class="s1">USE_WEBCAM </span><span class="s3">= </span><span class="s2">true</span><span class="s3">;  </span><span class="s0">// true for webcam, false for phone camera</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Variables to store the position and orientation of the camera on the robot. Setting these</span>
+     <span class="s5">* values requires a definition of the axes of the camera and robot:</span>
+     <span class="s5">*</span>
+     <span class="s5">* Camera axes:</span>
+     <span class="s5">* Origin location: Center of the lens</span>
+     <span class="s5">* Axes orientation: +x right, +y down, +z forward (from camera's perspective)</span>
+     <span class="s5">*</span>
+     <span class="s5">* Robot axes (this is typical, but you can define this however you want):</span>
+     <span class="s5">* Origin location: Center of the robot at field height</span>
+     <span class="s5">* Axes orientation: +x right, +y forward, +z upward</span>
+     <span class="s5">*</span>
+     <span class="s5">* Position:</span>
+     <span class="s5">* If all values are zero (no translation), that implies the camera is at the center of the</span>
+     <span class="s5">* robot. Suppose your camera is positioned 5 inches to the left, 7 inches forward, and 12</span>
+     <span class="s5">* inches above the ground - you would need to set the position to (-5, 7, 12).</span>
+     <span class="s5">*</span>
+     <span class="s5">* Orientation:</span>
+     <span class="s5">* If all values are zero (no rotation), that implies the camera is pointing straight up. In</span>
+     <span class="s5">* most cases, you'll need to set the pitch to -90 degrees (rotation about the x-axis), meaning</span>
+     <span class="s5">* the camera is horizontal. Use a yaw of 0 if the camera is pointing forwards, +90 degrees if</span>
+     <span class="s5">* it's pointing straight left, -90 degrees for straight right, etc. You can also set the roll</span>
+     <span class="s5">* to +/-90 degrees if it's vertical, or 180 degrees if it's upside-down.</span>
+     <span class="s5">*/</span>
+    <span class="s2">private </span><span class="s1">Position cameraPosition </span><span class="s3">= </span><span class="s2">new </span><span class="s1">Position</span><span class="s3">(</span><span class="s1">DistanceUnit</span><span class="s3">.</span><span class="s1">INCH</span><span class="s3">,</span>
+            <span class="s6">0</span><span class="s3">, </span><span class="s6">0</span><span class="s3">, </span><span class="s6">0</span><span class="s3">, </span><span class="s6">0</span><span class="s3">);</span>
+    <span class="s2">private </span><span class="s1">YawPitchRollAngles cameraOrientation </span><span class="s3">= </span><span class="s2">new </span><span class="s1">YawPitchRollAngles</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">,</span>
+            <span class="s6">0</span><span class="s3">, -</span><span class="s6">90</span><span class="s3">, </span><span class="s6">0</span><span class="s3">, </span><span class="s6">0</span><span class="s3">);</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* The variable to store our instance of the AprilTag processor.</span>
+     <span class="s5">*/</span>
+    <span class="s2">private </span><span class="s1">AprilTagProcessor aprilTag</span><span class="s3">;</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* The variable to store our instance of the vision portal.</span>
+     <span class="s5">*/</span>
+    <span class="s2">private </span><span class="s1">VisionPortal visionPortal</span><span class="s3">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s2">public void </span><span class="s1">runOpMode</span><span class="s3">() {</span>
+
+        <span class="s1">initAprilTag</span><span class="s3">();</span>
+
+        <span class="s0">// Wait for the DS start button to be touched.</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;DS preview on/off&quot;</span><span class="s3">, </span><span class="s4">&quot;3 dots, Camera Stream&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;&gt;&quot;</span><span class="s3">, </span><span class="s4">&quot;Touch START to start OpMode&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+        <span class="s1">waitForStart</span><span class="s3">();</span>
+
+        <span class="s2">while </span><span class="s3">(</span><span class="s1">opModeIsActive</span><span class="s3">()) {</span>
+
+            <span class="s1">telemetryAprilTag</span><span class="s3">();</span>
+
+            <span class="s0">// Push telemetry to the Driver Station.</span>
+            <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">update</span><span class="s3">();</span>
+
+            <span class="s0">// Save CPU resources; can resume streaming when needed.</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">dpad_down</span><span class="s3">) {</span>
+                <span class="s1">visionPortal</span><span class="s3">.</span><span class="s1">stopStreaming</span><span class="s3">();</span>
+            <span class="s3">} </span><span class="s2">else if </span><span class="s3">(</span><span class="s1">gamepad1</span><span class="s3">.</span><span class="s1">dpad_up</span><span class="s3">) {</span>
+                <span class="s1">visionPortal</span><span class="s3">.</span><span class="s1">resumeStreaming</span><span class="s3">();</span>
+            <span class="s3">}</span>
+
+            <span class="s0">// Share the CPU.</span>
+            <span class="s1">sleep</span><span class="s3">(</span><span class="s6">20</span><span class="s3">);</span>
+        <span class="s3">}</span>
+
+        <span class="s0">// Save more CPU resources when camera is no longer needed.</span>
+        <span class="s1">visionPortal</span><span class="s3">.</span><span class="s1">close</span><span class="s3">();</span>
+
+    <span class="s3">}   </span><span class="s0">// end method runOpMode()</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Initialize the AprilTag processor.</span>
+     <span class="s5">*/</span>
+    <span class="s2">private void </span><span class="s1">initAprilTag</span><span class="s3">() {</span>
+
+        <span class="s0">// Create the AprilTag processor.</span>
+        <span class="s1">aprilTag </span><span class="s3">= </span><span class="s2">new </span><span class="s1">AprilTagProcessor</span><span class="s3">.</span><span class="s1">Builder</span><span class="s3">()</span>
+
+                <span class="s0">// The following default settings are available to un-comment and edit as needed.</span>
+                <span class="s0">//.setDrawAxes(false)</span>
+                <span class="s0">//.setDrawCubeProjection(false)</span>
+                <span class="s0">//.setDrawTagOutline(true)</span>
+                <span class="s0">//.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)</span>
+                <span class="s0">//.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())</span>
+                <span class="s0">//.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)</span>
+                <span class="s3">.</span><span class="s1">setCameraPose</span><span class="s3">(</span><span class="s1">cameraPosition</span><span class="s3">, </span><span class="s1">cameraOrientation</span><span class="s3">)</span>
+
+                <span class="s0">// == CAMERA CALIBRATION ==</span>
+                <span class="s0">// If you do not manually specify calibration parameters, the SDK will attempt</span>
+                <span class="s0">// to load a predefined calibration for your camera.</span>
+                <span class="s0">//.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)</span>
+                <span class="s0">// ... these parameters are fx, fy, cx, cy.</span>
+
+                <span class="s3">.</span><span class="s1">build</span><span class="s3">();</span>
+
+        <span class="s0">// Adjust Image Decimation to trade-off detection-range for detection-rate.</span>
+        <span class="s0">// eg: Some typical detection data using a Logitech C920 WebCam</span>
+        <span class="s0">// Decimation = 1 ..  Detect 2&quot; Tag from 10 feet away at 10 Frames per second</span>
+        <span class="s0">// Decimation = 2 ..  Detect 2&quot; Tag from 6  feet away at 22 Frames per second</span>
+        <span class="s0">// Decimation = 3 ..  Detect 2&quot; Tag from 4  feet away at 30 Frames Per Second (default)</span>
+        <span class="s0">// Decimation = 3 ..  Detect 5&quot; Tag from 10 feet away at 30 Frames Per Second (default)</span>
+        <span class="s0">// Note: Decimation can be changed on-the-fly to adapt during a match.</span>
+        <span class="s0">//aprilTag.setDecimation(3);</span>
+
+        <span class="s0">// Create the vision portal by using a builder.</span>
+        <span class="s1">VisionPortal</span><span class="s3">.</span><span class="s1">Builder builder </span><span class="s3">= </span><span class="s2">new </span><span class="s1">VisionPortal</span><span class="s3">.</span><span class="s1">Builder</span><span class="s3">();</span>
+
+        <span class="s0">// Set the camera (webcam vs. built-in RC phone camera).</span>
+        <span class="s2">if </span><span class="s3">(</span><span class="s1">USE_WEBCAM</span><span class="s3">) {</span>
+            <span class="s1">builder</span><span class="s3">.</span><span class="s1">setCamera</span><span class="s3">(</span><span class="s1">hardwareMap</span><span class="s3">.</span><span class="s1">get</span><span class="s3">(</span><span class="s1">WebcamName</span><span class="s3">.</span><span class="s2">class</span><span class="s3">, </span><span class="s4">&quot;Webcam 1&quot;</span><span class="s3">));</span>
+        <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+            <span class="s1">builder</span><span class="s3">.</span><span class="s1">setCamera</span><span class="s3">(</span><span class="s1">BuiltinCameraDirection</span><span class="s3">.</span><span class="s1">BACK</span><span class="s3">);</span>
+        <span class="s3">}</span>
+
+        <span class="s0">// Choose a camera resolution. Not all cameras support all resolutions.</span>
+        <span class="s0">//builder.setCameraResolution(new Size(640, 480));</span>
+
+        <span class="s0">// Enable the RC preview (LiveView).  Set &quot;false&quot; to omit camera monitoring.</span>
+        <span class="s0">//builder.enableLiveView(true);</span>
+
+        <span class="s0">// Set the stream format; MJPEG uses less bandwidth than default YUY2.</span>
+        <span class="s0">//builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);</span>
+
+        <span class="s0">// Choose whether or not LiveView stops if no processors are enabled.</span>
+        <span class="s0">// If set &quot;true&quot;, monitor shows solid orange screen if no processors enabled.</span>
+        <span class="s0">// If set &quot;false&quot;, monitor shows camera view without annotations.</span>
+        <span class="s0">//builder.setAutoStopLiveView(false);</span>
+
+        <span class="s0">// Set and enable the processor.</span>
+        <span class="s1">builder</span><span class="s3">.</span><span class="s1">addProcessor</span><span class="s3">(</span><span class="s1">aprilTag</span><span class="s3">);</span>
+
+        <span class="s0">// Build the Vision Portal, using the above settings.</span>
+        <span class="s1">visionPortal </span><span class="s3">= </span><span class="s1">builder</span><span class="s3">.</span><span class="s1">build</span><span class="s3">();</span>
+
+        <span class="s0">// Disable or re-enable the aprilTag processor at any time.</span>
+        <span class="s0">//visionPortal.setProcessorEnabled(aprilTag, true);</span>
+
+    <span class="s3">}   </span><span class="s0">// end method initAprilTag()</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Add telemetry about AprilTag detections.</span>
+     <span class="s5">*/</span>
+    <span class="s2">private void </span><span class="s1">telemetryAprilTag</span><span class="s3">() {</span>
+
+        <span class="s1">List</span><span class="s3">&lt;</span><span class="s1">AprilTagDetection</span><span class="s3">&gt; </span><span class="s1">currentDetections </span><span class="s3">= </span><span class="s1">aprilTag</span><span class="s3">.</span><span class="s1">getDetections</span><span class="s3">();</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addData</span><span class="s3">(</span><span class="s4">&quot;# AprilTags Detected&quot;</span><span class="s3">, </span><span class="s1">currentDetections</span><span class="s3">.</span><span class="s1">size</span><span class="s3">());</span>
+
+        <span class="s0">// Step through the list of detections and display info for each one.</span>
+        <span class="s2">for </span><span class="s3">(</span><span class="s1">AprilTagDetection detection </span><span class="s3">: </span><span class="s1">currentDetections</span><span class="s3">) {</span>
+            <span class="s2">if </span><span class="s3">(</span><span class="s1">detection</span><span class="s3">.</span><span class="s1">metadata </span><span class="s3">!= </span><span class="s2">null</span><span class="s3">) {</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s2">\n</span><span class="s4">==== (ID %d) %s&quot;</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">id</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">metadata</span><span class="s3">.</span><span class="s1">name</span><span class="s3">));</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;XYZ %6.1f %6.1f %6.1f  (inch)&quot;</span><span class="s3">,</span>
+                        <span class="s1">detection</span><span class="s3">.</span><span class="s1">robotPose</span><span class="s3">.</span><span class="s1">getPosition</span><span class="s3">().</span><span class="s1">x</span><span class="s3">,</span>
+                        <span class="s1">detection</span><span class="s3">.</span><span class="s1">robotPose</span><span class="s3">.</span><span class="s1">getPosition</span><span class="s3">().</span><span class="s1">y</span><span class="s3">,</span>
+                        <span class="s1">detection</span><span class="s3">.</span><span class="s1">robotPose</span><span class="s3">.</span><span class="s1">getPosition</span><span class="s3">().</span><span class="s1">z</span><span class="s3">));</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;PRY %6.1f %6.1f %6.1f  (deg)&quot;</span><span class="s3">,</span>
+                        <span class="s1">detection</span><span class="s3">.</span><span class="s1">robotPose</span><span class="s3">.</span><span class="s1">getOrientation</span><span class="s3">().</span><span class="s1">getPitch</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">),</span>
+                        <span class="s1">detection</span><span class="s3">.</span><span class="s1">robotPose</span><span class="s3">.</span><span class="s1">getOrientation</span><span class="s3">().</span><span class="s1">getRoll</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">),</span>
+                        <span class="s1">detection</span><span class="s3">.</span><span class="s1">robotPose</span><span class="s3">.</span><span class="s1">getOrientation</span><span class="s3">().</span><span class="s1">getYaw</span><span class="s3">(</span><span class="s1">AngleUnit</span><span class="s3">.</span><span class="s1">DEGREES</span><span class="s3">)));</span>
+            <span class="s3">} </span><span class="s2">else </span><span class="s3">{</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s2">\n</span><span class="s4">==== (ID %d) Unknown&quot;</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">id</span><span class="s3">));</span>
+                <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s1">String</span><span class="s3">.</span><span class="s1">format</span><span class="s3">(</span><span class="s4">&quot;Center %6.0f %6.0f   (pixels)&quot;</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">center</span><span class="s3">.</span><span class="s1">x</span><span class="s3">, </span><span class="s1">detection</span><span class="s3">.</span><span class="s1">center</span><span class="s3">.</span><span class="s1">y</span><span class="s3">));</span>
+            <span class="s3">}</span>
+        <span class="s3">}   </span><span class="s0">// end for() loop</span>
+
+        <span class="s0">// Add &quot;key&quot; information to telemetry</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s2">\n</span><span class="s4">key:</span><span class="s2">\n</span><span class="s4">XYZ = X (Right), Y (Forward), Z (Up) dist.&quot;</span><span class="s3">);</span>
+        <span class="s1">telemetry</span><span class="s3">.</span><span class="s1">addLine</span><span class="s3">(</span><span class="s4">&quot;PRY = Pitch, Roll &amp; Yaw (XYZ Rotation)&quot;</span><span class="s3">);</span>
+
+    <span class="s3">}   </span><span class="s0">// end method telemetryAprilTag()</span>
+
+<span class="s3">}   </span><span class="s0">// end class</span>
+</pre>
+</body>
+</html>
