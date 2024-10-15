@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@Autonomous(name="Auto Testing",   group="Linear OpMode")
+@Autonomous(name="Auto-Testing",   group="Linear OpMode")
 
 public class BasicAutoCentric extends LinearOpMode {
     @Override
