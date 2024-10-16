@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import java.util.Random;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -42,9 +43,10 @@ public class BasicAutoCentric extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-            double x = gamepad1.left_stick_x;
-            double rx = gamepad1.right_stick_x;
+            double y = 0.05; // Remember, Y stick value is reversed
+            double x = 0;
+
+            double rx = 1;
 
             // This button choice was made so that it is hard to hit on accident,
             // it can be freely changed based on preference.
