@@ -50,7 +50,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="1.1 WORKING - Basic Robot Centric (10/3/2024 by Ethan)", group="Linear OpMode")
+@TeleOp(name="10/3/2024 - robotCentric", group="Linear OpMode")
 public class BasicRobotCentric extends LinearOpMode {
 
     // Declare OpMode members.

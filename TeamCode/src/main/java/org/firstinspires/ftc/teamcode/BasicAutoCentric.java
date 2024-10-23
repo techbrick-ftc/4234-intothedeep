@@ -10,7 +10,7 @@ import java.util.Random;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@Autonomous(name="1.1 WORKING - Auto Test (10/15/2024 by Ethan",   group="Linear OpMode")
+@Autonomous(name="10/15/2024 - autoTest",   group="Linear OpMode")
 
 public class BasicAutoCentric extends LinearOpMode {
     @Override

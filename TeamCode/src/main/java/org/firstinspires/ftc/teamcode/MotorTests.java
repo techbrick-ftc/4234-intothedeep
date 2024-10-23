@@ -8,9 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@TeleOp(name="2.2 IN TESTING - More Motors (10/15/2024 by Aiden)",   group="Linear OpMode")
+@TeleOp(name="10/22/2024 - motorTests",   group="Linear OpMode")
 
-public class BasicFieldCentric extends LinearOpMode {
+public class MotorTests extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
@@ -19,6 +19,8 @@ public class BasicFieldCentric extends LinearOpMode {
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("backleft");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontright");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backright");
+        DcMotor armExtend = hardwareMap.dcMotor.get("armextend");
+        DcMotor armLift = hardwareMap.dcMotor.get("armlift");
 
         // Reverse the right side motors. This may be wrong for your setup.
         // If your robot moves backwards when commanded to go forwards,
@@ -44,17 +46,24 @@ public class BasicFieldCentric extends LinearOpMode {
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x;
             double rx = gamepad1.right_stick_x;
+            double ae = gamepad2.right_stick_x;
+            double aep = armExtend.getCurrentPosition();
+            double aepmax = 1000;
+            double al = gamepad2.right_stick_y/2;
+            telemetry.addData("Motor Extend", aep);
+            if (ae > 0 && aep < aepmax) {
+                armExtend.setPower(ae);
+            } else if (ae < 0 && aep > 0) {
+                armExtend.setPower(ae);
+            } else{
+                armExtend.setPower(0);
+            }
 
             // This button choice was made so that it is hard to hit on accident,
             // it can be freely changed based on preference.
             // The equivalent button is start on Xbox-style controllers.
             if (gamepad1.options) {
                 imu.resetYaw();
-            }
-            if (gamepad1.y) {
-
-            else
-
             }
 
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
@@ -78,6 +87,8 @@ public class BasicFieldCentric extends LinearOpMode {
             backLeftMotor.setPower(backLeftPower);
             frontRightMotor.setPower(frontRightPower);
             backRightMotor.setPower(backRightPower);
+            armLift.setPower(al);
+            telemetry.update();
         }
     }
 }
