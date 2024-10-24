@@ -22,7 +22,7 @@ public class BasicAutoCentric extends LinearOpMode {
         backLeftMotor.setPower(speed);
         frontRightMotor.setPower(speed);
         backRightMotor.setPower(speed);
-while (frontLeftMotor.getCurrentPosition()<distance && opModeIsActive()) {}
+while (Math.abs(frontLeftMotor.getCurrentPosition())<distance && opModeIsActive()) {}
         frontLeftMotor.setPower(0);
         backLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
@@ -53,7 +53,7 @@ while (frontLeftMotor.getCurrentPosition()<distance && opModeIsActive()) {}
         if (isStopRequested()) return;
 
         drive(0.5, 500);
-        drive(-0.5, -500);drive(0.5, 500);
+        drive(-0.5, 500);drive(0.5, 500);
         drive(-0.5, -500);drive(0.5, 500);
         drive(-0.5, -500);
     }
