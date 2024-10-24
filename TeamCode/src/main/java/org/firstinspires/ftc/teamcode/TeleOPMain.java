@@ -72,10 +72,6 @@ public class TeleOPMain extends LinearOpMode {
             //Log telemetry data
             telemetry.addData("Arm Extend", aep);
             telemetry.addData("Arm Lift", armLift.getCurrentPosition());
-            telemetry.addData("Can Lower Arm?", (armExtend.getCurrentPosition() < 30) );
-            telemetry.addData("AL", (al) );
-            telemetry.addData("ALModifier?", (liftModifier) );
-
 
 
             //Allows player to reset IMU
