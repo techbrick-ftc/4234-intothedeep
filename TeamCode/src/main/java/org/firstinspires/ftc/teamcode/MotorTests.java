@@ -48,7 +48,7 @@ public class MotorTests extends LinearOpMode {
             double rx = gamepad1.right_stick_x;
             double ae = gamepad2.right_stick_x;
             double aep = armExtend.getCurrentPosition();
-            double aepmax = 1000;
+            double aepmax = 1000; //Maximum extension value of the arm, in encoder ticks
             double al = gamepad2.right_stick_y/2;
             telemetry.addData("Motor Extend", aep);
             if (ae > 0 && aep < aepmax) {
