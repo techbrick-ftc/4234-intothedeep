@@ -22,13 +22,28 @@ public class BasicAutoCentric extends LinearOpMode {
         backLeftMotor.setPower(speed);
         frontRightMotor.setPower(speed);
         backRightMotor.setPower(speed);
-while (Math.abs(frontLeftMotor.getCurrentPosition())<distance && opModeIsActive()) {}
+        while (Math.abs(frontLeftMotor.getCurrentPosition())<distance && opModeIsActive()) {
+            sleep(5);
+        }
         frontLeftMotor.setPower(0);
         backLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
     }
-
+    public void driveLeft(double speed, double distance) {
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeftMotor.setPower(0-speed);
+        backLeftMotor.setPower(speed);
+        frontRightMotor.setPower(speed);
+        backRightMotor.setPower(0-speed);
+        while (Math.abs(frontLeftMotor.getCurrentPosition())<distance && opModeIsActive()) {
+            sleep(5);
+        }
+        frontLeftMotor.setPower(0);
+        backLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+        backRightMotor.setPower(0);
+    }
     @Override
     public void runOpMode() throws InterruptedException {
         frontLeftMotor = hardwareMap.get(DcMotor.class, "frontleft");
@@ -52,9 +67,9 @@ while (Math.abs(frontLeftMotor.getCurrentPosition())<distance && opModeIsActive(
 
         if (isStopRequested()) return;
 
-        drive(0.5, 500);
-        drive(-0.5, 500);drive(0.5, 500);
-        drive(-0.5, -500);drive(0.5, 500);
-        drive(-0.5, -500);
+        drive(0.5, 200);
+        driveLeft(0.5, 200);
+        drive(-0.5, 200);
+        driveLeft(-0.5, 200);
     }
 }
