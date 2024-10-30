@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@Autonomous(name="10/24/2024 - backwardsTest", group="Linear OpMode")
+@Autonomous(name="NEW 1029", group="Linear OpMode")
 public class BasicAutoCentric extends LinearOpMode {
 
     private DcMotor frontLeftMotor;
@@ -17,32 +17,47 @@ public class BasicAutoCentric extends LinearOpMode {
     private DcMotor backRightMotor;
 
     public void drive(double speed, double distance) {
-        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLeftMotor.setPower(speed);
         backLeftMotor.setPower(speed);
         frontRightMotor.setPower(speed);
         backRightMotor.setPower(speed);
         while (Math.abs(frontLeftMotor.getCurrentPosition())<distance && opModeIsActive()) {
-            sleep(5);
+            sleep(1);
         }
         frontLeftMotor.setPower(0);
         backLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
     public void driveLeft(double speed, double distance) {
-        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLeftMotor.setPower(0-speed);
         backLeftMotor.setPower(speed);
         frontRightMotor.setPower(speed);
         backRightMotor.setPower(0-speed);
         while (Math.abs(frontLeftMotor.getCurrentPosition())<distance && opModeIsActive()) {
-            sleep(5);
+            sleep(1);
         }
         frontLeftMotor.setPower(0);
         backLeftMotor.setPower(0);
         frontRightMotor.setPower(0);
         backRightMotor.setPower(0);
+        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     @Override
     public void runOpMode() throws InterruptedException {
@@ -62,14 +77,12 @@ public class BasicAutoCentric extends LinearOpMode {
 
         waitForStart();
 
-        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+  if (isStopRequested()) return;
 
-        if (isStopRequested()) return;
+        double dist = 10 ;
+        drive(0.3, 27*dist);
+        driveLeft(0.3, 24*dist);
+        drive(-0.3,15+dist);
 
-        drive(0.5, 200);
-        driveLeft(0.5, 200);
-        drive(-0.5, 200);
-        driveLeft(-0.5, 200);
-    }
+        }
 }
