@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 
-@Autonomous(name="NEW 1029", group="Linear OpMode")
+@Autonomous(name="Working Auto 10/31 (Ethan)", group="Linear OpMode")
 public class BasicAutoCentric extends LinearOpMode {
     private DcMotor frontLeftMotor;
     private DcMotor backLeftMotor;
@@ -76,14 +76,19 @@ public class BasicAutoCentric extends LinearOpMode {
 //double ticksPerInch = 29.8; // MAIN based on wheel sizes and motor rpm
   double ticksPerInch = 41.7; // TESTBOT based on wheel sizes and motor rpm
 double driveSpeed = 0.4;    // can be changed
-    stopDrive();
-    drive(driveSpeed, 27* ticksPerInch);
-    driveLeft(driveSpeed, 24* ticksPerInch);
-    drive(driveSpeed, 5.5*ticksPerInch); // add : raise arm 27 while driving forwards
-    // add : Lower arm to place
-        sleep(1500);
-    // add : Release sample
-    drive(-driveSpeed,15*ticksPerInch);
+        stopDrive();
+        drive(driveSpeed, 27* ticksPerInch);
+        driveLeft(driveSpeed, 24* ticksPerInch);
+        drive(driveSpeed, 5*ticksPerInch); // add : raise arm 27 while driving forwards
+        // add : Release sample
+        sleep(550);
+        drive(-driveSpeed,5*ticksPerInch);
+        sleep(200);
 
+        driveLeft(-driveSpeed, 36* ticksPerInch);
+        //Intake()
+        //rotate(-130);
+        //extendArm()
+        //release
     }
 }
