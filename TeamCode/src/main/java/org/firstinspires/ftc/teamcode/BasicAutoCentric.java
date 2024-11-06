@@ -14,7 +14,9 @@ public class BasicAutoCentric extends LinearOpMode {
     private DcMotor backLeftMotor;
     private DcMotor frontRightMotor;
     private DcMotor backRightMotor;
-
+    private DcMotor armDistanceMotor;
+    private DcMotor armAngleMotor;
+double armRotationsPerInch = 0.5;
         public void stopDrive() {
             frontLeftMotor.setPower(0);
             backLeftMotor.setPower(0);
@@ -42,6 +44,36 @@ public class BasicAutoCentric extends LinearOpMode {
             }
             stopDrive();
         }
+    public void extendArm(double speed, double position) {
+        if (armDistanceMotor.getCurrentPosition() > position) {
+            armDistanceMotor.setPower(Math.abs(speed) * -1); // Move in the negative direction
+            while (Math.abs(armDistanceMotor.getCurrentPosition()) > position && opModeIsActive()) {
+                sleep(1);
+            }
+        } else {
+            armDistanceMotor.setPower(Math.abs(speed)); // Move in the positive direction
+            while (Math.abs(armDistanceMotor.getCurrentPosition()) < position && opModeIsActive()) {
+                sleep(1);
+            }
+        }
+
+        armDistanceMotor.setPower(0);
+    }
+    public void raiseArm(double speed, double position) {
+        if (armAngleMotor.getCurrentPosition() > position) {
+            armAngleMotor.setPower(Math.abs(speed) * -1); // Move in the negative direction
+            while (Math.abs(armAngleMotor.getCurrentPosition()) > position && opModeIsActive()) {
+                sleep(1);
+            }
+        } else {
+            armAngleMotor.setPower(Math.abs(speed)); // Move in the positive direction
+            while (Math.abs(armAngleMotor.getCurrentPosition()) < position && opModeIsActive()) {
+                sleep(1);
+            }
+        }
+
+        armAngleMotor.setPower(0);
+    }
         public void driveLeft(double speed, double distance) {
             frontLeftMotor.setPower(0-speed);
             backLeftMotor.setPower(speed);
@@ -75,7 +107,7 @@ public class BasicAutoCentric extends LinearOpMode {
   /* DRIVE CODE */
 //double ticksPerInch = 29.8; // MAIN based on wheel sizes and motor rpm
   double ticksPerInch = 41.7; // TESTBOT based on wheel sizes and motor rpm
-double driveSpeed = 0.4;    // can be changed
+double driveSpeed = 0.15;    // can be changed
         stopDrive();
         drive(driveSpeed, 27* ticksPerInch);
         driveLeft(driveSpeed, 24* ticksPerInch);
