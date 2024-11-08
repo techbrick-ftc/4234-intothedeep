@@ -7,16 +7,38 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import java.lang.Math;
 
+
+//intake1+ = outtake
 @Autonomous(name="Working Auto 10/31 (Ethan)", group="Linear OpMode")
 public class BasicAutoCentric extends LinearOpMode {
     private DcMotor frontLeftMotor;
     private DcMotor backLeftMotor;
     private DcMotor frontRightMotor;
     private DcMotor backRightMotor;
-    private DcMotor armDistanceMotor;
-    private DcMotor armAngleMotor;
-double armRotationsPerInch = 0.5;
+    public DcMotor armExtend = hardwareMap.dcMotor.get("armextend");
+    public DcMotor armLift = hardwareMap.dcMotor.get("armlift");
+    public DcMotor armDistanceMotor;
+    public DcMotor armAngleMotor;
+    public CRServo intake1;
+    public CRServo intake2;
+    //armExtend.setDirection(DcMotorSimple.Direction.REVERSE); //Might not be needed; test on Tuesday
+
+
+    //Setup IMU
+    IMU imu = hardwareMap.get(IMU.class, "imu");
+    IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+            RevHubOrientationOnRobot.LogoFacingDirection.UP,
+            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+     double armRotationsPerInch = 0.5;
         public void stopDrive() {
             frontLeftMotor.setPower(0);
             backLeftMotor.setPower(0);
@@ -90,6 +112,8 @@ double armRotationsPerInch = 0.5;
         backLeftMotor = hardwareMap.get(DcMotor.class, "backleft");
         frontRightMotor = hardwareMap.get(DcMotor.class, "frontright");
         backRightMotor = hardwareMap.get(DcMotor.class, "backright");
+        intake1 = hardwareMap.get(CRServo.class, "intake1");
+        intake2 = hardwareMap.get(CRServo.class, "intake2");
 
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -105,8 +129,8 @@ double armRotationsPerInch = 0.5;
   if (isStopRequested()) return;
 
   /* DRIVE CODE */
-//double ticksPerInch = 29.8; // MAIN based on wheel sizes and motor rpm
-  double ticksPerInch = 41.7; // TESTBOT based on wheel sizes and motor rpm
+double ticksPerInch = 29.8; // MAIN based on wheel sizes and motor rp
+//double ticksPerInch = 41.7; // TESTBOT based on wheel sizes and motor rpm
 double driveSpeed = 0.15;    // can be changed
         stopDrive();
         drive(driveSpeed, 27* ticksPerInch);
