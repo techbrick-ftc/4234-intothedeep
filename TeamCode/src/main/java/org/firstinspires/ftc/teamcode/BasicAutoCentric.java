@@ -20,22 +20,24 @@ import java.lang.Math;
 //intake1+ = outtake
 @Autonomous(name="Working Auto 10/31 (Ethan)", group="Linear OpMode")
 public class BasicAutoCentric extends LinearOpMode {
+
+
+    //Setup IMU
+    IMU imu;
+    IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+        RevHubOrientationOnRobot.LogoFacingDirection.UP,
+        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
     private DcMotor frontLeftMotor;
     private DcMotor backLeftMotor;
     private DcMotor frontRightMotor;
     private DcMotor backRightMotor;
-    public DcMotor shortArm = hardwareMap.dcMotor.get("shortArm");
-    public DcMotor longArm = hardwareMap.dcMotor.get("longArm");
-    public CRServo intake1;
-    public CRServo intake2;
+    private DcMotor shortArm;
+    private DcMotor longArm;
+    //private CRServo intake1;
+    //private CRServo intake2;
     //armExtend.setDirection(DcMotorSimple.Direction.REVERSE); //Might not be needed; test on Tuesday
 
 
-    //Setup IMU
-    IMU imu = hardwareMap.get(IMU.class, "imu");
-    IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-            RevHubOrientationOnRobot.LogoFacingDirection.UP,
-            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
     double armRotationsPerInch = 0.5;
     public void stopDrive() {
         frontLeftMotor.setPower(0);
@@ -110,16 +112,18 @@ public class BasicAutoCentric extends LinearOpMode {
         backLeftMotor = hardwareMap.get(DcMotor.class, "backleft");
         frontRightMotor = hardwareMap.get(DcMotor.class, "frontright");
         backRightMotor = hardwareMap.get(DcMotor.class, "backright");
-        intake1 = hardwareMap.get(CRServo.class, "intake1");
-        intake2 = hardwareMap.get(CRServo.class, "intake2");
+       // intake1 = hardwareMap.get(CRServo.class, "intake1");
+       // intake2 = hardwareMap.get(CRServo.class, "intake2");
+       shortArm = hardwareMap.get(DcMotor.class, "shortArm");
+       longArm = hardwareMap.get(DcMotor.class, "longArm");
 
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         IMU imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+        RevHubOrientationOnRobot.LogoFacingDirection.UP,
+        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(parameters);
 
         waitForStart();
@@ -127,8 +131,8 @@ public class BasicAutoCentric extends LinearOpMode {
         if (isStopRequested()) return;
 
         /* DRIVE CODE */
-//        double ticksPerInch = 29.8; // MAIN based on wheel sizes and motor rp
-double ticksPerInch = 41.7; // TESTBOT based on wheel sizes and motor rpm
+        //double ticksPerInch = 29.8; // MAIN based on wheel sizes and motor rp
+        double ticksPerInch = 41.7; // TESTBOT based on wheel sizes and motor rpm
         double driveSpeed = 0.15;    // can be changed
         stopDrive();
         drive(driveSpeed, 27* ticksPerInch);
@@ -137,17 +141,16 @@ double ticksPerInch = 41.7; // TESTBOT based on wheel sizes and motor rpm
         drive(driveSpeed, 5*ticksPerInch); // add : raise arm 27 while driving forwards
 
         sleep(550);
-        longArm(10, 5);
-        shortArm(10, 5);
+        longArm(0.5, 5000);
+        shortArm(0.5, 5000);
         // add : Release specimen
-
         sleep(550);
         drive(-driveSpeed,5*ticksPerInch);
         driveLeft(-driveSpeed, 24* ticksPerInch);
         drive(-driveSpeed, 27* ticksPerInch);
-        //Intake()
-        //rotate(-130);
-        //extendArm()
-        //release
+    //Intake()
+    //rotate(-130);
+    //extendArm()
+    //release
     }
 }
