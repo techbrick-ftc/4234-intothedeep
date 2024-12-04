@@ -37,7 +37,6 @@ public class BasicAutoCentric extends LinearOpMode {
     //private CRServo intake2;
     //armExtend.setDirection(DcMotorSimple.Direction.REVERSE); //Might not be needed; test on Tuesday
 
-
     double armRotationsPerInch = 0.5;
     public void stopDrive() {
         frontLeftMotor.setPower(0);
@@ -131,21 +130,20 @@ public class BasicAutoCentric extends LinearOpMode {
         if (isStopRequested()) return;
 
         /* DRIVE CODE */
-        //double ticksPerInch = 29.8; // MAIN based on wheel sizes and motor rp
-        double ticksPerInch = 41.7; // TESTBOT based on wheel sizes and motor rpm
-        double driveSpeed = 0.15;    // can be changed
+        double ticksPerInch = 29.8; // MAIN based on wheel sizes and motor rp
+        //double ticksPerInch = 41.7; // TESTBOT based on wheel sizes and motor rpm
+        double driveSpeed = 0.3;    // can be changed
         stopDrive();
         drive(driveSpeed, 27* ticksPerInch);
         driveLeft(driveSpeed, 24* ticksPerInch);
-
-        drive(driveSpeed, 5*ticksPerInch); // add : raise arm 27 while driving forwards
-
+        longArm(1, 5000);
+        drive(driveSpeed, 8*ticksPerInch); // add : raise arm 27 while driving forwards
         sleep(550);
-        longArm(0.5, 5000);
-        shortArm(0.5, 5000);
-        // add : Release specimen
-        sleep(550);
-        drive(-driveSpeed,5*ticksPerInch);
+        longArm(0.5, 2000);
+            shortArm(0.5, 2000);
+            // add : Release specimen
+            sleep(550);
+            drive(-driveSpeed,8*ticksPerInch);
         driveLeft(-driveSpeed, 24* ticksPerInch);
         drive(-driveSpeed, 27* ticksPerInch);
     //Intake()
