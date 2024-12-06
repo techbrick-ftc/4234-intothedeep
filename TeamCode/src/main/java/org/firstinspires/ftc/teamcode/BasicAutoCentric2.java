@@ -99,15 +99,15 @@ public class BasicAutoCentric2 extends LinearOpMode {
         driveLeft(driveSpeed, 6* ticksPerInch);
 
         drive(driveSpeed, 50* ticksPerInch);
-        driveLeft(-driveSpeed, 12* ticksPerInch);
+        driveLeft(-driveSpeed, 18* ticksPerInch);
         drive(-driveSpeed, 46* ticksPerInch);
 
         drive(driveSpeed, 48* ticksPerInch);
-        driveLeft(-driveSpeed, 12* ticksPerInch);
+        driveLeft(-driveSpeed, 10* ticksPerInch);
         drive(-driveSpeed, 48* ticksPerInch);
 
         drive(driveSpeed, 48* ticksPerInch);
-        driveLeft(-driveSpeed, 12* ticksPerInch);
+        driveLeft(-driveSpeed, 14* ticksPerInch);
         drive(-driveSpeed, 48* ticksPerInch);
 
         //Intake()
