@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 
 //intake1+ = outtake
-@Autonomous(name="Working Auto 10/31 (Ethan)", group="Linear OpMode")
+@Autonomous(name="the new code we should run", group="Linear OpMode")
 public class BasicAutoCentric2 extends LinearOpMode {
 
 
@@ -19,10 +19,10 @@ public class BasicAutoCentric2 extends LinearOpMode {
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
         RevHubOrientationOnRobot.LogoFacingDirection.UP,
         RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-    private DcMotor frontLeftMotor;
-    private DcMotor backLeftMotor;
-    private DcMotor frontRightMotor;
-    private DcMotor backRightMotor;
+    private DcMotor frontLeft;
+    private DcMotor backLeft;
+    private DcMotor frontRight;
+    private DcMotor backRight;
     private DcMotor shortArm;
     private DcMotor longArm;
     //private CRServo intake1;
@@ -31,85 +31,55 @@ public class BasicAutoCentric2 extends LinearOpMode {
 
     double armRotationsPerInch = 0.5;
     public void stopDrive() {
-        frontLeftMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backRightMotor.setPower(0);
-        frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode (DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
 
     public void drive(double speed, double distance) {
-        frontLeftMotor.setPower(speed);
-        backLeftMotor.setPower(speed);
-        frontRightMotor.setPower(speed);
-        backRightMotor.setPower(speed);
-        while (Math.abs(frontLeftMotor.getCurrentPosition())<distance && opModeIsActive()) {
+        frontLeft.setPower(speed);
+        backLeft.setPower(speed);
+        frontRight.setPower(speed);
+        backRight.setPower(speed);
+        while (Math.abs(frontLeft.getCurrentPosition())<distance && opModeIsActive()) {
             sleep(1);
         }
         stopDrive();
     }
-    public void longArm(double speed, double position) {
-        if (longArm.getCurrentPosition() > position) {
-            longArm.setPower(Math.abs(speed) * -1); // Move in the negative direction
-            while (Math.abs(longArm.getCurrentPosition()) > position && opModeIsActive()) {
-                sleep(1);
-            }
-        } else {
-            longArm.setPower(Math.abs(speed)); // Move in the positive direction
-            while (Math.abs(longArm.getCurrentPosition()) < position && opModeIsActive()) {
-                sleep(1);
-            }
-        }
-
-        longArm.setPower(0);
-    }
-    public void shortArm(double speed, double position) {
-        if (shortArm.getCurrentPosition() > position) {
-            shortArm.setPower(Math.abs(speed) * -1); // Move in the negative direction
-            while (Math.abs(shortArm.getCurrentPosition()) > position && opModeIsActive()) {
-                sleep(1);
-            }
-        } else {
-            shortArm.setPower(Math.abs(speed)); // Move in the positive direction
-            while (Math.abs(shortArm.getCurrentPosition()) < position && opModeIsActive()) {
-                sleep(1);
-            }
-        }
-
-        shortArm.setPower(0);
-    }
-    public void driveLeft(double speed, double distance) {
-        frontLeftMotor.setPower(0-speed);
-        backLeftMotor.setPower(speed);
-        frontRightMotor.setPower(speed);
-        backRightMotor.setPower(0-speed);
-        while (Math.abs(frontLeftMotor.getCurrentPosition())<distance && opModeIsActive()) {
+           public void driveLeft(double speed, double distance) {
+        frontLeft.setPower(0-speed);
+        backLeft.setPower(speed);
+        frontRight.setPower(speed);
+        backRight.setPower(0-speed);
+        while (Math.abs(frontLeft.getCurrentPosition())<distance && opModeIsActive()) {
             sleep(1);
         }
         stopDrive();
     }
     @Override
     public void runOpMode() throws InterruptedException {
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontleft");
-        backLeftMotor = hardwareMap.get(DcMotor.class, "backleft");
-        frontRightMotor = hardwareMap.get(DcMotor.class, "frontright");
-        backRightMotor = hardwareMap.get(DcMotor.class, "backright");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
        // intake1 = hardwareMap.get(CRServo.class, "intake1");
        // intake2 = hardwareMap.get(CRServo.class, "intake2");
-       shortArm = hardwareMap.get(DcMotor.class, "shortArm");
-       longArm = hardwareMap.get(DcMotor.class, "longArm");
+       //shortArm = hardwareMap.get(DcMotor.class, "shortArm");
+       //longArm = hardwareMap.get(DcMotor.class, "longArm");
 
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         IMU imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -123,22 +93,22 @@ public class BasicAutoCentric2 extends LinearOpMode {
 
         /* DRIVE CODE */
         double ticksPerInch = 29.8; // MAIN based on wheel sizes and motor rp
-        //double ticksPerInch = 41.7; // TESTBOT based on wheel sizes and motor rpm
+        //double ticksPerInch = 41.7; // TEST/BOT based on wheel sizes and motor rpm
         double driveSpeed = 0.3;    // can be changed
         stopDrive();
         driveLeft(driveSpeed, 6* ticksPerInch);
 
-        drive(driveSpeed, 54* ticksPerInch);
-        driveLeft(driveSpeed, -6* ticksPerInch);
-        drive(driveSpeed, -50* ticksPerInch);
-
         drive(driveSpeed, 50* ticksPerInch);
-        driveLeft(driveSpeed, -6* ticksPerInch);
-        drive(driveSpeed, -50* ticksPerInch);
+        driveLeft(-driveSpeed, 12* ticksPerInch);
+        drive(-driveSpeed, 46* ticksPerInch);
 
-        drive(driveSpeed, 50* ticksPerInch);
-        driveLeft(driveSpeed, -6* ticksPerInch);
-        drive(driveSpeed, -50* ticksPerInch);
+        drive(driveSpeed, 48* ticksPerInch);
+        driveLeft(-driveSpeed, 12* ticksPerInch);
+        drive(-driveSpeed, 48* ticksPerInch);
+
+        drive(driveSpeed, 48* ticksPerInch);
+        driveLeft(-driveSpeed, 12* ticksPerInch);
+        drive(-driveSpeed, 48* ticksPerInch);
 
         //Intake()
     //rotate(-130);
