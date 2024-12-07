@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 public class movesLeft extends LinearOpMode {
 
 
-    //Setup IMU
+    //Setup  IMU
     IMU imu;
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
         RevHubOrientationOnRobot.LogoFacingDirection.UP,
