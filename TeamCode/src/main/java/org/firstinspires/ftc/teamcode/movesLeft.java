@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 //intake1+ = outtake
 @Autonomous(name="the new code we should run", group="Linear OpMode")
-public class BasicAutoCentric2 extends LinearOpMode {
+public class movesLeft extends LinearOpMode {
 
 
     //Setup IMU

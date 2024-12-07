@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 //intake1+ = outtake
 @Autonomous(name="the new code we should run", group="Linear OpMode")
-public class BasicAutoCentric2 extends LinearOpMode {
+public class moveRight extends LinearOpMode {
 
 
     //Setup IMU
@@ -93,7 +93,7 @@ public class BasicAutoCentric2 extends LinearOpMode {
 
         /* DRIVE CODE */
         double ticksPerInch = 29.8; // MAIN based on wheel sizes and motor rp
-        double reversed = -1;
+        double reversed = 1;
         //double ticksPerInch = 41.7; // TEST/BOT based on wheel sizes and motor rpm
         double driveSpeed = 0.3;    // can be changed
         stopDrive();
