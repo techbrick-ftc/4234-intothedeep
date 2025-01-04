@@ -10,11 +10,11 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 
 //intake1+ = outtake
-@Autonomous(name="12/12/2024", group="Linear OpMode")
-public class BasicAutoCentric2 extends LinearOpMode {
+@Autonomous(name="the new code we should run", group="Linear OpMode")
+public class movesLeft extends LinearOpMode {
 
 
-    //Setup IMU
+    //Setup  IMU
     IMU imu;
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
         RevHubOrientationOnRobot.LogoFacingDirection.UP,
@@ -41,7 +41,7 @@ public class BasicAutoCentric2 extends LinearOpMode {
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode (DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
@@ -52,14 +52,6 @@ public class BasicAutoCentric2 extends LinearOpMode {
         backLeft.setPower(speed);
         frontRight.setPower(speed);
         backRight.setPower(speed);
-        while (Math.abs(frontLeft.getCurrentPosition())<distance && opModeIsActive()) {
-            sleep(1);
-        }
-        stopDrive();
-    }
-    public void correct(double speed, double distance) {
-        frontLeft.setPower(speed);
-        backLeft.setPower(speed);
         while (Math.abs(frontLeft.getCurrentPosition())<distance && opModeIsActive()) {
             sleep(1);
         }
@@ -101,23 +93,22 @@ public class BasicAutoCentric2 extends LinearOpMode {
 
         /* DRIVE CODE */
         double ticksPerInch = 29.8; // MAIN based on wheel sizes and motor rp
-        double reversed = 1;
+        double reversed = -1;
         //double ticksPerInch = 41.7; // TEST/BOT based on wheel sizes and motor rpm
         double driveSpeed = 0.3;    // can be changed
         stopDrive();
-        driveLeft(-driveSpeed * reversed, 9* ticksPerInch);
+        driveLeft(driveSpeed * reversed, 6* ticksPerInch);
 
         drive(driveSpeed, 50* ticksPerInch);
-        driveLeft(-driveSpeed * reversed, 14* ticksPerInch);
-        drive(-driveSpeed, 42* ticksPerInch);
-        correct(-driveSpeed, 0);
-        drive(driveSpeed, 46* ticksPerInch);
-        driveLeft(-driveSpeed * reversed, 14* ticksPerInch);
+        driveLeft(-driveSpeed * reversed, 18* ticksPerInch);
         drive(-driveSpeed, 46* ticksPerInch);
-        correct(-driveSpeed, 0);
 
         drive(driveSpeed, 48* ticksPerInch);
-        driveLeft(-driveSpeed * reversed, 18* ticksPerInch);
+        driveLeft(-driveSpeed * reversed, 10* ticksPerInch);
+        drive(-driveSpeed, 48* ticksPerInch);
+
+        drive(driveSpeed, 48* ticksPerInch);
+        driveLeft(-driveSpeed * reversed, 14* ticksPerInch);
         drive(-driveSpeed, 48* ticksPerInch);
 
         //Intake()
