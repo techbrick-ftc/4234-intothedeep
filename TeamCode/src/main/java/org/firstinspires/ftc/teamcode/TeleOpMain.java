@@ -34,7 +34,7 @@ public class TeleOpMain extends LinearOpMode {
     double debugInfo = 0; // Provides state info for the debug screen, in numeric form. State values and their meanings can be found towards the end of the code, along with other telemetry data
 
 
-    public void armTO (int liftPosTo, int extendPosTo, float speed, float wristTo) {
+    public void setArm (int liftPosTo, int extendPosTo, float speed, float wristTo) {
 
         armLift.setTargetPosition(liftPosTo);
         armLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -114,6 +114,9 @@ public class TeleOpMain extends LinearOpMode {
 
         // Init toggles
         boolean fieldCentricActive = true;
+        boolean slowModeActive = false;
+        double driveModifier;
+
         boolean fieldCentricToggle = false;
         boolean fieldCentricToggleLast;
 
@@ -135,6 +138,9 @@ public class TeleOpMain extends LinearOpMode {
 
         boolean resetIMU = false;
         boolean resetIMULast;
+
+        boolean slowModeToggle = false;
+        boolean slowModeToggleLast;
 
         boolean stopAutomations;
 
@@ -191,13 +197,25 @@ public class TeleOpMain extends LinearOpMode {
                 specimen.setPosition( specimen.getPosition() != 1 ? 0 :1 );
             }
 
+            slowModeToggleLast = slowModeToggle;
+            slowModeToggle = gamepad1.left_bumper;
+            if (slowModeToggle && !slowModeToggleLast) {
+                slowModeActive = !slowModeActive;
+            }
+            driveModifier = gamepad1.right_bumper ? 0.4 : slowModeActive ? .7 : 1;
+            if (gamepad1.right_bumper) {
+                driveModifier = .4;
+            } else if (slowModeToggle && !slowModeToggleLast) {
+                driveModifier = (driveModifier == .7 ? 1 : .7);
+            }
+
             stopAutomations = gamepad1.y || gamepad2.y;
 
 
             double xP = gamepad1.left_stick_x;
             double yP = -gamepad1.left_stick_y;
             double rP = -gamepad1.right_stick_x * 0.7;
-            double driveModifier = gamepad1.left_bumper ? 0.7 : (gamepad1.right_bumper ? 0.4 : 1); // Slow mode
+            // driveModifier = gamepad1.left_bumper ? 0.7 : (gamepad1.right_bumper ? 0.4 : 1); // Slow mode
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
             double rotX = xP * Math.cos(-botHeading) - yP * Math.sin(-botHeading);
             double rotY = xP * Math.sin(-botHeading) + yP * Math.cos(-botHeading);
@@ -325,15 +343,15 @@ public class TeleOpMain extends LinearOpMode {
 
             } else if (armState == 1) {
 
-                armTO(home[0], home[1], 10, home[2]);
+                setArm(home[0], home[1], 5, home[2]);
 
             } else if (armState == 2) {
 
-                armTO(hiBasket[0], hiBasket[1], 10, hiBasket[2]);
+                setArm(hiBasket[0], hiBasket[1], 5, hiBasket[2]);
 
             } else if (armState == 3) {
 
-                armTO(intake[0], intake[1], 10, intake[2]);
+                setArm(intake[0], intake[1], 5, intake[2]);
 
             }
 
