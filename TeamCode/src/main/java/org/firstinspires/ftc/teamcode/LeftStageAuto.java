@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -12,6 +11,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 //intake1+ = outtake
 @Autonomous(name="Auto Left Stage", group="Linear OpMode")
 public class LeftStageAuto extends LinearOpMode {
+
 
     //Setup  IMU
     IMU imu;
@@ -27,6 +27,7 @@ public class LeftStageAuto extends LinearOpMode {
     //private CRServo intake1;
     //private CRServo intake2;
     //armExtend.setDirection(DcMotorSimple.Direction.REVERSE); //Might not be needed; test on Tuesday
+
 
     double armRotationsPerInch = 0.5;
     public void stopDrive() {
@@ -56,6 +57,8 @@ public class LeftStageAuto extends LinearOpMode {
         }
         stopDrive();
     }
+
+
     public void driveLeft(double speed, double distance) {
         frontLeft.setPower(0-speed);
         backLeft.setPower(speed);
@@ -66,6 +69,8 @@ public class LeftStageAuto extends LinearOpMode {
         }
         stopDrive();
     }
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
