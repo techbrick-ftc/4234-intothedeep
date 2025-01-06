@@ -456,6 +456,7 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Automation", armState);
 
             telemetry.update();
+            //test
         }
     }
 }
