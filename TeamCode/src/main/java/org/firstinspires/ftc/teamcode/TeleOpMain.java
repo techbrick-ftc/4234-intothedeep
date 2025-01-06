@@ -447,13 +447,13 @@ public class TeleOpMain extends LinearOpMode {
                 telemetry.addData("Status", "Uh Oh");
             }
 
+            telemetry.addData("Field Centric Active?", fieldCentricActive ? "[YES], press the left and right sticks simultaneously on P1 to disable, or press 'back' on P1 to reset IMU" : "[NO], press the left and right sticks simultaneously on P1 to re-enable");
+            telemetry.addData("Arm Limits Active?", limitsActive ? "[YES], press the left and right sticks simultaneously on P2 to toggle in case of emergency" : "[NO], press the left and right sticks simultaneously on P2 to re-enable");
             telemetry.addData("Arm Extension", armExtendPosition);
             telemetry.addData("Arm Lift", armLiftPosition);
             telemetry.addData("Arm Expansion Limit", armExtendMax42);
             telemetry.addData("Arm Extension %", armExtendPosition / armExtendMax);
             telemetry.addData("Automation", armState);
-            telemetry.addData("Field Centric Active?", fieldCentricActive ? "Yes, press the left and right sticks simultaneously on P1 to disable, or press 'back' on P1 to reset IMU" : "No, press the left and right sticks simultaneously on P1 to re-enable");
-            telemetry.addData("Arm Limits Active?", limitsActive ? "Yes, press the left and right sticks simultaneously on P2 to toggle in case of emergency" : "No, press the left and right sticks simultaneously on P2 to re-enable");
 
             telemetry.update();
         }
