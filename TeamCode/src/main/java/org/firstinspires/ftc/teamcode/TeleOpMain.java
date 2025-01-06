@@ -186,7 +186,7 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             resetIMULast = resetIMU;
-            resetIMU = gamepad1.options;
+            resetIMU = gamepad1.left_stick_button && gamepad1.right_stick_button;
             if (resetIMU && !resetIMULast) {
                 imu.resetYaw();
             }
@@ -202,6 +202,7 @@ public class TeleOpMain extends LinearOpMode {
             if (slowModeToggle && !slowModeToggleLast) {
                 slowModeActive = !slowModeActive;
             }
+
             driveModifier = gamepad1.right_bumper ? 0.4 : slowModeActive ? .7 : 1;
             if (gamepad1.right_bumper) {
                 driveModifier = .4;
