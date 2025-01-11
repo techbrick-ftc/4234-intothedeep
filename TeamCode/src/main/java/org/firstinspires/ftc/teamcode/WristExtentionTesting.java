@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode;
 
 //Import
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import java.lang.Math;
 
 //Name Program
+@Disabled
 @TeleOp(name="Extension Testing", group="Linear OpMode")
 
 //Initialization Code

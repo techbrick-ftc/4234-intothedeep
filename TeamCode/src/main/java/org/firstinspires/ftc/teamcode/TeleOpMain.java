@@ -1,116 +1,229 @@
-// Package
 package org.firstinspires.ftc.teamcode;
 
-// Import
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
+
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 import java.lang.Math;
-// [Future imports]
-// [Future imports]
-// [Future imports]
 
-// Name Program
-@TeleOp(name="[Current] 4234 Main TeleOP", group="Linear OpMode") // Set the program name
 
-// Initialization Code
+@TeleOp(name="[Current] 4234 Main TeleOP")
 public class TeleOpMain extends LinearOpMode {
 
-    // Initialize Servos
+    private DcMotor armExtend;
+    private DcMotor armLift;
+    double armState = 1;
+
     public Servo wrist1;
     public Servo wrist2;
     public CRServo intake1;
     public CRServo intake2;
     public Servo winch;
+    public Servo specimen;
+
+    double debugInfo = 0; // Provides state info for the debug screen, in numeric form. State values and their meanings can be found towards the end of the code, along with other telemetry data
+
+
+    public void setArm (int liftPosTo, int extendPosTo, float speed, float wristTo) {
+
+        armLift.setTargetPosition(liftPosTo);
+        armLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armExtend.setTargetPosition(extendPosTo);
+        armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armLift.setPower(speed / 10);
+        armExtend.setPower(speed / 10);
+        armState = -1; // Automated action in progress
+        wrist1.setPosition(wristTo / 10);
+        wrist2.setPosition(wristTo / 10);
+        debugInfo = 2;
+
+    }
+
+
+    // Targets
+    int [] home = {5, 5, 5};
+    int [] hiBasket = {4500, 4700, 7};
+    int [] intake = {3000, -50, 3};
+
 
     @Override
     public void runOpMode() throws InterruptedException {
 
-        // Setup Motors
-        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeft"); // Basically self explanatory, this sets up the motors
+
+        DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeft");
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeft");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRight");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("backRight");
-        DcMotor armExtend = hardwareMap.dcMotor.get("armExtend");
+
+        armExtend = hardwareMap.dcMotor.get("armExtend");
+        armLift = hardwareMap.dcMotor.get("armLift");
+        DcMotor winchMotor = hardwareMap.dcMotor.get("winchs");
+
         armExtend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armExtend.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        DcMotor armLift = hardwareMap.dcMotor.get("armLift");
         armLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        DcMotor winchMotor = hardwareMap.dcMotor.get("winchs");
+
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         armLift.setDirection(DcMotorSimple.Direction.REVERSE);
+
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        // Setup Servos
-        wrist1 = hardwareMap.get(Servo.class, "wrist1"); // Setup servos
+        wrist1 = hardwareMap.get(Servo.class, "wrist1");
         wrist2 = hardwareMap.get(Servo.class, "wrist2");
         intake1 = hardwareMap.get(CRServo.class, "intake1");
         intake2 = hardwareMap.get(CRServo.class, "intake2");
         winch = hardwareMap.get(Servo.class, "winch");
+        specimen = hardwareMap.get(Servo.class, "specimen");
 
-        // Setup IMU
-        IMU imu = hardwareMap.get(IMU.class, "imu"); // This allows for field centric
+        wrist1.setDirection(Servo.Direction.REVERSE);
+
+
+        IMU imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, // Orientation of the control hub
                 RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD)); //Orientation of the control hub
         imu.initialize(parameters);
 
 
-        // Initialize Variables
-        double debugInfo = 0; // Provides state info for the debug screen, in numeric form. State values and their meanings can be found towards the end of the code, along with other telemetry data
-        double armLiftMin = -100; // Minimum lift value of the arm
-        double armLiftMax = 4050; // Maximum lift value of the arm
-        double armExtendMax = 5020; // Maximum extension value of the arm
-        double automation = 0; // Current automation
-        double automationStep = 0; // Current automation step
-        boolean fieldCentricActive = true;
+        double armLiftMin = -100;
+        double armLiftMax = 4700;
+        double armExtendMax = 5020;
+        armState = 0;
         double frontLeftPower;
         double backLeftPower;
         double frontRightPower;
         double backRightPower;
         double denominator;
         double armExtendMax42;
-        winchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Targets
-        int pickUpExtentionTarget = 500;
-        int pickUpLiftTarget = 200;
 
 
+        // Init toggles
+        boolean fieldCentricActive = true;
+        boolean slowModeActive = false;
+        double driveModifier;
 
-        // Debug Information
+        boolean fieldCentricToggle = false;
+        boolean fieldCentricToggleLast;
+
+        boolean limitsActive = true;
+        boolean forceDisableLimits = false;
+        boolean forceDisableLimitsLast;
+
+        boolean requestHome = false;
+        boolean requestHomeLast;
+
+        boolean requestBasket = false;
+        boolean requestBasketLast;
+
+        boolean requestIntake = false;
+        boolean requestIntakeLast;
+
+        boolean specimenIntake = false;
+        boolean specimenIntakeLast;
+
+        boolean resetIMU = false;
+        boolean resetIMULast;
+
+        boolean slowModeToggle = false;
+        boolean slowModeToggleLast;
+
+        boolean stopAutomations;
+
+
         telemetry.addData("Status", "Initializing - Waiting for Start"); //Log status info
-        telemetry.update(); // Push status to driver station
+        telemetry.update();
 
-        // Loop Code
-        waitForStart(); // DO NOT TOUCH! This prevents the robot from moving upon initialization, and will cause a penalty or failed inspection if removed
-        if (isStopRequested()) return; // Again, do not touch
+
+        waitForStart();
+        if (isStopRequested()) return;
         while (opModeIsActive()) {
 
-            // Directional and Movement Related Inputs
-            //region DrivePower
-            if (gamepad1.left_stick_button) {
-                fieldCentricActive = true;
-            } else if (gamepad1.right_stick_button) {
-                fieldCentricActive = false;
+
+            // Toggles and Modes
+            fieldCentricToggleLast = fieldCentricToggle; // Probably wont need but why not
+            fieldCentricToggle = gamepad1.left_stick_button && gamepad1.right_stick_button;
+            if (fieldCentricToggle && !fieldCentricToggleLast) {
+                fieldCentricActive = !fieldCentricActive;
             }
+
+            forceDisableLimitsLast = forceDisableLimits; // Emergency use only, disables all limits for the arm
+            forceDisableLimits = gamepad2.left_stick_button && gamepad2.right_stick_button;
+            if (forceDisableLimits && !forceDisableLimitsLast) {
+                limitsActive = !limitsActive;
+            }
+
+            requestHomeLast = requestHome;
+            requestHome = gamepad1.a || gamepad2.a;
+            if (requestHome && !requestHomeLast) {
+                armState = 1;
+            }
+
+            requestBasketLast = requestBasket;
+            requestBasket = gamepad1.b || gamepad2.b;
+            if (requestBasket && ! requestBasketLast) {
+                armState = 2;
+            }
+
+            requestIntakeLast = requestIntake;
+            requestIntake = gamepad1.x || gamepad2.x;
+            if (requestIntake && !requestIntakeLast) {
+                armState = 3;
+            }
+
+            resetIMULast = resetIMU;
+            resetIMU = gamepad1.left_stick_button && gamepad1.right_stick_button;
+            if (resetIMU && !resetIMULast) {
+                imu.resetYaw();
+            }
+
+            specimenIntakeLast = specimenIntake;
+            specimenIntake = gamepad2.right_bumper;
+            if (specimenIntake && !specimenIntakeLast) {
+                specimen.setPosition( specimen.getPosition() != 1 ? 0 :1 );
+            }
+
+            slowModeToggleLast = slowModeToggle;
+            slowModeToggle = gamepad1.left_bumper;
+            if (slowModeToggle && !slowModeToggleLast) {
+                slowModeActive = !slowModeActive;
+            }
+
+            driveModifier = gamepad1.right_bumper ? 0.4 : slowModeActive ? .7 : 1;
+            if (gamepad1.right_bumper) {
+                driveModifier = .4;
+            } else if (slowModeToggle && !slowModeToggleLast) {
+                driveModifier = (driveModifier == .7 ? 1 : .7);
+            }
+
+            stopAutomations = gamepad1.y || gamepad2.y;
+
+
             double xP = gamepad1.left_stick_x;
             double yP = -gamepad1.left_stick_y;
-            double rP = -gamepad1.right_stick_x;
-            double driveModifier = gamepad1.right_bumper ? .4 : 1; // Slow mode. 1 = full speed, 0.5 = half speed, 0.25 = quarter speed, ect.
+            double rP = -gamepad1.right_stick_x * 0.7;
+            // driveModifier = gamepad1.left_bumper ? 0.7 : (gamepad1.right_bumper ? 0.4 : 1); // Slow mode
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
             double rotX = xP * Math.cos(-botHeading) - yP * Math.sin(-botHeading);
             double rotY = xP * Math.sin(-botHeading) + yP * Math.cos(-botHeading);
             rotX = rotX * 1.1;
+
+            double armExtendPosition = armExtend.getCurrentPosition();
+
 
             if (fieldCentricActive) {
                 denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rP), 1);
@@ -123,56 +236,28 @@ public class TeleOpMain extends LinearOpMode {
                 frontLeftPower      =     (yP + xP + rP) / denominator;
                 backLeftPower       =     (yP - xP + rP) / denominator;
                 frontRightPower     =     (yP - xP - rP) / denominator;
-                backRightPower      =     (yP + xP - rP) / denominator;            }
-
-            //endregion DrivePower
-
-            //Arm and Intake Inputs
-            double armExtendPower = -gamepad2.left_stick_y; // Position inputs
-            double armLiftPower = -gamepad2.right_stick_y;
-            double armExtendPosition = armExtend.getCurrentPosition();
-            double armLiftPosition = armLift.getCurrentPosition();
-            double armLiftRotation = (armLiftPosition / 5000.0);
-            if (armLiftRotation < 4000) {
-                armExtendMax42 = (Math.cos((armLiftRotation) * (Math.PI / 2)) <= 0.01) ? Double.POSITIVE_INFINITY : 3000 / Math.cos((armLiftPosition / 5000.0) * (Math.PI / 2)); // Calculates the arm extension limit to prevent the arm exceeding the 42" limit
-            } else {
-                armExtendMax42 = (Double.POSITIVE_INFINITY);
-            }
-            double armExtendPowerOffset = 1 - ((armExtendMax42 - armExtendPosition) / 250);
-            double armLiftPowerOffset =  1 - ((armExtendMax42 - armExtendPosition) / 125);
-            double autoDriveModifier = (armExtendPosition > 3500 ? Math.max((5500 - armExtendPosition) / 2000, .4) : 1);
-
-//            //Automation Inputs
-//            if (gamepad2.y && automation != 0) {
-//                automation = 0;
-//                debugInfo = 3;
-//            } else if (automation == 0) {
-//                if (gamepad2.x) {
-//                    automation = 1;
-//                    debugInfo = 2;
-//                } else if (gamepad2.a) {
-//                    automation = 2;
-//                    automationStep = 1;
-//                    debugInfo = 2;
-//                } else if (gamepad2.b) {
-//                    automation = 3;
-//                    automationStep = 1;
-//                    debugInfo = 2;
-//                }
-//            }
-
-            // Reset IMU
-            if (gamepad1.options) {
-                imu.resetYaw();
+                backRightPower      =     (yP + xP - rP) / denominator;
             }
 
-            // Drive Power
             frontLeftMotor.setPower(frontLeftPower * driveModifier);
             backLeftMotor.setPower(backLeftPower * driveModifier);
             frontRightMotor.setPower(frontRightPower * driveModifier);
             backRightMotor.setPower(backRightPower * driveModifier);
 
-            // Auto Braking
+
+            double armExtendPower = -gamepad2.left_stick_y;
+            double armLiftPower = -gamepad2.right_stick_y;
+            double armLiftPosition = armLift.getCurrentPosition();
+            double armLiftRotation = (armLiftPosition / 4700.0);
+            if (armLiftRotation < 4000) {
+                // armExtendMax42 = (Math.cos(armLiftRotation) / 90 * 3200);
+                armExtendMax42 = (Math.cos((armLiftRotation) * (Math.PI / 2)) <= 0.01) ? Double.POSITIVE_INFINITY : 3000 / Math.cos((armLiftPosition / 5000.0) * (Math.PI / 2)); // Calculates the arm extension limit to prevent the arm exceeding the 42" limit
+            } else {
+                armExtendMax42 = (Double.POSITIVE_INFINITY);
+            }
+            double armExtendPowerOffset = 1 - ((armExtendMax42 - armExtendPosition) / 250);
+
+
             if (armExtendPosition > 3500) {
                 frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
                 frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -185,142 +270,169 @@ public class TeleOpMain extends LinearOpMode {
                 backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
 
+
             // Arm Power
-            if (automation == 0) { // == Driver controlled
+            if (armState == 0) { // == Driver controlled
 
-                // This subregion contains the code for the arm extension while in the driver controlled mode
-                //region Arm Extend
-                if (armExtendPosition > 150) { // Prevents arm hitting lower limit
-                    if (armExtendPosition + 250 > armExtendMax || armExtendPosition + 250 > armExtendMax42) { // Is arm extended too far?
-                        if (armExtendPosition + 250 > armExtendMax42 && armExtendPosition > 2500) { //Is arm at risk of hitting the horizontal expansion limit?
-                            armExtend.setPower(armExtendPower - armExtendPowerOffset);
-                        } else if (armExtendPosition > armExtendMax) {
-                            if (armExtendPower > 0) {
-                                armExtend.setPower(0);
-                            } else {
-                                armExtend.setPower(armExtendPower);
-                            }
-                        }
-                    } else if (armExtendPosition + 100 > armExtendMax) {
-                        if (armExtendPower > 0) {
-                            armExtend.setPower(0);
-                        } else {
-                            armExtend.setPower(armExtendPower);
-                        }
+
+                if ((armExtendPosition > 50 && armExtendPosition < armExtendMax && armExtendPosition + 250 < armExtendMax42) || !limitsActive) {
+
+                    armExtend.setPower(armExtendPower);
+
+                } else if (armExtendPosition < 50) {
+
+                    if (armExtendPower < 0) {
+
+                        armExtend.setPower(0);
+
                     } else {
+
                         armExtend.setPower(armExtendPower);
+
                     }
+
+                } else if (armExtendPosition + 250 > armExtendMax42){
+
+                    armExtend.setPower(armExtendPower - armExtendPowerOffset);
+
+                } else if (armExtendPosition > armExtendMax) {
+
+                    if (armExtendPower < 0) {
+
+                        armExtend.setPower(armExtendPower);
+
+                    } else {
+
+                        armExtend.setPower(0);
+
+                    }
+
                 } else {
-                    if (armExtendPower > 0) {
-                        armExtend.setPower(armExtendPower);
-                    } else {
-                        if (armExtendPosition > 50) {
-                            armExtend.setPower(Math.min(-.25, armExtendPower));
-                        } else if (armExtendPosition > 25) {
-                            armExtend.setPower(0);
-                        } else {
-                            armExtend.setPower((25 - armExtendPosition) / 100);
-                        }
-                    }
+
+                    armExtend.setPower(0);
+
                 }
-                //endregion //
 
 
-                // This subregion contains the code for the arm lifting while in the driver controlled state
-                // region Arm Lift
-                if (armLiftPower > 0 && armLiftPosition < armLiftMax) { // Is arm rising and below limit?
-                    armLift.setPower(armLiftPower); // Is arm lowering too fast?
-                } else if (armLiftPower < 0 && armLiftPosition > armLiftMin) { // Is arm lowering and above limit
+                if (armLiftPower > 0 && armLiftPosition < armLiftMax || !limitsActive) { // Is arm rising and below limit?
+
                     armLift.setPower(armLiftPower);
+
+                } else if (armLiftPower < 0 && armLiftPosition > armLiftMin) { // Is arm lowering and above limit
+
+                    armLift.setPower(armLiftPower);
+
                 } else { // Stop the arm
+
                     armLift.setPower(0);
+
                 }
-                //endregion
-            } else if (automation == 1) {
-                armExtend.setTargetPosition(pickUpExtentionTarget);
-                armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                armExtend.setPower(1);
-                if (Math.abs (armExtend.getCurrentPosition() - pickUpExtentionTarget) < 30) {
+
+            } else if (armState == -1) {
+
+
+                if ((!armLift.isBusy() && !armExtend.isBusy()) || stopAutomations) {
+                    armLift.setPower(0);
+                    armExtend.setPower(0);
+
+                    armLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     armExtend.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    automation = 0;
-                }
-                //endregion
-            } else if (automation == 2) {
 
-                sleep(0);
-
-            } else if (automation == 3) {
-                if (automationStep == 1) {
-                    if (Math.abs(armExtendPosition - 500) < 50) {
-                        armExtend.setPower((500 - armExtendPosition) / 250);
-                    } else {
-                        armExtend.setPower((500 - armExtendPosition) / 150);
-                    }
-                    if (Math.abs(armLiftPosition - 500) < 50) {
-                        armLift.setPower((500 - armLiftPosition) / 250);
-                    } else {
-                        armLift.setPower((500 - armLiftPosition) / 150);
-                    }
-                    if (Math.abs(armExtendPosition - 500) < 25 && Math.abs(armLiftPosition - 100) < 25) {
-                        automation = 0;
-                        debugInfo = 4;
-                        armLift.setPower(0);
-                    }
+                    armState = 0;
                 }
+
+
+            } else if (armState == 1) {
+
+                setArm(home[0], home[1], 5, home[2]);
+
+            } else if (armState == 2) {
+
+                setArm(hiBasket[0], hiBasket[1], 5, hiBasket[2]);
+
+            } else if (armState == 3) {
+
+                setArm(intake[0], intake[1], 5, intake[2]);
+
             }
 
-            //Servos
 
             // region Wrist
-            if (automation == 0) {
+            if (armState == 0) {
+
                 if (gamepad2.dpad_down) {
-                    wrist1.setPosition(.75);
+
+                    wrist1.setPosition(.25);
                     wrist2.setPosition(.25);
+
                 } else if (gamepad2.dpad_up && armLiftPosition < 3500) {
-                    wrist1.setPosition(0);
+
+                    wrist1.setPosition(1);
                     wrist2.setPosition(1);
+
                 } else if (gamepad2.dpad_left || gamepad2.dpad_right || ((wrist1.getPosition() == 0) && (armLiftPosition > 3500))) {
+
                     wrist1.setPosition(.5);
                     wrist2.setPosition(.5);
+
                 }
-            } else if (automation == 1) {
 
             }
-            // endregion Wrist
 
-            // region Intake
-            if (automation == 0) {
-                if (gamepad2.left_bumper) { //Outtake
+
+            if (armState == 0) {
+
+                if (gamepad2.left_bumper) { //Outtake\
+
                     intake1.setPower(.3);
                     intake2.setPower(-.3);
-                } else if (gamepad2.left_trigger > .2) { //Intake
+
+                } else if (gamepad2.left_trigger > 0.2) { //Intake
+
                     intake1.setPower(-.75);
                     intake2.setPower(.75);
+
                 } else {
+
                     intake1.setPower(0);
                     intake2.setPower(0);
+
                 }
-            } else if (automation == 1) {
-                intake1.setPower(-.5);
-                intake2.setPower(.5);
-            }
-            // endregion Intake
 
-            //Winch Power
+            } else if (armState == -1) {
+
+                intake1.setPower(-.1); // Tension the intake to prevent dropped elements
+                intake2.setPower(.1);
+
+            }
+
+
             if (gamepad1.dpad_up) {
+
                 winch.setPosition(1);
-            } else if (gamepad1.dpad_down){
+
+            } else if (gamepad1.dpad_down) {
+
                 winch.setPosition(0);
-            }
-            if (gamepad1.dpad_left) {
-                winchMotor.setPower(-1);
-            } else if (gamepad1.dpad_right) {
-                winchMotor.setPower(1);
-            } else {
-                winchMotor.setPower(0);
+
             }
 
-            //Debug Information
+
+            if (gamepad1.dpad_left) {
+
+                winchMotor.setPower(-1);
+
+            } else if (gamepad1.dpad_right) {
+
+                winchMotor.setPower(1);
+
+            } else {
+
+                winchMotor.setPower(0);
+
+            }
+
+
             if (debugInfo == 0) {
                 telemetry.addData("Status", "Waiting for Start");
                 debugInfo = 1;
@@ -335,13 +447,15 @@ public class TeleOpMain extends LinearOpMode {
             } else if (debugInfo == 5) {
                 telemetry.addData("Status", "Uh Oh");
             }
+
+            telemetry.addData("Field Centric Active?", fieldCentricActive ? "[YES], press the left and right sticks simultaneously on P1 to disable, or press 'back' on P1 to reset IMU" : "[NO], press the left and right sticks simultaneously on P1 to re-enable");
+            telemetry.addData("Arm Limits Active?", limitsActive ? "[YES], press the left and right sticks simultaneously on P2 to toggle in case of emergency" : "[NO], press the left and right sticks simultaneously on P2 to re-enable");
             telemetry.addData("Arm Extension", armExtendPosition);
+            telemetry.addData("Arm Lift", armLiftPosition);
+            telemetry.addData("Arm Expansion Limit", armExtendMax42);
             telemetry.addData("Arm Extension %", armExtendPosition / armExtendMax);
-            telemetry.addData("Automation", automationStep);
-            telemetry.addData("armExtendMax42", armExtendMax42);
-            telemetry.addData("armExtendPowerOffset", armExtendPowerOffset);
-            telemetry.addData("autoDriveModifier", autoDriveModifier);
-            telemetry.addData("alp", armLiftPosition);
+            telemetry.addData("Automation", armState);
+
             telemetry.update();
         }
     }

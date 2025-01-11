@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
 
 //Import the various necessary packages
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
 //Sets the program name
+@Disabled
 @TeleOp(name="Other Early Code", group="Linear OpMode")
 
 

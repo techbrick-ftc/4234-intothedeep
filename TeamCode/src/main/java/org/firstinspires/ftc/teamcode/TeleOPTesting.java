@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 
-// Import Statements
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -14,11 +14,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import java.lang.Math;
 
 
-// Name
 @TeleOp(name="[In Testing] TeleOP")
-public class TeleOP extends LinearOpMode {
-    
-    
+@Disabled
+public class TeleOPTesting extends LinearOpMode {
+
+
     // Servo Declarations
     public Servo wrist1;
     public Servo wrist2;
@@ -86,7 +86,6 @@ public class TeleOP extends LinearOpMode {
         boolean autoStopRequested = false;
 
 
-
         // Status
         telemetry.addData("Status", "Waiting for start");
         telemetry.update(); // Push status to driver station
@@ -97,8 +96,6 @@ public class TeleOP extends LinearOpMode {
         if (isStopRequested()) return;
         while (opModeIsActive()) {
 
-
-            // Chassis Movement
 
             // Field Centric Toggle
             lastOptions = options;
@@ -117,7 +114,6 @@ public class TeleOP extends LinearOpMode {
             double rotX = xP * Math.cos(-botHeading) - yP * Math.sin(-botHeading);
             double rotY = xP * Math.sin(-botHeading) + yP * Math.cos(-botHeading);
             rotX = rotX * 1.1;
-
 
             // Motor Power Calculations
             if (fieldCentricActive) {
@@ -169,6 +165,7 @@ public class TeleOP extends LinearOpMode {
             if (gamepad1.start || gamepad2.start) {
                 imu.resetYaw();
             }
+
 
             // Drive Power
             fl.setPower(frontLeftPower * slowMode);
@@ -303,6 +300,7 @@ public class TeleOP extends LinearOpMode {
 //                }
 //            }
 
+
             //Servos
             // region Wrist
             if (gamepad2.dpad_down) {
@@ -343,6 +341,8 @@ public class TeleOP extends LinearOpMode {
             } else {
                 winchMotor.setPower(0);
             }
+
+
             //Debug Information
             if (info == 0) {
                 telemetry.addData("Status", "Initializing - Waiting for Start");
@@ -358,12 +358,14 @@ public class TeleOP extends LinearOpMode {
             } else if (info == 5) {
                 telemetry.addData("Status", "Unspecified Error");
             }
+
             telemetry.addData("Drive Mode [P1.Options to toggle]", fieldCentricActive ? "Field centric" : "Robot centric");
             telemetry.addData("Arm Extension", extendPos);
             telemetry.addData("Arm Extension %", extendPos / armExtendMax);
             telemetry.addData("Automation", automationStep);
             telemetry.addData("extendMax42", extendMax42);
             telemetry.addData("aepo", extendPowerOffset);
+
             telemetry.update();
         }
     }
