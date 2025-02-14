@@ -1,6 +1,4 @@
-
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,12 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
-
 //intake1+ = outtake
 @Autonomous(name="Sample-Right Field", group="Linear OpMode")
 public class sample_R extends LinearOpMode {
-
-
     //Setup IMU
     IMU imu;
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -38,7 +33,6 @@ public class sample_R extends LinearOpMode {
     //private CRServo intake1;
     //private CRServo intake2;
     //armExtend.setDirection(DcMotorSimple.Direction.REVERSE); //Might not be needed; test on Tuesday
-
     double armRotationsPerInch = 0.5;
     public void stopDrive() {
         frontLeft.setPower(0);
@@ -54,12 +48,8 @@ public class sample_R extends LinearOpMode {
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armLift.setDirection(DcMotorSimple.Direction.REVERSE);
-
-
     }
-
-    public void armTO(int liftPosTo, int extendPosTo, float speed, float wrist) {
-
+    /* public void armTO(int liftPosTo, int extendPosTo, float speed, float wrist) {
         armLift.setTargetPosition(liftPosTo);
         armLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         armExtend.setTargetPosition(extendPosTo);
@@ -69,7 +59,7 @@ public class sample_R extends LinearOpMode {
         armState = -1; // Automated action in progress
         wrist1.setPosition(1 - (wrist / 10));
         wrist2.setPosition(wrist / 10);
-    }
+    } */
     public void drive(double speed, double distance) {
         frontLeft.setPower(speed);
         backLeft.setPower(speed);
@@ -80,7 +70,6 @@ public class sample_R extends LinearOpMode {
         }
         stopDrive();
     }
-
     public void driveLeft(double speed, double distance) {
         frontLeft.setPower(0-speed);
         backLeft.setPower(speed);
@@ -91,7 +80,6 @@ public class sample_R extends LinearOpMode {
         }
         stopDrive();
     }
-
     public void arm(double speed, double distance) {
         frontLeft.setPower(speed);
         backLeft.setPower(speed);
@@ -100,7 +88,6 @@ public class sample_R extends LinearOpMode {
         }
         stopDrive();
     }
-
     public void correct(double speed, double distance) {
         frontLeft.setPower(speed);
         backLeft.setPower(speed);
@@ -109,7 +96,6 @@ public class sample_R extends LinearOpMode {
         }
         stopDrive();
     }
-
     @Override
     public void runOpMode() throws InterruptedException {
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
@@ -124,27 +110,20 @@ public class sample_R extends LinearOpMode {
         intake2 = hardwareMap.get(CRServo.class, "intake2");
         winch = hardwareMap.get(Servo.class, "winch");
         specimen = hardwareMap.get(Servo.class, "specimen");
-
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-
         IMU imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(parameters);
-
         waitForStart();
-
         if (isStopRequested()) return;
-
         double ticksPerInch = 29.8;
         double reversed = 1;
         double driveSpeed = 0.3;
         stopDrive();
         drive(driveSpeed, 20 * ticksPerInch);
-
-
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -161,14 +140,21 @@ public class sample_R extends LinearOpMode {
             sleep(1);
         }
         stopDrive();
+/*        armLift.setTargetPosition(500);
+        armLift.setPower(.5);
+        while ((armLift.isBusy())) {
+            sleep(1);
+*///        }
 
-        armTO(300,300,5,7);
-
-        while (opModeIsActive() && ((armLift.isBusy() || armExtend.isBusy()))) {
+        armLift.setPower(0.5);
+        while ((armLift.getCurrentPosition())<500 && opModeIsActive()) {
             sleep(1);
         }
+        armLift.setPower(0);
+
+        stopDrive();
         stopDrive();
         armLift.setPower(0);
         armExtend.setPower(0);
-   }
+    }
 }

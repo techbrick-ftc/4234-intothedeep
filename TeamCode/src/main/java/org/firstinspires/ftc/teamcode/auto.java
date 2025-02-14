@@ -21,8 +21,8 @@ public class auto extends LinearOpMode {
     //Setup IMU
     IMU imu;
     IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+            RevHubOrientationOnRobot.LogoFacingDirection.UP,
+            RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
     private DcMotor frontLeft;
     private DcMotor backLeft;
     private DcMotor frontRight;
@@ -60,7 +60,7 @@ public class auto extends LinearOpMode {
 
     }
 
-    public void armTO (int liftPosTo, int extendPosTo, float speed, float wrist) {
+    public void armTO(int liftPosTo, int extendPosTo, float speed, float wrist) {
 
         armLift.setTargetPosition(liftPosTo);
         armLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -69,7 +69,7 @@ public class auto extends LinearOpMode {
         armLift.setPower(speed * 1.25 / 10);
         armExtend.setPower(speed / 10);
         armState = -1; // Automated action in progress
-        wrist1.setPosition(1    - (wrist / 10));
+        wrist1.setPosition(1 - (wrist / 10));
         wrist2.setPosition(wrist / 10);
     }
     public void drive(double speed, double distance) {
@@ -132,8 +132,8 @@ public class auto extends LinearOpMode {
 
         IMU imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(parameters);
 
         waitForStart();
@@ -147,25 +147,25 @@ public class auto extends LinearOpMode {
         double driveSpeed = 0.3;    // can be changed
         stopDrive();
         drive(-driveSpeed, 5 * ticksPerInch);
-
-
+        armTO(0, 0, 0, 0);
         driveLeft(-driveSpeed * reversed, 9* ticksPerInch);
 
         drive(driveSpeed, 50* ticksPerInch);
         driveLeft(-driveSpeed * reversed, 14* ticksPerInch);
         drive(-driveSpeed, 42* ticksPerInch);
+
         correct(-driveSpeed, 0);
         drive(driveSpeed, 46* ticksPerInch);
         driveLeft(-driveSpeed * reversed, 14* ticksPerInch);
         drive(-driveSpeed, 46* ticksPerInch);
         correct(-driveSpeed, 0);
 //        drive(driveSpeed, 48* ticksPerInch);
-  //      driveLeft(-driveSpeed * reversed, 18* ticksPerInch);
-    //    drive(-driveSpeed, 48* ticksPerInch);
+        //      driveLeft(-driveSpeed * reversed, 18* ticksPerInch);
+        //    drive(-driveSpeed, 48* ticksPerInch);
 
         //Intake()
-    //rotate(-130);
-    //extendArm()
-    //release
+        //rotate(-130);
+        //extendArm()
+        //release
     }
 }
