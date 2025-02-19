@@ -173,7 +173,7 @@ public class sample_R extends LinearOpMode {
         armExtend.setPower(0);
         armExtend.setPower(0);
         stopDrive();
-        drive(0.3,29.8*23);
+        drive(0.2,29.8*23);
          intake1.setPower(1);
         intake2.setPower(-1);
         sleep(1000);
