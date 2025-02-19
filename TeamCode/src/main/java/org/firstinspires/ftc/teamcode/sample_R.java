@@ -160,7 +160,7 @@ public class sample_R extends LinearOpMode {
         }
         armLift.setPower(0);
         armExtend.setPower(0.8);
-        while ((armExtend.getCurrentPosition())<3700 && opModeIsActive()) {
+        while ((armExtend.getCurrentPosition())<3300 && opModeIsActive()) {
             telemetry.addData("hello we are armExtend arm", armLift.getCurrentPosition());
             sleep(1);
         }
@@ -173,8 +173,7 @@ public class sample_R extends LinearOpMode {
         armExtend.setPower(0);
         armExtend.setPower(0);
         stopDrive();
-        drive(0.1,29.8*24
-        );
+        drive(0.3,29.8*23);
          intake1.setPower(1);
         intake2.setPower(-1);
         sleep(1000);
