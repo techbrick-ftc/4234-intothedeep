@@ -3,6 +3,8 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -124,6 +126,8 @@ public class sample_R extends LinearOpMode {
         double driveSpeed = 0.3;
         stopDrive();
         drive(driveSpeed, 20 * ticksPerInch);
+        armLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -132,10 +136,10 @@ public class sample_R extends LinearOpMode {
         backLeft.setPower(driveSpeed);
         frontRight.setPower(driveSpeed);
         backRight.setPower(driveSpeed);
-        frontLeft.setTargetPosition(800);
-        backLeft.setTargetPosition(800);
-        frontRight.setTargetPosition(-800);
-        backRight.setTargetPosition(-800);
+        frontLeft.setTargetPosition(900);
+        backLeft.setTargetPosition(900);
+        frontRight.setTargetPosition(-900);
+        backRight.setTargetPosition(-900);
         while (opModeIsActive() && (frontRight.isBusy() || frontLeft.isBusy())) {
             sleep(1);
         }
@@ -145,15 +149,35 @@ public class sample_R extends LinearOpMode {
         while ((armLift.isBusy())) {
             sleep(1);
 *///        }
+        wrist1.setPosition(.65);
+        wrist2.setPosition(.35);
+        sleep(1000);
 
-        armLift.setPower(0.5);
-        while ((armLift.getCurrentPosition())<500 && opModeIsActive()) {
+        armLift.setPower(0.8);
+        while (((armLift.getCurrentPosition())<4000) && opModeIsActive()) {
+            telemetry.addData("hello we are lift arm", armLift.getCurrentPosition());
             sleep(1);
         }
         armLift.setPower(0);
+        armExtend.setPower(0.8);
+        while ((armExtend.getCurrentPosition())<3700 && opModeIsActive()) {
+            telemetry.addData("hello we are armExtend arm", armLift.getCurrentPosition());
+            sleep(1);
+        }
+        armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        wrist1.setPosition(.50);
+        wrist2.setPosition(.50);
+        sleep(1000);
+        armLift.setPower(0);
+        armExtend.setPower(0);
+        armExtend.setPower(0);
         stopDrive();
-        stopDrive();
+        drive(0.1,29.8*24
+        );
+         intake1.setPower(1);
+        intake2.setPower(-1);
+        sleep(1000);
         armLift.setPower(0);
         armExtend.setPower(0);
     }
